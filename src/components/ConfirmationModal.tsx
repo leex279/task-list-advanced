@@ -36,8 +36,8 @@ export function ConfirmationModal({ onConfirm, onCancel, tasks }: ConfirmationMo
   };
 
   return (
-    <div className="confirmation-modal-overlay">
-      <div ref={modalRef} className="confirmation-modal">
+    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <p className="text-gray-800 mb-4">
           Are you sure you want to reload? You will lose any unsaved changes.
         </p>

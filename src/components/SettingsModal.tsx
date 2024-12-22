@@ -35,12 +35,12 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
   };
 
   return (
-    <div className="confirmation-modal-overlay">
-      <div ref={modalRef} className="confirmation-modal w-11/12 max-w-3xl">
+    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md sm:max-w-xl md:max-w-3xl">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-gray-800">Settings</h2>
+          <h2 className="text-gray-800 text-lg sm:text-xl md:text-2xl">Settings</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X size={16} />
+            <X size={20} />
           </button>
         </div>
         <div className="space-y-4">

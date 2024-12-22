@@ -76,8 +76,8 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
   };
 
   return (
-    <div className="confirmation-modal-overlay">
-      <div ref={modalRef} className="confirmation-modal w-11/12 max-w-3xl">
+    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg sm:max-w-xl md:max-w-3xl">
         <input
           type="file"
           accept=".json"
@@ -86,12 +86,12 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
           style={{ display: 'none' }}
         />
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-gray-800">Import Tasks</h2>
+          <h2 className="text-gray-800 text-lg sm:text-xl md:text-2xl">Import Tasks</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X size={16} />
+            <X size={20} />
           </button>
         </div>
-        <div className="mb-4">
+        <div className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => {
               setImportType('browse');
@@ -115,7 +115,7 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
           </button>
         </div>
         {importType === 'url' && (
-          <div className="space-y-2">
+          <div className="space-y-2 mb-4">
             <input
               type="text"
               value={url}
@@ -126,7 +126,7 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
           </div>
         )}
         {importType === 'paste' && (
-          <div className="space-y-2">
+          <div className="space-y-2 mb-4">
             <textarea
               value={json}
               onChange={(e) => setJson(e.target.value)}

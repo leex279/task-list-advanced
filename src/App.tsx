@@ -191,12 +191,12 @@ export default function App() {
         </button>
         <span className="beta-badge">beta</span>
       </div>
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-          <div className="flex items-center justify-between mb-8">
+      <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
+          <div className="flex items-center justify-between mb-4 sm:mb-8">
             <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
               <CheckSquare size={32} className="text-blue-500" />
-              <h1 className="text-2xl font-semibold text-gray-900">Task List Advanced</h1>
+              <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Task List Advanced</h1>
             </div>
             <ImportExport tasks={tasks} onImport={setTasks} />
           </div>
