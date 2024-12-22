@@ -46,7 +46,7 @@ export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, hasHeadlin
         >
           <GripVertical size={18} />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 overflow-x-auto">
           <TaskItem
             task={task}
             onToggle={onToggle}

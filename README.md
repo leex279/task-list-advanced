@@ -9,7 +9,7 @@ A feature-rich task list application built with React, TypeScript, and Tailwind 
 -   **Code Blocks:** Include code snippets within tasks with syntax highlighting using Prism.js.
 -   **Drag and Drop Reordering:** Reorder tasks using drag and drop functionality.
 -   **Import/Export:** Import and export tasks as JSON files.
--   **Community Task Lists:** Load predefined task lists from a community repository.
+-   **Community Task Lists:** Load predefined task lists from a configurable GitHub repository.
 -   **Subtask Completion:** Check all subtasks under a headline with a single click.
 -   **Link Processing:** Automatically convert URLs in task descriptions into clickable links.
 -   **Responsive Design:** Built with Tailwind CSS for a responsive and modern user interface.
@@ -90,6 +90,48 @@ VITE_DEFAULT_GITHUB_RAW_URL=https://raw.githubusercontent.com/leex279/task-list-
 ```
 
 These variables are used as default values for the settings. When you modify the settings in the app, they are saved to local storage and override the default values.
+
+### JSON Format for Tasks
+
+The application uses a specific JSON format for importing and exporting tasks. The JSON file should contain an object with the following structure:
+
+```json
+{
+  "name": "Task List Name",
+  "data": [
+    {
+      "id": "unique-task-id",
+      "text": "Task description",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-07-20T12:00:00.000Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "console.log('Hello, world!');"
+      }
+    },
+    {
+      "id": "unique-headline-id",
+      "text": "Headline",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2024-07-20T12:00:00.000Z"
+    }
+    // ... more tasks
+  ]
+}
+```
+
+-   **`name`**: (String, optional) The name of the task list. This is used when loading community task lists.
+-   **`data`**: (Array) An array of task objects. Each task object can have the following properties:
+    -   **`id`**: (String, required) A unique identifier for the task.
+    -   **`text`**: (String, required) The text description of the task.
+    -   **`completed`**: (Boolean, required) Indicates whether the task is completed.
+    -   **`isHeadline`**: (Boolean, optional) Indicates whether the task is a headline. Defaults to `false`.
+    -   **`createdAt`**: (String, required) A timestamp indicating when the task was created.
+    -   **`codeBlock`**: (Object, optional) An object containing code block information:
+        -   **`language`**: (String, optional) The language of the code block (e.g., "javascript", "typescript", "jsx", "tsx").
+        -   **`code`**: (String, optional) The code snippet.
 
 #### Building for Production
 
