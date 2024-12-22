@@ -85,7 +85,17 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
         >
           {task.completed && <Check size={14} className="text-white" />}
         </button>
-        <TaskText text={task.text} completed={task.completed} />
+        <div className="flex-1 overflow-x-auto">
+          <TaskText text={task.text} completed={task.completed} />
+          {task.codeBlock && task.codeBlock.code.trim() && (
+            <div className="mt-2">
+              <CodeBlock
+                code={task.codeBlock.code}
+                language={task.codeBlock.language}
+              />
+            </div>
+          )}
+        </div>
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={onEdit}
@@ -101,13 +111,6 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           </button>
         </div>
       </div>
-      
-      {task.codeBlock && task.codeBlock.code.trim() && (
-        <CodeBlock
-          code={task.codeBlock.code}
-          language={task.codeBlock.language}
-        />
-      )}
     </div>
   );
 }
