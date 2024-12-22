@@ -7,10 +7,12 @@ interface TaskListSelectorProps {
   onImportTaskList: (tasks: Task[]) => void;
 }
 
+const GITHUB_TASKLIST_BASE_URL = 'https://raw.githubusercontent.com/leex279/task-list-advanced/stable/public/tasklists';
+
 export function TaskListSelector({ availableLists, onImportTaskList }: TaskListSelectorProps) {
   const handleImport = async (listName: string) => {
     try {
-      const response = await fetch(`/tasklists/${listName}`);
+      const response = await fetch(`${GITHUB_TASKLIST_BASE_URL}/${listName}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch task list: ${response.statusText}`);
       }

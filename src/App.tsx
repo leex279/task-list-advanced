@@ -6,6 +6,8 @@ import { TaskList } from './components/TaskList';
 import { ImportExport } from './components/ImportExport';
 import { TaskListSelector } from './components/TaskListSelector';
 
+const GITHUB_TASKLISTS_URL = 'https://api.github.com/repos/leex279/task-list-advanced/contents/public/tasklists?ref=stable';
+
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [availableLists, setAvailableLists] = useState<string[]>([]);
@@ -13,10 +15,13 @@ export default function App() {
   useEffect(() => {
     const fetchTaskLists = async () => {
       try {
-        const response = await fetch('/tasklists');
+        const response = await fetch(GITHUB_TASKLISTS_URL);
         if (response.ok) {
           const data = await response.json();
-          setAvailableLists(data);
+          const fileNames = data
+            .filter((item: any) => item.type === 'file' && item.name.endsWith('.json'))
+            .map((item: any) => item.name);
+          setAvailableLists(fileNames);
         } else {
           console.error('Failed to fetch task lists:', response.statusText);
         }
@@ -153,13 +158,10 @@ export default function App() {
             />
           </>
         ) : (
-          availableLists.length > 0 ? (
+          <>
+            <h2 className="text-center text-gray-500 font-semibold mb-4">Load Community Lists</h2>
             <TaskListSelector availableLists={availableLists} onImportTaskList={handleImportTaskList} />
-          ) : (
-            <div className="text-center py-12 text-gray-500">
-              No predefined task lists available.
-            </div>
-          )
+          </>
         )}
       </div>
     </div>
