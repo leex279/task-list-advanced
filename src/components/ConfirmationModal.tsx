@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { exportTasks } from '../utils/storage';
 import { Task } from '../types/task';
 
@@ -9,6 +9,21 @@ interface ConfirmationModalProps {
 }
 
 export function ConfirmationModal({ onConfirm, onCancel, tasks }: ConfirmationModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onCancel();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onCancel]);
+
   const handleExport = () => {
     const json = exportTasks(tasks);
     const blob = new Blob([json], { type: 'application/json' });
@@ -22,7 +37,7 @@ export function ConfirmationModal({ onConfirm, onCancel, tasks }: ConfirmationMo
 
   return (
     <div className="confirmation-modal-overlay">
-      <div className="confirmation-modal">
+      <div ref={modalRef} className="confirmation-modal">
         <p className="text-gray-800 mb-4">
           Are you sure you want to reload? You will lose any unsaved changes.
         </p>

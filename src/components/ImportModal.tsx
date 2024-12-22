@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Task } from '../types/task';
 import { importTasks } from '../utils/storage';
@@ -13,6 +13,20 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
   const [url, setUrl] = useState('');
   const [json, setJson] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
 
   const handleBrowseClick = () => {
     if (fileInputRef.current) {
@@ -63,7 +77,7 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
 
   return (
     <div className="confirmation-modal-overlay">
-      <div className="confirmation-modal w-11/12 max-w-3xl">
+      <div ref={modalRef} className="confirmation-modal w-11/12 max-w-3xl">
         <input
           type="file"
           accept=".json"
