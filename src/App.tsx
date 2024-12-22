@@ -148,7 +148,10 @@ export default function App() {
   const totalTasks = tasks.filter((task) => !task.isHeadline).length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
+      <div className="absolute top-4 right-4">
+        <span className="beta-badge">beta</span>
+      </div>
       <div className="max-w-2xl mx-auto px-4 py-12">
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
           <div className="flex items-center justify-between mb-8">
@@ -198,4 +201,3 @@ export default function App() {
     </div>
   );
 }
-

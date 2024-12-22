@@ -45,3 +45,8 @@ footer {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   min-width: 300px;
 }
+
+.beta-badge {
+  @apply px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-md;
+}
+
