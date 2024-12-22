@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Task } from '../types/task';
 import { importTasks } from '../utils/storage';
 
@@ -26,14 +26,14 @@ export function TaskListSelector({ availableLists, onImportTaskList }: TaskListS
   };
 
   return (
-    <div className="text-center py-12 text-gray-500">
+    <div className="text-center py-4 text-gray-500">
       {availableLists.length > 0 ? (
         <div className="flex flex-wrap justify-center gap-2">
           {availableLists.map((listName) => (
             <button
               key={listName}
               onClick={() => handleImport(listName)}
-              className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+              className="tag-button"
             >
               {listName.replace('.json', '').replace(/_/g, ' ')}
             </button>

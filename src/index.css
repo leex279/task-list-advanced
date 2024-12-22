@@ -9,3 +9,14 @@ code {
 .indent {
   margin-left: 2rem;
 }
+
+.tag-button {
+  @apply px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors;
+  box-shadow: 0 0 0.5rem rgba(100, 149, 237, 0.2);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.tag-button:hover {
+  box-shadow: 0 0 1rem rgba(100, 149, 237, 0.5);
+  transform: translateY(-2px);
+}
