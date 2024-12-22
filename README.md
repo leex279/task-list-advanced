@@ -79,6 +79,44 @@ The application allows you to configure the following settings via the settings 
 
 These settings are used to fetch and display the community task lists in the `TaskListSelector` component.
 
+### Environment Variables
+
+The application uses the following environment variables, which are defined in a `.env` file at the root of the project:
+
+```
+VITE_DEFAULT_GITHUB_TASKLISTS_URL=https://api.github.com/repos/leex279/task-list-advanced/contents/public/tasklists?ref=stable
+VITE_DEFAULT_GITHUB_REPO_URL=https://github.com/leex279/task-list-advanced
+VITE_DEFAULT_GITHUB_RAW_URL=https://raw.githubusercontent.com/leex279/task-list-advanced/stable/public/tasklists
+```
+
+These variables are used as default values for the settings. When you modify the settings in the app, they are saved to local storage and override the default values.
+
+#### Building for Production
+
+To build the application for production, run:
+
+```bash
+npm run build
+```
+
+This will generate a `dist` directory with the production-ready files.
+
+#### Deployment to Netlify
+
+When deploying to Netlify, you need to set the environment variables in the Netlify site settings:
+
+1. Go to your site's settings in the Netlify dashboard.
+2. Navigate to **Build & deploy** > **Environment**.
+3. Add the following environment variables:
+    
+    -   `VITE_DEFAULT_GITHUB_TASKLISTS_URL`
+    -   `VITE_DEFAULT_GITHUB_REPO_URL`
+    -   `VITE_DEFAULT_GITHUB_RAW_URL`
+    
+    Set the values according to your GitHub repository configuration.
+
+4. Redeploy your site to apply the changes.
+
 ## Contributing
 
 Contributions are welcome! If you have any ideas for improvements or bug fixes, please feel free to submit a pull request.
