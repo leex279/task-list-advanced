@@ -43,10 +43,28 @@ footer {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  min-width: 300px;
 }
 
 .beta-badge {
   @apply px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-md;
 }
 
+.modern-button {
+  @apply px-4 py-2 text-sm rounded-md transition-colors;
+  box-shadow: 0 0 0.5rem rgba(100, 149, 237, 0.2);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  margin: 0 0.3rem;
+}
+
+.modern-button:hover {
+  box-shadow: 0 0 1rem rgba(100, 149, 237, 0.5);
+  transform: translateY(-2px);
+}
+
+.modern-button.bg-blue-500:hover {
+  background-color: #1d4ed8;
+}
+
+.modern-button.bg-gray-100:hover {
+  background-color: #e5e7eb;
+}
