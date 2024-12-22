@@ -1,24 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { CheckSquare } from 'lucide-react';
+import { CheckSquare, Settings } from 'lucide-react';
 import { Task } from './types/task';
 import { TaskInput } from './components/TaskInput';
 import { TaskList } from './components/TaskList';
 import { ImportExport } from './components/ImportExport';
 import { TaskListSelector } from './components/TaskListSelector';
 import { ConfirmationModal } from './components/ConfirmationModal';
+import { SettingsModal } from './components/SettingsModal';
 
-const GITHUB_TASKLISTS_URL = 'https://api.github.com/repos/leex279/task-list-advanced/contents/public/tasklists?ref=stable';
-const GITHUB_REPO_URL = 'https://github.com/leex279/task-list-advanced';
+const DEFAULT_GITHUB_TASKLISTS_URL = 'https://api.github.com/repos/leex279/task-list-advanced/contents/public/tasklists?ref=stable';
+const DEFAULT_GITHUB_REPO_URL = 'https://github.com/leex279/task-list-advanced';
+const DEFAULT_GITHUB_RAW_URL = 'https://raw.githubusercontent.com/leex279/task-list-advanced/stable/public/tasklists';
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [availableLists, setAvailableLists] = useState<{ name: string; url: string }[]>([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [settings, setSettings] = useState({
+    githubRepo: DEFAULT_GITHUB_REPO_URL,
+    githubTaskLists: DEFAULT_GITHUB_TASKLISTS_URL,
+    githubRawUrl: DEFAULT_GITHUB_RAW_URL,
+  });
 
   useEffect(() => {
     const fetchTaskLists = async () => {
       try {
-        const response = await fetch(GITHUB_TASKLISTS_URL);
+        const response = await fetch(settings.githubTaskLists);
         if (!response.ok) {
           throw new Error(`Failed to fetch task lists: ${response.statusText}`);
         }
@@ -26,7 +34,7 @@ export default function App() {
         const filePromises = data
           .filter((item: any) => item.type === 'file' && item.name.endsWith('.json'))
           .map(async (item: any) => {
-            const fileResponse = await fetch(item.download_url);
+            const fileResponse = await fetch(`${settings.githubRawUrl}/${item.name}`);
             if (!fileResponse.ok) {
               throw new Error(`Failed to fetch task list: ${fileResponse.statusText}`);
             }
@@ -42,7 +50,7 @@ export default function App() {
     };
 
     fetchTaskLists();
-  }, []);
+  }, [settings]);
 
   const addTask = (
     text: string,
@@ -152,12 +160,23 @@ export default function App() {
     setShowConfirmationModal(false);
   };
 
+  const handleSettingsSave = (newSettings: any) => {
+    setSettings(newSettings);
+  };
+
   const completedTasks = tasks.filter((task) => !task.isHeadline && task.completed).length;
   const totalTasks = tasks.filter((task) => !task.isHeadline).length;
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <button
+          onClick={() => setShowSettingsModal(true)}
+          className="text-gray-400 hover:text-gray-600"
+          title="Settings"
+        >
+          <Settings size={18} />
+        </button>
         <span className="beta-badge">beta</span>
       </div>
       <div className="max-w-2xl mx-auto px-4 py-12">
@@ -190,12 +209,12 @@ export default function App() {
         ) : (
           <>
             <h2 className="text-center text-gray-500 font-semibold mb-4">Load Community Lists</h2>
-            <TaskListSelector availableLists={availableLists} onImportTaskList={handleImportTaskList} />
+            <TaskListSelector availableLists={availableLists} onImportTaskList={handleImportTaskList} settings={settings} />
           </>
         )}
       </div>
       <footer className="text-center p-4 text-gray-500">
-        <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:underline">
+        <a href={settings.githubRepo} target="_blank" rel="noopener noreferrer" className="hover:underline">
           GitHub Repository
         </a>
       </footer>
@@ -204,6 +223,13 @@ export default function App() {
           onConfirm={handleConfirmReload}
           onCancel={handleCancelReload}
           tasks={tasks}
+        />
+      )}
+      {showSettingsModal && (
+        <SettingsModal
+          onClose={() => setShowSettingsModal(false)}
+          onSave={handleSettingsSave}
+          initialSettings={settings}
         />
       )}
     </div>

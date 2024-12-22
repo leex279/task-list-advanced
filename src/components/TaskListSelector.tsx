@@ -3,17 +3,19 @@ import { Task } from '../types/task';
 
 interface TaskListSelectorProps {
   onImportTaskList: (tasks: Task[]) => void;
+  settings: {
+    githubTaskLists: string;
+    githubRawUrl: string;
+  };
 }
 
-const GITHUB_TASKLIST_BASE_URL = 'https://raw.githubusercontent.com/leex279/task-list-advanced/stable/public/tasklists';
-
-export function TaskListSelector({ onImportTaskList }: TaskListSelectorProps) {
+export function TaskListSelector({ onImportTaskList, settings }: TaskListSelectorProps) {
   const [availableLists, setAvailableLists] = useState<{ name: string; url: string }[]>([]);
 
   useEffect(() => {
     const fetchTaskLists = async () => {
       try {
-        const response = await fetch('https://api.github.com/repos/leex279/task-list-advanced/contents/public/tasklists?ref=stable');
+        const response = await fetch(settings.githubTaskLists);
         if (!response.ok) {
           throw new Error(`Failed to fetch task lists: ${response.statusText}`);
         }
@@ -21,7 +23,7 @@ export function TaskListSelector({ onImportTaskList }: TaskListSelectorProps) {
         const filePromises = data
           .filter((item: any) => item.type === 'file' && item.name.endsWith('.json'))
           .map(async (item: any) => {
-            const fileResponse = await fetch(`${GITHUB_TASKLIST_BASE_URL}/${item.name}`);
+            const fileResponse = await fetch(`${settings.githubRawUrl}/${item.name}`);
             if (!fileResponse.ok) {
               throw new Error(`Failed to fetch task list: ${fileResponse.statusText}`);
             }
@@ -38,7 +40,7 @@ export function TaskListSelector({ onImportTaskList }: TaskListSelectorProps) {
     };
 
     fetchTaskLists();
-  }, []);
+  }, [settings]);
 
   const handleImport = async (url: string) => {
     try {
