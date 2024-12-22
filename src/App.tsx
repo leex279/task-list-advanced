@@ -5,12 +5,15 @@ import { TaskInput } from './components/TaskInput';
 import { TaskList } from './components/TaskList';
 import { ImportExport } from './components/ImportExport';
 import { TaskListSelector } from './components/TaskListSelector';
+import { ConfirmationModal } from './components/ConfirmationModal';
 
 const GITHUB_TASKLISTS_URL = 'https://api.github.com/repos/leex279/task-list-advanced/contents/public/tasklists?ref=stable';
+const GITHUB_REPO_URL = 'https://github.com/leex279/task-list-advanced';
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [availableLists, setAvailableLists] = useState<string[]>([]);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   useEffect(() => {
     const fetchTaskLists = async () => {
@@ -125,6 +128,22 @@ export default function App() {
     setTasks(newTasks);
   };
 
+  const handleLogoClick = () => {
+    if (tasks.length > 0) {
+      setShowConfirmationModal(true);
+    } else {
+      window.location.reload();
+    }
+  };
+
+  const handleConfirmReload = () => {
+    window.location.reload();
+  };
+
+  const handleCancelReload = () => {
+    setShowConfirmationModal(false);
+  };
+
   const completedTasks = tasks.filter((task) => !task.isHeadline && task.completed).length;
   const totalTasks = tasks.filter((task) => !task.isHeadline).length;
 
@@ -133,7 +152,7 @@ export default function App() {
       <div className="max-w-2xl mx-auto px-4 py-12">
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
               <CheckSquare size={32} className="text-blue-500" />
               <h1 className="text-2xl font-semibold text-gray-900">Task List Advanced</h1>
             </div>
@@ -164,6 +183,19 @@ export default function App() {
           </>
         )}
       </div>
+      <footer className="text-center p-4 text-gray-500">
+        <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:underline">
+          GitHub Repository
+        </a>
+      </footer>
+      {showConfirmationModal && (
+        <ConfirmationModal
+          onConfirm={handleConfirmReload}
+          onCancel={handleCancelReload}
+          tasks={tasks}
+        />
+      )}
     </div>
   );
 }
+
