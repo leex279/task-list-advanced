@@ -1,4 +1,3 @@
-<file path="README.md">
 # Task List Advanced
 
 A feature-rich task list application built with React, TypeScript, and Tailwind CSS. This project aims to provide a more advanced and flexible task management experience compared to basic to-do lists.
@@ -74,4 +73,3 @@ Contributions are welcome! If you have any ideas for improvements or bug fixes, 
 ## License
 
 This project is licensed under the MIT License.
-</file>
