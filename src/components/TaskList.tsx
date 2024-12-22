@@ -55,15 +55,20 @@ export function TaskList({ tasks, onToggle, onDelete, onEdit, onReorder }: TaskL
         strategy={verticalListSortingStrategy}
       >
         <div className="space-y-2">
-          {tasks.map((task) => (
-            <DraggableTaskItem
-              key={task.id}
-              task={task}
-              onToggle={onToggle}
-              onDelete={onDelete}
-              onEdit={onEdit}
-            />
-          ))}
+          {tasks.map((task, index) => {
+            const previousTask = tasks[index - 1];
+            const isIndented = previousTask && previousTask.isHeadline;
+            return (
+              <DraggableTaskItem
+                key={task.id}
+                task={task}
+                onToggle={onToggle}
+                onDelete={onDelete}
+                onEdit={onEdit}
+                isIndented={isIndented}
+              />
+            );
+          })}
         </div>
       </SortableContext>
     </DndContext>
