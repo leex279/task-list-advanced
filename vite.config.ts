@@ -12,4 +12,9 @@ export default defineConfig({
       allow: ['src', 'node_modules'],
     },
   },
+  define: {
+    'import.meta.env.VITE_DEFAULT_GITHUB_TASKLISTS_URL': JSON.stringify(process.env.VITE_DEFAULT_GITHUB_TASKLISTS_URL),
+    'import.meta.env.VITE_DEFAULT_GITHUB_REPO_URL': JSON.stringify(process.env.VITE_DEFAULT_GITHUB_REPO_URL),
+    'import.meta.env.VITE_DEFAULT_GITHUB_RAW_URL': JSON.stringify(process.env.VITE_DEFAULT_GITHUB_RAW_URL),
+  }
 });
