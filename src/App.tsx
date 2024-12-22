@@ -12,22 +12,30 @@ const GITHUB_REPO_URL = 'https://github.com/leex279/task-list-advanced';
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [availableLists, setAvailableLists] = useState<string[]>([]);
+  const [availableLists, setAvailableLists] = useState<{ name: string; url: string }[]>([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   useEffect(() => {
     const fetchTaskLists = async () => {
       try {
         const response = await fetch(GITHUB_TASKLISTS_URL);
-        if (response.ok) {
-          const data = await response.json();
-          const fileNames = data
-            .filter((item: any) => item.type === 'file' && item.name.endsWith('.json'))
-            .map((item: any) => item.name);
-          setAvailableLists(fileNames);
-        } else {
-          console.error('Failed to fetch task lists:', response.statusText);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch task lists: ${response.statusText}`);
         }
+        const data = await response.json();
+        const filePromises = data
+          .filter((item: any) => item.type === 'file' && item.name.endsWith('.json'))
+          .map(async (item: any) => {
+            const fileResponse = await fetch(item.download_url);
+            if (!fileResponse.ok) {
+              throw new Error(`Failed to fetch task list: ${fileResponse.statusText}`);
+            }
+            const jsonData = await fileResponse.json();
+            return { name: jsonData.name, url: item.download_url };
+          });
+
+        const filesData = await Promise.all(filePromises);
+        setAvailableLists(filesData);
       } catch (error) {
         console.error('Error fetching task lists:', error);
       }
@@ -49,7 +57,7 @@ export default function App() {
       createdAt: new Date(),
       codeBlock,
     };
-    setTasks([...tasks, newTask]); // Add new tasks at the bottom
+    setTasks([...tasks, newTask]);
   };
 
   const toggleTask = (id: string) => {
@@ -84,7 +92,7 @@ export default function App() {
     setTasks((prevTasks) => {
       const headline = prevTasks.find((task) => task.id === headlineId);
       if (!headline) return prevTasks;
-      
+
       const newTasks = prevTasks.map((task, index) => {
         if (task.id === headlineId) {
           return { ...task, completed: !isAllSubTasksCompleted(prevTasks, task.id) };
