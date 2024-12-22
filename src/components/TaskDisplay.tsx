@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, Trash2, Edit2 } from 'lucide-react';
+import { Check, Trash2, Edit2, CheckSquare } from 'lucide-react';
 import { Task } from '../types/task';
 import { CodeBlock } from './code/CodeBlock';
 import { TaskText } from './TaskText';
@@ -9,13 +9,42 @@ interface TaskDisplayProps {
   onToggle: (id: string) => void;
   onEdit: () => void;
   onDelete: (id: string) => void;
+  onCheckAllSubTasks?: (headlineId: string) => void;
+  tasks: Task[];
 }
 
-export function TaskDisplay({ task, onToggle, onEdit, onDelete }: TaskDisplayProps) {
+export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTasks, tasks }: TaskDisplayProps) {
   if (task.isHeadline) {
+    const isAllSubTasksCompleted = (tasks: Task[]) => {
+      let allCompleted = true;
+      for (let i = 0; i < tasks.length; i++) {
+        const t = tasks[i];
+        if (t.isHeadline) continue;
+        let j = i - 1;
+        while (j >= 0 && !tasks[j].isHeadline) {
+          j--;
+        }
+        if (j >= 0 && tasks[j].id === task.id) {
+          if (!t.completed) {
+            allCompleted = false;
+            break;
+          }
+        }
+      }
+      return allCompleted;
+    };
+
     return (
       <div className="p-4 bg-white rounded-lg shadow-sm group">
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => onCheckAllSubTasks?.(task.id)}
+            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+              isAllSubTasksCompleted(tasks) ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-500'
+            }`}
+          >
+            {isAllSubTasksCompleted(tasks) && <Check size={14} className="text-white" />}
+          </button>
           <h2 className="flex-1 text-xl font-semibold text-gray-900">{task.text}</h2>
           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
@@ -30,6 +59,15 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete }: TaskDisplayPro
             >
               <Trash2 size={18} />
             </button>
+            {onCheckAllSubTasks && (
+              <button
+                onClick={() => onCheckAllSubTasks(task.id)}
+                className="text-gray-400 hover:text-green-500 transition-colors"
+                title="Check all subtasks"
+              >
+                <CheckSquare size={18} />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -42,9 +80,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete }: TaskDisplayPro
         <button
           onClick={() => onToggle(task.id)}
           className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-            task.completed
-              ? 'bg-green-500 border-green-500'
-              : 'border-gray-300 hover:border-green-500'
+            task.completed ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-500'
           }`}
         >
           {task.completed && <Check size={14} className="text-white" />}
@@ -66,7 +102,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete }: TaskDisplayPro
         </div>
       </div>
       
-      {task.codeBlock && (
+      {task.codeBlock && task.codeBlock.code.trim() && (
         <CodeBlock
           code={task.codeBlock.code}
           language={task.codeBlock.language}

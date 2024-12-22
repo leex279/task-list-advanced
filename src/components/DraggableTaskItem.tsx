@@ -11,9 +11,11 @@ interface DraggableTaskItemProps {
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }) => void;
   isIndented: boolean;
+  onCheckAllSubTasks?: (headlineId: string) => void;
+  tasks: Task[];
 }
 
-export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, isIndented }: DraggableTaskItemProps) {
+export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, isIndented, onCheckAllSubTasks, tasks }: DraggableTaskItemProps) {
   const {
     attributes,
     listeners,
@@ -35,19 +37,23 @@ export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, isIndented
       className={`relative ${isDragging ? 'z-50' : ''} ${isIndented ? 'indent' : ''}`}
     >
       <div className="flex group">
-        <div
-          {...attributes}
-          {...listeners}
-          className="px-2 py-4 flex items-center cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
-        >
-          <GripVertical size={18} />
-        </div>
+        {!task.isHeadline && (
+          <div
+            {...attributes}
+            {...listeners}
+            className="px-2 py-4 flex items-center cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+          >
+            <GripVertical size={18} />
+          </div>
+        )}
         <div className="flex-1">
           <TaskItem
             task={task}
             onToggle={onToggle}
             onDelete={onDelete}
             onEdit={onEdit}
+            onCheckAllSubTasks={onCheckAllSubTasks}
+            tasks={tasks}
           />
         </div>
       </div>

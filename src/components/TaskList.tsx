@@ -21,9 +21,10 @@ interface TaskListProps {
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }) => void;
   onReorder: (tasks: Task[]) => void;
+  onCheckAllSubTasks: (headlineId: string) => void;
 }
 
-export function TaskList({ tasks, onToggle, onDelete, onEdit, onReorder }: TaskListProps) {
+export function TaskList({ tasks, onToggle, onDelete, onEdit, onReorder, onCheckAllSubTasks }: TaskListProps) {
   const sensors = useSensors(
     useSensor(MouseSensor),
     useSensor(TouchSensor)
@@ -57,7 +58,8 @@ export function TaskList({ tasks, onToggle, onDelete, onEdit, onReorder }: TaskL
         <div className="space-y-2">
           {tasks.map((task, index) => {
             const previousTask = tasks[index - 1];
-            const isIndented = previousTask && previousTask.isHeadline;
+            const isIndented = !task.isHeadline;
+
             return (
               <DraggableTaskItem
                 key={task.id}
@@ -66,6 +68,8 @@ export function TaskList({ tasks, onToggle, onDelete, onEdit, onReorder }: TaskL
                 onDelete={onDelete}
                 onEdit={onEdit}
                 isIndented={isIndented}
+                onCheckAllSubTasks={task.isHeadline ? onCheckAllSubTasks : undefined}
+                tasks={tasks}
               />
             );
           })}

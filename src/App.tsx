@@ -52,6 +52,50 @@ export default function App() {
     setTasks(newTasks);
   };
 
+  const checkAllSubTasks = (headlineId: string) => {
+    setTasks((prevTasks) => {
+      const headline = prevTasks.find((task) => task.id === headlineId);
+      if (!headline) return prevTasks;
+      
+      const newTasks = prevTasks.map((task, index) => {
+        if (task.id === headlineId) {
+          return { ...task, completed: !isAllSubTasksCompleted(prevTasks, task.id) };
+        }
+        if (task.isHeadline) {
+          return task;
+        }
+        let i = index - 1;
+        while (i >= 0 && !prevTasks[i].isHeadline) {
+          i--;
+        }
+        if (i >= 0 && prevTasks[i].id === headlineId) {
+          return { ...task, completed: !isAllSubTasksCompleted(prevTasks, headlineId) };
+        }
+        return task;
+      });
+      return newTasks;
+    });
+  };
+
+  const isAllSubTasksCompleted = (tasks: Task[], headlineId: string) => {
+    let allCompleted = true;
+    for (let i = 0; i < tasks.length; i++) {
+      const t = tasks[i];
+      if (t.isHeadline) continue;
+      let j = i - 1;
+      while (j >= 0 && !tasks[j].isHeadline) {
+        j--;
+      }
+      if (j >= 0 && tasks[j].id === headlineId) {
+        if (!t.completed) {
+          allCompleted = false;
+          break;
+        }
+      }
+    }
+    return allCompleted;
+  };
+
   const completedTasks = tasks.filter((task) => !task.isHeadline && task.completed).length;
   const totalTasks = tasks.filter((task) => !task.isHeadline).length;
 
@@ -62,7 +106,7 @@ export default function App() {
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <CheckSquare size={32} className="text-blue-500" />
-              <h1 className="text-2xl font-semibold text-gray-900">Bolt Tasks</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">Task List Advanced</h1>
             </div>
             <ImportExport tasks={tasks} onImport={setTasks} />
           </div>
@@ -82,6 +126,7 @@ export default function App() {
               onDelete={deleteTask}
               onEdit={editTask}
               onReorder={reorderTasks}
+              onCheckAllSubTasks={checkAllSubTasks}
             />
           </>
         ) : (
