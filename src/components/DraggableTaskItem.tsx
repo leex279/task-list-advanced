@@ -10,9 +10,10 @@ interface DraggableTaskItemProps {
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }) => void;
+  isIndented: boolean;
 }
 
-export function DraggableTaskItem({ task, onToggle, onDelete, onEdit }: DraggableTaskItemProps) {
+export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, isIndented }: DraggableTaskItemProps) {
   const {
     attributes,
     listeners,
@@ -31,7 +32,7 @@ export function DraggableTaskItem({ task, onToggle, onDelete, onEdit }: Draggabl
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative ${isDragging ? 'z-50' : ''}`}
+      className={`relative ${isDragging ? 'z-50' : ''} ${isIndented ? 'indent' : ''}`}
     >
       <div className="flex group">
         <div
