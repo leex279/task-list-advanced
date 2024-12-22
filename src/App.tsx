@@ -86,7 +86,7 @@ export default function App() {
           </>
         ) : (
           <div className="text-center py-12 text-gray-500">
-            No tasks yet. Add one above to get started!
+            No tasks yet. Add one above to get started!!!
           </div>
         )}
       </div>
