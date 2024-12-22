@@ -1,12 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckSquare } from 'lucide-react';
 import { Task } from './types/task';
 import { TaskInput } from './components/TaskInput';
 import { TaskList } from './components/TaskList';
 import { ImportExport } from './components/ImportExport';
+import { TaskListSelector } from './components/TaskListSelector';
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [availableLists, setAvailableLists] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchTaskLists = async () => {
+      try {
+        const response = await fetch('/tasklists');
+        if (response.ok) {
+          const data = await response.json();
+          setAvailableLists(data);
+        } else {
+          console.error('Failed to fetch task lists:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching task lists:', error);
+      }
+    };
+
+    fetchTaskLists();
+  }, []);
 
   const addTask = (
     text: string,
@@ -96,6 +116,10 @@ export default function App() {
     return allCompleted;
   };
 
+  const handleImportTaskList = (newTasks: Task[]) => {
+    setTasks(newTasks);
+  };
+
   const completedTasks = tasks.filter((task) => !task.isHeadline && task.completed).length;
   const totalTasks = tasks.filter((task) => !task.isHeadline).length;
 
@@ -112,7 +136,6 @@ export default function App() {
           </div>
           <TaskInput onAddTask={addTask} />
         </div>
-
         {tasks.length > 0 ? (
           <>
             {totalTasks > 0 && (
@@ -130,9 +153,13 @@ export default function App() {
             />
           </>
         ) : (
-          <div className="text-center py-12 text-gray-500">
-            No tasks yet. Add one above to get started!
-          </div>
+          availableLists.length > 0 ? (
+            <TaskListSelector availableLists={availableLists} onImportTaskList={handleImportTaskList} />
+          ) : (
+            <div className="text-center py-12 text-gray-500">
+              No predefined task lists available.
+            </div>
+          )
         )}
       </div>
     </div>
