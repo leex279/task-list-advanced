@@ -10,12 +10,12 @@ interface DraggableTaskItemProps {
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }) => void;
-  isIndented: boolean;
+  hasHeadlines: boolean;
   onCheckAllSubTasks?: (headlineId: string) => void;
   tasks: Task[];
 }
 
-export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, isIndented, onCheckAllSubTasks, tasks }: DraggableTaskItemProps) {
+export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, hasHeadlines, onCheckAllSubTasks, tasks }: DraggableTaskItemProps) {
   const {
     attributes,
     listeners,
@@ -29,6 +29,8 @@ export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, isIndented
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
+  const isIndented = hasHeadlines && !task.isHeadline;
 
   return (
     <div

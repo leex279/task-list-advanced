@@ -45,6 +45,8 @@ export function TaskList({ tasks, onToggle, onDelete, onEdit, onReorder, onCheck
     }
   };
 
+  const hasHeadlines = tasks.some((task) => task.isHeadline);
+
   return (
     <DndContext
       sensors={sensors}
@@ -56,23 +58,18 @@ export function TaskList({ tasks, onToggle, onDelete, onEdit, onReorder, onCheck
         strategy={verticalListSortingStrategy}
       >
         <div className="space-y-2">
-          {tasks.map((task, index) => {
-            const previousTask = tasks[index - 1];
-            const isIndented = !task.isHeadline;
-
-            return (
-              <DraggableTaskItem
-                key={task.id}
-                task={task}
-                onToggle={onToggle}
-                onDelete={onDelete}
-                onEdit={onEdit}
-                isIndented={isIndented}
-                onCheckAllSubTasks={task.isHeadline ? onCheckAllSubTasks : undefined}
-                tasks={tasks}
-              />
-            );
-          })}
+          {tasks.map((task) => (
+            <DraggableTaskItem
+              key={task.id}
+              task={task}
+              onToggle={onToggle}
+              onDelete={onDelete}
+              onEdit={onEdit}
+              hasHeadlines={hasHeadlines}
+              onCheckAllSubTasks={task.isHeadline ? onCheckAllSubTasks : undefined}
+              tasks={tasks}
+            />
+          ))}
         </div>
       </SortableContext>
     </DndContext>
