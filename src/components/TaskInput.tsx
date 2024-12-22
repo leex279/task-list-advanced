@@ -1,0 +1,101 @@
+import React, { useState } from 'react';
+import { PlusCircle, Code, Heading } from 'lucide-react';
+
+interface TaskInputProps {
+  onAddTask: (text: string, isHeadline: boolean, codeBlock?: { language: string; code: string }) => void;
+}
+
+export function TaskInput({ onAddTask }: TaskInputProps) {
+  const [text, setText] = useState('');
+  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [isHeadline, setIsHeadline] = useState(false);
+  const [code, setCode] = useState('');
+  const [language, setLanguage] = useState('javascript');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (text.trim()) {
+      onAddTask(
+        text.trim(),
+        isHeadline,
+        !isHeadline && showCodeInput && code.trim() ? { language, code: code.trim() } : undefined
+      );
+      setText('');
+      setCode('');
+      setShowCodeInput(false);
+      setIsHeadline(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={isHeadline ? "Add a headline..." : "Add a new task..."}
+          className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
+        />
+        <button
+          type="button"
+          onClick={() => {
+            setIsHeadline(!isHeadline);
+            if (!isHeadline) {
+              setShowCodeInput(false);
+            }
+          }}
+          className={`px-3 rounded-lg border transition-colors ${
+            isHeadline
+              ? 'border-blue-500 text-blue-500'
+              : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
+          }`}
+          title="Toggle headline"
+        >
+          <Heading size={20} />
+        </button>
+        {!isHeadline && (
+          <button
+            type="button"
+            onClick={() => setShowCodeInput(!showCodeInput)}
+            className={`px-3 rounded-lg border transition-colors ${
+              showCodeInput
+                ? 'border-blue-500 text-blue-500'
+                : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
+            }`}
+          >
+            <Code size={20} />
+          </button>
+        )}
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+        >
+          <PlusCircle size={20} />
+          Add
+        </button>
+      </div>
+
+      {!isHeadline && showCodeInput && (
+        <div className="space-y-2">
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="px-3 py-1.5 rounded-md border border-gray-200 text-sm"
+          >
+            <option value="javascript">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+            <option value="jsx">JSX</option>
+            <option value="tsx">TSX</option>
+          </select>
+          <textarea
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="Enter code here..."
+            className="w-full h-24 px-4 py-2 rounded-lg border border-gray-200 font-mono text-sm focus:outline-none focus:border-blue-500 transition-colors"
+          />
+        </div>
+      )}
+    </form>
+  );
+}
