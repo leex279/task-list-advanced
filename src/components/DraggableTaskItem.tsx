@@ -9,7 +9,7 @@ interface DraggableTaskItemProps {
   task: Task;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
-  onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }) => void;
+  onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }, richText?: string) => void;
   hasHeadlines: boolean;
   onCheckAllSubTasks?: (headlineId: string) => void;
   tasks: Task[];

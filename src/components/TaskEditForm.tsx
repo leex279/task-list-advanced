@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { X, Save } from 'lucide-react';
 import { Task } from '../types/task';
 import { CodeBlockEditor } from './code/CodeBlockEditor';
+import { RichTextEditor } from './RichTextEditor';
 
 interface TaskEditFormProps {
   task: Task;
-  onSave: (text: string, codeBlock?: { language: string; code: string }) => void;
+  onSave: (text: string, codeBlock?: { language: string; code: string }, richText?: string) => void;
   onCancel: () => void;
 }
 
@@ -13,12 +14,14 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
   const [text, setText] = useState(task.text);
   const [code, setCode] = useState(task.codeBlock?.code || '');
   const [language, setLanguage] = useState(task.codeBlock?.language || 'javascript');
+  const [richText, setRichText] = useState(task.richText || '');
 
   const handleSave = () => {
-    if (text.trim()) {
+    if (text.trim() || richText.trim()) {
       onSave(
         text.trim(),
-        code.trim() ? { language, code: code.trim() } : undefined
+        code.trim() ? { language, code: code.trim() } : undefined,
+        richText.trim() ? richText.trim() : undefined
       );
     }
   };
@@ -31,6 +34,10 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+        />
+        <RichTextEditor
+          value={richText}
+          onChange={setRichText}
         />
         <CodeBlockEditor
           code={code}

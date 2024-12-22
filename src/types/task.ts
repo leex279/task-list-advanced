@@ -8,4 +8,5 @@ export interface Task {
     language: string;
     code: string;
   };
+  richText?: string;
 }

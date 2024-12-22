@@ -8,7 +8,7 @@ interface TaskItemProps {
   task: Task;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
-  onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }) => void;
+  onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }, richText?: string) => void;
   onCheckAllSubTasks?: (headlineId: string) => void;
   tasks: Task[];
 }
@@ -20,8 +20,8 @@ export function TaskItem({ task, onToggle, onDelete, onEdit, onCheckAllSubTasks,
     return (
       <TaskEditForm
         task={task}
-        onSave={(text, codeBlock) => {
-          onEdit(task.id, text, codeBlock);
+        onSave={(text, codeBlock, richText) => {
+          onEdit(task.id, text, codeBlock, richText);
           setIsEditing(false);
         }}
         onCancel={() => setIsEditing(false)}

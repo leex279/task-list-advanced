@@ -11,12 +11,21 @@ interface TaskListSelectorProps {
 
 export function TaskListSelector({ onImportTaskList, settings }: TaskListSelectorProps) {
   const [availableLists, setAvailableLists] = useState<{ name: string; url: string }[]>([]);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTaskLists = async () => {
+      setFetchError(null);
       try {
         const response = await fetch(settings.githubTaskLists);
         if (!response.ok) {
+          if (response.status === 403) {
+            const errorData = await response.json();
+            if (errorData.message && errorData.message.includes('API rate limit exceeded')) {
+              setFetchError('GitHub API rate limit exceeded. Please try again later.');
+              return;
+            }
+          }
           throw new Error(`Failed to fetch task lists: ${response.statusText}`);
         }
         const data = await response.json();
@@ -33,9 +42,9 @@ export function TaskListSelector({ onImportTaskList, settings }: TaskListSelecto
 
         const filesData = await Promise.all(filePromises);
         setAvailableLists(filesData);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching task lists:', error);
-        alert('Error fetching task lists: ' + error);
+        setFetchError(error.message || 'Failed to fetch task lists.');
       }
     };
 
@@ -58,7 +67,14 @@ export function TaskListSelector({ onImportTaskList, settings }: TaskListSelecto
 
   return (
     <div className="text-center py-4 text-gray-500">
-      {availableLists.length > 0 ? (
+      {fetchError ? (
+        <div className="text-center text-red-500 font-semibold mb-4">
+          {fetchError}
+          <button onClick={() => fetchTaskLists()} className="mt-2 text-blue-500 hover:underline">
+            Retry
+          </button>
+        </div>
+      ) : availableLists.length > 0 ? (
         <div className="flex flex-wrap justify-center gap-2">
           {availableLists.map((list) => (
             <button

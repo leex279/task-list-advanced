@@ -19,7 +19,7 @@ interface TaskListProps {
   tasks: Task[];
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
-  onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }) => void;
+  onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }, richText?: string) => void;
   onReorder: (tasks: Task[]) => void;
   onCheckAllSubTasks: (headlineId: string) => void;
 }

@@ -1,8 +1,9 @@
-import React from 'react';
-import { Check, Trash2, Edit2, CheckSquare } from 'lucide-react';
+import React, { useState } from 'react';
+import { Check, Trash2, Edit2, CheckSquare, AlignLeft } from 'lucide-react';
 import { Task } from '../types/task';
 import { CodeBlock } from './code/CodeBlock';
 import { TaskText } from './TaskText';
+import { DescriptionModal } from './DescriptionModal';
 
 interface TaskDisplayProps {
   task: Task;
@@ -14,6 +15,8 @@ interface TaskDisplayProps {
 }
 
 export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTasks, tasks }: TaskDisplayProps) {
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+
   if (task.isHeadline) {
     const isAllSubTasksCompleted = (tasks: Task[]) => {
       let allCompleted = true;
@@ -76,7 +79,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-sm group">
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         <button
           onClick={() => onToggle(task.id)}
           className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
@@ -86,7 +89,18 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           {task.completed && <Check size={14} className="text-white" />}
         </button>
         <div className="flex-1 overflow-x-auto">
-          <TaskText text={task.text} completed={task.completed} />
+          <div className="flex items-center gap-2">
+            <TaskText text={task.text} completed={task.completed} />
+            {task.richText && (
+              <button
+                onClick={() => setShowDescriptionModal(true)}
+                className="text-blue-400 hover:text-blue-500 transition-colors"
+                title="Show detailed description"
+              >
+                <AlignLeft size={18} />
+              </button>
+            )}
+          </div>
           {task.codeBlock && task.codeBlock.code.trim() && (
             <div className="mt-2">
               <CodeBlock
@@ -111,6 +125,12 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           </button>
         </div>
       </div>
+      {showDescriptionModal && (
+        <DescriptionModal
+          content={task.richText || ''}
+          onClose={() => setShowDescriptionModal(false)}
+        />
+      )}
     </div>
   );
 }

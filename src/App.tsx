@@ -25,11 +25,20 @@ export default function App() {
       githubRawUrl: DEFAULT_GITHUB_RAW_URL,
     };
   });
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const fetchTaskLists = async () => {
+    setFetchError(null);
     try {
       const response = await fetch(settings.githubTaskLists);
       if (!response.ok) {
+        if (response.status === 403) {
+          const errorData = await response.json();
+          if (errorData.message && errorData.message.includes('API rate limit exceeded')) {
+            setFetchError('GitHub API rate limit exceeded. Please try again later.');
+            return;
+          }
+        }
         throw new Error(`Failed to fetch task lists: ${response.statusText}`);
       }
       const data = await response.json();
@@ -46,8 +55,9 @@ export default function App() {
 
       const filesData = await Promise.all(filePromises);
       setAvailableLists(filesData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching task lists:', error);
+      setFetchError(error.message || 'Failed to fetch task lists.');
     }
   };
 
@@ -65,7 +75,8 @@ export default function App() {
   const addTask = (
     text: string,
     isHeadline: boolean,
-    codeBlock?: { language: string; code: string }
+    codeBlock?: { language: string; code: string },
+    richText?: string
   ) => {
     const newTask: Task = {
       id: crypto.randomUUID(),
@@ -74,6 +85,7 @@ export default function App() {
       isHeadline,
       createdAt: new Date(),
       codeBlock,
+      richText
     };
     setTasks([...tasks, newTask]);
   };
@@ -93,11 +105,12 @@ export default function App() {
   const editTask = (
     id: string,
     text: string,
-    codeBlock?: { language: string; code: string }
+    codeBlock?: { language: string; code: string },
+    richText?: string
   ) => {
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, text, codeBlock } : task
+        task.id === id ? { ...task, text, codeBlock, richText } : task
       )
     );
   };
@@ -181,6 +194,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
+      <div className="absolute top-4 left-4 flex items-center gap-2">
+        <span className="beta-badge">beta</span>
+      </div>
       <div className="absolute top-4 right-4 flex items-center gap-2">
         <button
           onClick={() => setShowSettingsModal(true)}
@@ -189,7 +205,6 @@ export default function App() {
         >
           <Settings size={18} />
         </button>
-        <span className="beta-badge">beta</span>
       </div>
       <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
@@ -220,12 +235,23 @@ export default function App() {
           </>
         ) : (
           <>
-            <h2 className="text-center text-gray-500 font-semibold mb-4">Load Community Lists</h2>
-            <TaskListSelector availableLists={availableLists} onImportTaskList={handleImportTaskList} settings={settings} />
+            {fetchError ? (
+              <div className="text-center text-red-500 font-semibold mb-4">
+                {fetchError}
+                <button onClick={fetchTaskLists} className="mt-2 text-blue-500 hover:underline">
+                  Retry
+                </button>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-center text-gray-500 font-semibold mb-4">Load Community Lists</h2>
+                <TaskListSelector availableLists={availableLists} onImportTaskList={handleImportTaskList} settings={settings} />
+              </>
+            )}
           </>
         )}
       </div>
-      <footer className="text-center p-4 text-gray-500">
+      <footer className="text-center p-4 text-gray-500 border-t">
         <a href={settings.githubRepo} target="_blank" rel="noopener noreferrer" className="hover:underline">
           GitHub Repository
         </a>
