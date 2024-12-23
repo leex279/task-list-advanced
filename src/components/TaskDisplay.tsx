@@ -50,15 +50,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           </button>
           <h2 className="flex-1 text-xl font-semibold text-gray-900">{task.text}</h2>
           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            {task.richText && (
-              <button
-                onClick={() => setShowDescriptionModal(true)}
-                className="text-blue-400 hover:text-blue-500 transition-colors"
-                title="Show detailed description"
-              >
-                <AlignLeft size={18} />
-              </button>
-            )}
+            
             <button
               onClick={onEdit}
               className="text-gray-400 hover:text-blue-500 transition-colors"
@@ -78,6 +70,15 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
                 title="Check all subtasks"
               >
                 <CheckSquare size={18} />
+              </button>
+            )}
+             {task.richText && (
+              <button
+                onClick={() => setShowDescriptionModal(true)}
+                className="text-blue-400 hover:text-blue-500 transition-colors"
+                title="Show detailed description"
+              >
+                <AlignLeft size={18} />
               </button>
             )}
           </div>
@@ -106,7 +107,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
         <div className="flex-1 overflow-x-auto">
           <div className="flex items-center gap-2">
             <TaskText text={task.text} completed={task.completed} />
-            {task.richText && (
+             {task.richText && (
               <button
                 onClick={() => setShowDescriptionModal(true)}
                 className="text-blue-400 hover:text-blue-500 transition-colors"
@@ -127,7 +128,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
         </div>
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
-            onClick={onEdit}
+            onClick={() => onEdit()}
             className="text-gray-400 hover:text-blue-500 transition-colors"
           >
             <Edit2 size={18} />

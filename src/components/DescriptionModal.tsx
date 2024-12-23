@@ -31,7 +31,7 @@ export function DescriptionModal({ content, onClose }: DescriptionModalProps) {
             <X size={20} />
           </button>
         </div>
-        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
+        <div className="prose max-w-none prose-ul:list-disc prose-ol:list-decimal" dangerouslySetInnerHTML={{ __html: content }} />
       </div>
     </div>
   );

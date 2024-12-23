@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,6 +14,21 @@ code {
   @apply px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600;
   box-shadow: 0 0 0.5rem rgba(100, 149, 237, 0.2);
   transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.prose-ul:list-disc, .prose-ol:list-decimal {
+  box-shadow: 0 0 0.5rem rgba(100, 149, 237, 0.2);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.prose ul > li {
+  list-style-type: disc;
+  margin-left: 1.5em;
+}
+
+.prose ol > li {
+  list-style-type: decimal;
+  margin-left: 1.5em;
 }
 
 .tag-button:hover {
@@ -69,4 +83,3 @@ footer {
 .modern-button.bg-gray-100:hover {
   background-color: #e5e7eb;
 }
-
