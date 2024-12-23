@@ -1,0 +1,173 @@
+{
+  "name": "Bolt+Ollama Windows Installation",
+  "data": [
+    {
+      "id": "fb141bd2-f66c-4162-ba12-fddb82916942",
+      "text": "Pre-Requirements",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2024-12-22T14:06:47.531Z"
+    },
+    {
+      "id": "d06cb331-6528-4ef9-a18e-1630b9a7da05",
+      "text": "Install Git from https://git-scm.com",
+      "completed": false,
+      "createdAt": "2024-12-22T13:36:46.622Z"
+    },
+    {
+      "id": "b8d41c65-283a-4416-8e07-2e26f6334755",
+      "text": "Install Node.js LTS from https://nodejs.org",
+      "completed": false,
+      "createdAt": "2024-12-22T13:36:46.622Z"
+    },
+    {
+      "id": "8927db19-683f-4080-aa82-cb5464fc63bd",
+      "text": "Install pnpm globally using",
+      "completed": false,
+      "createdAt": "2024-12-22T13:36:46.623Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "npm install -g pnpm"
+      }
+    },
+    {
+      "id": "e7c1dce6-fe5b-4e4f-ad3b-8f56e6b44cea",
+      "text": "Install",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2024-12-22T14:07:13.332Z"
+    },
+    {
+      "id": "f18e3c70-2463-4e4d-8929-d661010c4265",
+      "text": "Install Microsoft Visual C++ Redistributable from https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170",
+      "completed": false,
+      "createdAt": "2024-12-22T13:36:46.623Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": ""
+      }
+    },
+    {
+      "id": "7a6a361c-a90a-4762-ba93-1a14baf19a85",
+      "text": "Ensure ports 11434(Ollama) and 5173 (bolt.diy) are free (not in use). Use this command in cmd or PowerShell",
+      "completed": false,
+      "createdAt": "2024-12-22T13:36:46.623Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "netstat -ano | findstr :11434\nnetstat -ano | findstr :5173"
+      }
+    },
+    {
+      "id": "445745c7-212f-4077-9e7f-c935b40c6285",
+      "text": "Clone the repository",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.368Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "git clone -b stable https://github.com/stackblitz-labs/bolt.diy.git"
+      }
+    },
+    {
+      "id": "422bb57c-563f-41ca-b3a2-594dc9a9a1fd",
+      "text": "Navigate to the project directory",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.369Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "cd bolt.diy"
+      }
+    },
+    {
+      "id": "e179f8da-ec71-4ade-bbab-1f1af97d39ac",
+      "text": "Rename .env.example to .env.local.",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.369Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": ".env.example"
+      }
+    },
+    {
+      "id": "e61619f0-b8fe-4924-9867-93b5f4876e8a",
+      "text": "Edit env.local and add your API keys for LLMs.",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.369Z"
+    },
+    {
+      "id": "4ceedc8a-631d-4029-a4cc-adb0d3a610fd",
+      "text": "Install dependencies",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.369Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "pnpm install"
+      }
+    },
+    {
+      "id": "28ff8199-0236-4bfb-a53d-9f635067768e",
+      "text": "Start the development server",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.370Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "pnpm run dev"
+      }
+    },
+    {
+      "id": "3b69b88b-765c-4a32-99a9-f4f9b4dc8922",
+      "text": "Open the browser and navigate to the URL shown in the terminal (typically http://localhost:5173).",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.370Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "http://localhost:5173"
+      }
+    },
+    {
+      "id": "e9ea8d10-4413-428d-8578-db8b8b0e5840",
+      "text": "Download Ollama for Windows from https://ollama.com/download",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.370Z"
+    },
+    {
+      "id": "4e24aaf9-0102-4aa7-8a97-dde43988c686",
+      "text": "Install Ollama following the installer instructions.",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.370Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": ""
+      }
+    },
+    {
+      "id": "0331dfb9-fb02-4e85-b307-10a3c63393d6",
+      "text": "Add the Ollama server URL to the .env.local file",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.371Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": ".env.local"
+      }
+    },
+    {
+      "id": "3e978903-4196-460d-9a78-ebef78f6c9d7",
+      "text": "Restart the bolt.diy development server",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.371Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "pnpm run dev"
+      }
+    },
+    {
+      "id": "5e07cf8f-c8bf-4702-a151-69e62925362b",
+      "text": "Test bolt.diy with Ollama by entering a prompt and verifying the response.",
+      "completed": false,
+      "createdAt": "2024-12-22T13:16:39.371Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": ""
+      }
+    }
+  ]
+}
