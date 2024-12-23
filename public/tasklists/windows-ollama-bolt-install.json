@@ -1,0 +1,182 @@
+[
+  {
+    "id": "fb141bd2-f66c-4162-ba12-fddb82916942",
+    "text": "Pre-Requirements",
+    "completed": false,
+    "isHeadline": true,
+    "createdAt": "2024-12-22T14:06:47.531Z"
+  },
+  {
+    "id": "d06cb331-6528-4ef9-a18e-1630b9a7da05",
+    "text": "Install Git from https://git-scm.com",
+    "completed": false,
+    "createdAt": "2024-12-22T13:36:46.622Z"
+  },
+  {
+    "id": "b8d41c65-283a-4416-8e07-2e26f6334755",
+    "text": "Install Node.js LTS from https://nodejs.org",
+    "completed": false,
+    "createdAt": "2024-12-22T13:36:46.622Z"
+  },
+  {
+    "id": "8927db19-683f-4080-aa82-cb5464fc63bd",
+    "text": "Install pnpm globally using",
+    "completed": false,
+    "createdAt": "2024-12-22T13:36:46.623Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": "npm install -g pnpm"
+    }
+  },
+  {
+    "id": "e7c1dce6-fe5b-4e4f-ad3b-8f56e6b44cea",
+    "text": "Bolt.diy Installation",
+    "completed": false,
+    "isHeadline": true,
+    "createdAt": "2024-12-22T14:07:13.332Z"
+  },
+  {
+    "id": "f18e3c70-2463-4e4d-8929-d661010c4265",
+    "text": "Install Microsoft Visual C++ Redistributable from https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170",
+    "completed": false,
+    "createdAt": "2024-12-22T13:36:46.623Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": ""
+    }
+  },
+  {
+    "id": "7a6a361c-a90a-4762-ba93-1a14baf19a85",
+    "text": "Ensure port 5173 (bolt.diy) isfree (not in use). Use this command in cmd or PowerShell:",
+    "completed": false,
+    "createdAt": "2024-12-22T13:36:46.623Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": "netstat -ano | findstr :5173"
+    },
+    "richText": "<ol><li>Open Powershell</li><li>Paste the commands</li><li>It should look like this:</li></ol><p><img src=\"data:image/png;base64,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\"></p><p>If there is no output, it is correct. If you see any output/list, then the port is in use.</p><p>=&gt; Make sure you close the other applications running on these ports and try again</p><p>=&gt; Alternatively change the port of bolt.diy (TODO)</p>"
+  },
+  {
+    "id": "445745c7-212f-4077-9e7f-c935b40c6285",
+    "text": "Clone the repository",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.368Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": "git clone -b stable https://github.com/stackblitz-labs/bolt.diy.git"
+    }
+  },
+  {
+    "id": "422bb57c-563f-41ca-b3a2-594dc9a9a1fd",
+    "text": "Navigate to the project directory",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.369Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": "cd bolt.diy"
+    }
+  },
+  {
+    "id": "e179f8da-ec71-4ade-bbab-1f1af97d39ac",
+    "text": "Rename \".env.example\" to \".env.local\"",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.369Z"
+  },
+  {
+    "id": "e61619f0-b8fe-4924-9867-93b5f4876e8a",
+    "text": "Edit env.local and add your API keys for LLMs.",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.369Z"
+  },
+  {
+    "id": "4ceedc8a-631d-4029-a4cc-adb0d3a610fd",
+    "text": "Install dependencies",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.369Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": "pnpm install"
+    },
+    "richText": "<p>With the terminal opened in the bolt.diy, run the install command.</p>"
+  },
+  {
+    "id": "28ff8199-0236-4bfb-a53d-9f635067768e",
+    "text": "Start the development server",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.370Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": "pnpm run dev"
+    }
+  },
+  {
+    "id": "3b69b88b-765c-4a32-99a9-f4f9b4dc8922",
+    "text": "Open the browser and navigate to the URL shown in the terminal (typically http://localhost:5173).",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.370Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": "http://localhost:5173"
+    }
+  },
+  {
+    "id": "57edbb8f-8c86-4825-82a9-c2e65c2d4ad7",
+    "text": "Ollama Installation",
+    "completed": false,
+    "isHeadline": true,
+    "createdAt": "2024-12-23T11:39:39.782Z"
+  },
+  {
+    "id": "e9ea8d10-4413-428d-8578-db8b8b0e5840",
+    "text": "Download Ollama for Windows from https://ollama.com/download",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.370Z"
+  },
+  {
+    "id": "4e24aaf9-0102-4aa7-8a97-dde43988c686",
+    "text": "Install Ollama following the installer instructions.",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.370Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": ""
+    }
+  },
+  {
+    "id": "0331dfb9-fb02-4e85-b307-10a3c63393d6",
+    "text": "Add the Ollama server URL to the .env.local file",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.371Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": ".env.local"
+    }
+  },
+  {
+    "id": "3e978903-4196-460d-9a78-ebef78f6c9d7",
+    "text": "Restart the bolt.diy development server",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.371Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": "pnpm run dev"
+    }
+  },
+  {
+    "id": "5d8d21ae-c4e0-495e-a6f8-86b375b28bf4",
+    "text": "Testing",
+    "completed": false,
+    "isHeadline": true,
+    "createdAt": "2024-12-23T11:40:03.948Z"
+  },
+  {
+    "id": "5e07cf8f-c8bf-4702-a151-69e62925362b",
+    "text": "Test bolt.diy with Ollama by entering a prompt and verifying the response.",
+    "completed": false,
+    "createdAt": "2024-12-22T13:16:39.371Z",
+    "codeBlock": {
+      "language": "javascript",
+      "code": ""
+    }
+  }
+]
