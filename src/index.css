@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,7 +12,7 @@ code {
 }
 
 .tag-button {
-  @apply px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors;
+  @apply px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600;
   box-shadow: 0 0 0.5rem rgba(100, 149, 237, 0.2);
   transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
@@ -68,3 +69,4 @@ footer {
 .modern-button.bg-gray-100:hover {
   background-color: #e5e7eb;
 }
+

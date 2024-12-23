@@ -1,7 +1,11 @@
 import { Task } from '../types/task';
 
-export const exportTasks = (tasks: Task[]): string => {
-  return JSON.stringify(tasks, null, 2);
+export const exportTasks = (tasks: Task[], name: string): string => {
+  const exportData = {
+    name: name,
+    data: tasks,
+  };
+  return JSON.stringify(exportData, null, 2);
 };
 
 export const importTasks = (jsonString: string): Task[] => {

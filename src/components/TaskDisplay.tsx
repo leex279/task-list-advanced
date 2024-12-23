@@ -50,6 +50,15 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           </button>
           <h2 className="flex-1 text-xl font-semibold text-gray-900">{task.text}</h2>
           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            {task.richText && (
+              <button
+                onClick={() => setShowDescriptionModal(true)}
+                className="text-blue-400 hover:text-blue-500 transition-colors"
+                title="Show detailed description"
+              >
+                <AlignLeft size={18} />
+              </button>
+            )}
             <button
               onClick={onEdit}
               className="text-gray-400 hover:text-blue-500 transition-colors"
@@ -73,6 +82,12 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
             )}
           </div>
         </div>
+        {showDescriptionModal && (
+          <DescriptionModal
+            content={task.richText || ''}
+            onClose={() => setShowDescriptionModal(false)}
+          />
+        )}
       </div>
     );
   }
