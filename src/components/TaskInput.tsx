@@ -3,7 +3,7 @@ import { PlusCircle, Code, Heading, AlignLeft } from 'lucide-react';
 import { RichTextEditor } from './RichTextEditor';
 
 interface TaskInputProps {
-  onAddTask: (text: string, isHeadline: boolean, codeBlock?: { language: string; code: string }, richText?: string) => void;
+  onAddTask: (text: string, isHeadline: boolean, codeBlock?: { language: string; code: string }, richText?: string, optional?: boolean) => void;
 }
 
 export function TaskInput({ onAddTask }: TaskInputProps) {
@@ -14,6 +14,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('javascript');
   const [richText, setRichText] = useState('');
+  const [optional, setOptional] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +23,8 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
         text.trim(),
         isHeadline,
         !isHeadline && showCodeInput && code.trim() ? { language, code: code.trim() } : undefined,
-        !isHeadline && showRichTextEditor ? richText.trim() : undefined
+        !isHeadline && showRichTextEditor ? richText.trim() : undefined,
+        !isHeadline ? optional : undefined
       );
       setText('');
       setCode('');
@@ -30,6 +32,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
       setShowCodeInput(false);
       setShowRichTextEditor(false);
       setIsHeadline(false);
+      setOptional(false);
     }
   };
 
@@ -85,6 +88,15 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
             >
               <AlignLeft size={20} />
             </button>
+             <label className="flex items-center gap-1">
+              <input
+                type="checkbox"
+                checked={optional}
+                onChange={(e) => setOptional(e.target.checked)}
+                className="rounded border-gray-300 text-blue-500 focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-500">Optional</span>
+            </label>
           </>
         )}
         <button

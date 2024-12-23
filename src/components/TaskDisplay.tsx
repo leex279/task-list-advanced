@@ -48,11 +48,26 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           >
             {isAllSubTasksCompleted(tasks) && <Check size={14} className="text-white" />}
           </button>
-          <h2 className="flex-1 text-xl font-semibold text-gray-900">{task.text}</h2>
+          <h2 className="flex-1 text-xl font-semibold text-gray-900">
+            {task.text}
+            {task.optional && (
+              <span className="ml-2 px-2 py-1 text-xs font-semibold text-gray-600 bg-yellow-200 rounded-md optional-badge">
+                Optional
+              </span>
+            )}
+          </h2>
           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            
+            {task.richText && (
+              <button
+                onClick={() => setShowDescriptionModal(true)}
+                className="text-blue-400 hover:text-blue-500 transition-colors"
+                title="Show detailed description"
+              >
+                <AlignLeft size={18} />
+              </button>
+            )}
             <button
-              onClick={onEdit}
+              onClick={() => onEdit()}
               className="text-gray-400 hover:text-blue-500 transition-colors"
             >
               <Edit2 size={18} />
@@ -70,15 +85,6 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
                 title="Check all subtasks"
               >
                 <CheckSquare size={18} />
-              </button>
-            )}
-             {task.richText && (
-              <button
-                onClick={() => setShowDescriptionModal(true)}
-                className="text-blue-400 hover:text-blue-500 transition-colors"
-                title="Show detailed description"
-              >
-                <AlignLeft size={18} />
               </button>
             )}
           </div>
@@ -107,7 +113,12 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
         <div className="flex-1 overflow-x-auto">
           <div className="flex items-center gap-2">
             <TaskText text={task.text} completed={task.completed} />
-             {task.richText && (
+            {task.optional && (
+              <span className="ml-2 px-2 py-1 text-xs font-semibold text-gray-600 bg-yellow-200 rounded-md optional-badge">
+                Optional
+              </span>
+            )}
+            {task.richText && (
               <button
                 onClick={() => setShowDescriptionModal(true)}
                 className="text-blue-400 hover:text-blue-500 transition-colors"

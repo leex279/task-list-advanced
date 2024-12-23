@@ -83,3 +83,7 @@ footer {
 .modern-button.bg-gray-100:hover {
   background-color: #e5e7eb;
 }
+
+.align-middle {
+  vertical-align: middle;
+}

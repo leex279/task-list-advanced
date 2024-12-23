@@ -9,4 +9,6 @@ export interface Task {
     code: string;
   };
   richText?: string;
+  optional?: boolean;
 }
+

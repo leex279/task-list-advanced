@@ -6,7 +6,7 @@ import { RichTextEditor } from './RichTextEditor';
 
 interface TaskEditFormProps {
   task: Task;
-  onSave: (text: string, codeBlock?: { language: string; code: string }, richText?: string) => void;
+  onSave: (text: string, codeBlock?: { language: string; code: string }, richText?: string, optional?: boolean) => void;
   onCancel: () => void;
 }
 
@@ -15,13 +15,15 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
   const [code, setCode] = useState(task.codeBlock?.code || '');
   const [language, setLanguage] = useState(task.codeBlock?.language || 'javascript');
   const [richText, setRichText] = useState(task.richText || '');
+  const [optional, setOptional] = useState(task.optional || false);
 
   const handleSave = () => {
     if (text.trim() || richText.trim()) {
       onSave(
         text.trim(),
         code.trim() ? { language, code: code.trim() } : undefined,
-        richText.trim() ? richText.trim() : undefined
+        richText.trim() ? richText.trim() : undefined,
+        optional
       );
     }
   };
@@ -35,7 +37,7 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
           onChange={(e) => setText(e.target.value)}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
         />
-        <RichTextEditor
+         <RichTextEditor
           value={richText}
           onChange={setRichText}
         />
@@ -45,6 +47,15 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
           onCodeChange={setCode}
           onLanguageChange={setLanguage}
         />
+         <label className="flex items-center gap-1">
+              <input
+                type="checkbox"
+                checked={optional}
+                onChange={(e) => setOptional(e.target.checked)}
+                className="rounded border-gray-300 text-blue-500 focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-500">Optional</span>
+            </label>
         <div className="flex justify-end gap-2">
           <button
             onClick={onCancel}
