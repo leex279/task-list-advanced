@@ -1,5 +1,5 @@
 {
-  "name": "Youtube-Video-Bolt-Windows-Installation",
+  "name": "My Task List",
   "data": [
     {
       "id": "fb141bd2-f66c-4162-ba12-fddb82916942",
@@ -11,19 +11,19 @@
     {
       "id": "d06cb331-6528-4ef9-a18e-1630b9a7da05",
       "text": "Install Git from https://git-scm.com",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:36:46.622Z"
     },
     {
       "id": "b8d41c65-283a-4416-8e07-2e26f6334755",
       "text": "Install Node.js LTS from https://nodejs.org",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:36:46.622Z"
     },
     {
       "id": "037884ec-e6e3-4058-a18f-219fa681cd64",
       "text": "Verify node/npm installation",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2024-12-23T13:56:10.512Z",
       "codeBlock": {
@@ -34,7 +34,7 @@
     {
       "id": "8927db19-683f-4080-aa82-cb5464fc63bd",
       "text": "Install pnpm globally using",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:36:46.623Z",
       "codeBlock": {
         "language": "javascript",
@@ -44,7 +44,7 @@
     {
       "id": "4037a565-7743-4b7a-8b98-6ed805a23668",
       "text": "Verify pnpm Installation",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2024-12-23T13:57:41.064Z",
       "codeBlock": {
@@ -55,7 +55,7 @@
     {
       "id": "f18e3c70-2463-4e4d-8929-d661010c4265",
       "text": "Install Microsoft Visual C++ Redistributable from https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:36:46.623Z",
       "codeBlock": {
         "language": "javascript",
@@ -72,7 +72,7 @@
     {
       "id": "7a6a361c-a90a-4762-ba93-1a14baf19a85",
       "text": "Ensure port 5173 (bolt.diy) is free (not in use). Use this command in cmd or PowerShell:",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:36:46.623Z",
       "codeBlock": {
         "language": "javascript",
@@ -83,7 +83,7 @@
     {
       "id": "445745c7-212f-4077-9e7f-c935b40c6285",
       "text": "Clone the repository",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:16:39.368Z",
       "codeBlock": {
         "language": "javascript",
@@ -93,18 +93,19 @@
     {
       "id": "57036360-e255-456a-8103-9cbfc481cf57",
       "text": "Alternative: Download the release (without git)",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2024-12-23T16:36:18.247Z",
       "codeBlock": {
         "language": "javascript",
         "code": "https://github.com/stackblitz-labs/bolt.diy/tags"
-      }
+      },
+      "optional": true
     },
     {
       "id": "422bb57c-563f-41ca-b3a2-594dc9a9a1fd",
       "text": "Navigate to the project directory",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:16:39.369Z",
       "codeBlock": {
         "language": "javascript",
@@ -114,7 +115,7 @@
     {
       "id": "e179f8da-ec71-4ade-bbab-1f1af97d39ac",
       "text": "Rename \".env.example\" to \".env.local\"",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:16:39.369Z",
       "codeBlock": {
         "language": "javascript",
@@ -123,15 +124,16 @@
     },
     {
       "id": "e61619f0-b8fe-4924-9867-93b5f4876e8a",
-      "text": "Edit env.local and add your API keys for LLMs. (optional)",
-      "completed": true,
+      "text": "Edit env.local and add your API keys for LLMs.",
+      "completed": false,
       "createdAt": "2024-12-22T13:16:39.369Z",
-      "richText": "<p>You can set your API keys here or you can temporarily do it later in the UI.</p>"
+      "richText": "<p>You can set your API keys here or you can temporarily do it later in the UI.</p>",
+      "optional": true
     },
     {
       "id": "4ceedc8a-631d-4029-a4cc-adb0d3a610fd",
       "text": "Install dependencies",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:16:39.369Z",
       "codeBlock": {
         "language": "javascript",
@@ -142,7 +144,7 @@
     {
       "id": "28ff8199-0236-4bfb-a53d-9f635067768e",
       "text": "Start the development server",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:16:39.370Z",
       "codeBlock": {
         "language": "javascript",
@@ -152,7 +154,7 @@
     {
       "id": "3b69b88b-765c-4a32-99a9-f4f9b4dc8922",
       "text": "Open the browser and navigate to the URL shown in the terminal (typically http://localhost:5173).",
-      "completed": true,
+      "completed": false,
       "createdAt": "2024-12-22T13:16:39.370Z",
       "codeBlock": {
         "language": "javascript",
@@ -163,14 +165,14 @@
     {
       "id": "d3ea0ab5-02af-468f-bd22-d6df013527e8",
       "text": "Create and Use Google API Key",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2024-12-23T14:09:36.678Z"
     },
     {
       "id": "9131de15-ac0d-43ca-a1a9-0b5886c265b0",
       "text": "Build a example Webapp with Gemini 2.0 Flash",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2024-12-23T14:09:14.719Z",
       "codeBlock": {
