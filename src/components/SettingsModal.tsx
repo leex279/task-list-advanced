@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { X, ExternalLink } from 'lucide-react';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -24,7 +24,7 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
     };
   }, [onClose]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setSettings({ ...settings, [name]: value });
   };
@@ -82,6 +82,52 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
               onChange={handleInputChange}
               className="mt-1 px-3 py-2 border rounded-md w-full focus:outline-none focus:border-blue-500"
             />
+          </div>
+          <div className="flex gap-2">
+            <select
+              id="service"
+              name="service"
+              value={settings.service || 'Google'}
+              onChange={handleInputChange}
+              className="mt-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <option value="Google">Google</option>
+            </select>
+            <select
+              id="model"
+              name="model"
+              value={settings.model || 'gemini-2.0-flash-exp'}
+              onChange={handleInputChange}
+              className="mt-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <option value="gemini-2.0-flash-exp">Gemini 2.0 Flash</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="apiKey" className="block text-sm font-medium text-gray-700">
+              Google API Key:
+            </label>
+            <div className="flex items-center justify-between">
+              <input
+                type="text"
+                id="apiKey"
+                name="apiKey"
+                value={settings.apiKey || ''}
+                onChange={handleInputChange}
+                placeholder="Not set (will still work if set in .env file)"
+                className="mt-1 px-3 py-2 border rounded-md w-full focus:outline-none focus:border-blue-500"
+              />
+              <a
+                href="https://makersuite.google.com/app/apikey"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-500 hover:underline flex items-center gap-1"
+                title="Get API Key"
+              >
+                Get API Key
+                <ExternalLink size={14} />
+              </a>
+            </div>
           </div>
         </div>
         <div className="flex justify-end gap-4 mt-4">

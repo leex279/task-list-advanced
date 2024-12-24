@@ -11,4 +11,3 @@ export interface Task {
   richText?: string;
   optional?: boolean;
 }
-
