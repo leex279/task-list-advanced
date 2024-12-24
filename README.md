@@ -169,6 +169,11 @@ Contributions are welcome! If you have any ideas for improvements or bug fixes, 
 4. Push your branch to your forked repository.
 5. Submit a pull request.
 
+
+## Build with
+![alt text](public/bolt-logo.png)
+
+
 ## License
 
 This project is licensed under the MIT License.
