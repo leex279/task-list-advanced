@@ -171,8 +171,9 @@ Contributions are welcome! If you have any ideas for improvements or bug fixes, 
 
 
 ## Build with
-![alt text](public/bolt-logo.png)
-
+<a href="https://bolt.diy">
+  <img src="public/bolt-logo.png" width="200" alt="Bolt Logo">
+</a>
 
 ## License
 
