@@ -88,7 +88,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
             >
               <AlignLeft size={20} />
             </button>
-             <label className="flex items-center gap-1">
+            <label className="flex items-center gap-1">
               <input
                 type="checkbox"
                 checked={optional}

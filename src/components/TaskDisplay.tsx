@@ -51,7 +51,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           <h2 className="flex-1 text-xl font-semibold text-gray-900">
             {task.text}
             {task.optional && (
-              <span className="ml-2 px-2 py-1 text-xs font-semibold text-gray-600 bg-yellow-200 rounded-md optional-badge">
+              <span className="ml-2 px-2 py-1 text-xs font-semibold text-gray-600 bg-yellow-200 rounded-md optional-badge align-middle">
                 Optional
               </span>
             )}
@@ -114,7 +114,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           <div className="flex items-center gap-2">
             <TaskText text={task.text} completed={task.completed} />
             {task.optional && (
-              <span className="ml-2 px-2 py-1 text-xs font-semibold text-gray-600 bg-yellow-200 rounded-md optional-badge">
+              <span className="ml-2 px-2 py-1 text-xs font-semibold text-gray-600 bg-yellow-200 rounded-md optional-badge align-middle">
                 Optional
               </span>
             )}

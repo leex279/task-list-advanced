@@ -76,7 +76,8 @@ export default function App() {
     text: string,
     isHeadline: boolean,
     codeBlock?: { language: string; code: string },
-    richText?: string
+    richText?: string,
+    optional?: boolean
   ) => {
     const newTask: Task = {
       id: crypto.randomUUID(),
@@ -85,7 +86,8 @@ export default function App() {
       isHeadline,
       createdAt: new Date(),
       codeBlock,
-      richText
+      richText,
+      optional
     };
     setTasks([...tasks, newTask]);
   };
@@ -106,11 +108,12 @@ export default function App() {
     id: string,
     text: string,
     codeBlock?: { language: string; code: string },
-    richText?: string
+    richText?: string,
+    optional?: boolean
   ) => {
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, text, codeBlock, richText } : task
+        task.id === id ? { ...task, text, codeBlock, richText, optional } : task
       )
     );
   };
