@@ -301,27 +301,25 @@ export default function App() {
                 </button>
               </div>
             ) : (
-              <>
-                <h2 className="text-center text-gray-500 font-semibold mb-4">Load Community Lists</h2>
-                <TaskListSelector availableLists={availableLists} onImportTaskList={handleImportTaskList} settings={settings} />
-                <form onSubmit={handleChatSubmit} className="flex items-center mt-4">
-                  <input
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    placeholder="Enter a prompt to generate a task list..."
-                    className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                  />
-                  <button
-                    type="submit"
-                    className="ml-2 px-3 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
-                    disabled={loading}
-                  >
-                    {loading ? 'Loading...' : <Send size={18} />}
-                  </button>
-                </form>
-              </>
+              <h2 className="text-center text-gray-500 font-semibold mb-4">Load Community Lists</h2>
             )}
+            <TaskListSelector availableLists={availableLists} onImportTaskList={handleImportTaskList} settings={settings} />
+            <form onSubmit={handleChatSubmit} className="flex items-center mt-4">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Enter a prompt to generate a task list..."
+                className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              />
+              <button
+                type="submit"
+                className="ml-2 px-3 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : <Send size={18} />}
+              </button>
+            </form>
           </>
         )}
       </div>
@@ -347,4 +345,4 @@ export default function App() {
     </div>
   );
 }
-   
+ 
