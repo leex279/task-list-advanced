@@ -1,0 +1,67 @@
+{
+  "name": "Simple Example List",
+  "data": [
+    {
+      "id": "task-1",
+      "text": "This is a basic task with no code block.",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-07-20T12:00:00.000Z",
+      "optional": false
+    },
+    {
+      "id": "headline-1",
+      "text": "This is a headline section.",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2024-07-20T12:00:00.000Z"
+    },
+    {
+      "id": "task-2",
+      "text": "This task has a code block associated with it.",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-07-20T12:00:00.000Z",
+      "codeBlock": {
+        "language": "python",
+        "code": "def hello():\n    print('Hello, from Python!')\nhello()"
+      },
+      "optional": false
+    },
+    {
+      "id": "task-3",
+      "text": "This is an optional task that can be skipped.",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-07-20T12:00:00.000Z",
+      "optional": true
+    },
+    {
+      "id": "task-4",
+      "text": "This task is already marked as complete.",
+      "completed": true,
+      "isHeadline": false,
+      "createdAt": "2024-07-20T12:00:00.000Z",
+      "optional": false
+    },
+    {
+      "id": "headline-2",
+      "text": "Another headline section, but with slightly more text to illustrate the behavior of long headlines.",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2024-07-20T12:00:00.000Z"
+    },
+    {
+      "id": "task-5",
+      "text": "This task uses Javascript code block.",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-07-20T12:00:00.000Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "const message = 'Hello from JS!';\nconsole.log(message);"
+      },
+      "optional": false
+    }
+  ]
+}

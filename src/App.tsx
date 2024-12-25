@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckSquare, Settings, Send } from 'lucide-react';
+import { CheckSquare, Settings, Send, HelpCircle } from 'lucide-react';
 import { Task } from './types/task';
 import { TaskInput } from './components/TaskInput';
 import { TaskList } from './components/TaskList';
@@ -7,6 +7,8 @@ import { ImportExport } from './components/ImportExport';
 import { TaskListSelector } from './components/TaskListSelector';
 import { ConfirmationModal } from './components/ConfirmationModal';
 import { SettingsModal } from './components/SettingsModal';
+import { HelpModal } from './components/HelpModal';
+import { ErrorNotification } from './components/ErrorNotification';
 
 const DEFAULT_GITHUB_TASKLISTS_URL = import.meta.env.VITE_DEFAULT_GITHUB_TASKLISTS_URL;
 const DEFAULT_GITHUB_REPO_URL = import.meta.env.VITE_DEFAULT_GITHUB_REPO_URL;
@@ -17,6 +19,7 @@ export default function App() {
   const [availableLists, setAvailableLists] = useState<{ name: string; url: string }[]>([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [settings, setSettings] = useState(() => {
@@ -31,6 +34,7 @@ export default function App() {
     };
   });
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchTaskLists = async () => {
     setFetchError(null);
@@ -269,6 +273,7 @@ export default function App() {
           <Settings size={18} />
         </button>
       </div>
+      {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
       <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
           <div className="flex items-center justify-between mb-4 sm:mb-8">
@@ -339,6 +344,13 @@ export default function App() {
           GitHub Repository
         </a>
       </footer>
+      <button
+        onClick={() => setShowHelpModal(true)}
+        className="fixed bottom-4 right-4 p-2 text-gray-400 hover:text-gray-600"
+        title="Help"
+      >
+        <HelpCircle size={24} />
+      </button>
       {showConfirmationModal && (
         <ConfirmationModal
           onConfirm={handleConfirmReload}
@@ -352,6 +364,9 @@ export default function App() {
           onSave={handleSettingsSave}
           initialSettings={settings}
         />
+      )}
+      {showHelpModal && (
+        <HelpModal onClose={() => setShowHelpModal(false)} />
       )}
     </div>
   );

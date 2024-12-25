@@ -43,10 +43,10 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           <button
             onClick={() => onCheckAllSubTasks?.(task.id)}
             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-              isAllSubTasksCompleted(tasks) ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-500'
+              onCheckAllSubTasks && isAllSubTasksCompleted(tasks) ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-500'
             }`}
           >
-            {isAllSubTasksCompleted(tasks) && <Check size={14} className="text-white" />}
+            {onCheckAllSubTasks && isAllSubTasksCompleted(tasks) && <Check size={14} className="text-white" />}
           </button>
           <h2 className="flex-1 text-xl font-semibold text-gray-900">
             {task.text}
@@ -128,7 +128,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
               </button>
             )}
           </div>
-          {task.codeBlock && task.codeBlock.code.trim() && (
+          {task.codeBlock && task.codeBlock.code && (
             <div className="mt-2">
               <CodeBlock
                 code={task.codeBlock.code}
