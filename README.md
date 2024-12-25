@@ -177,7 +177,7 @@ Contributions are welcome! If you have any ideas for improvements or bug fixes, 
 ## See also my Youtube Channel
 URL: https://www.youtube.com/@DIYSmartCode<br><br>
 <a href="https://www.youtube.com/@DIYSmartCode">
-  <img src="public/smartcode-logo.png" width="400" alt="Smartcode">
+  <img src="public/smartcode.png" width="400" alt="DIY Smart Code">
 </a>
 
 ## Build with
