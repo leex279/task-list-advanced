@@ -9,6 +9,7 @@ interface SettingsModalProps {
 
 export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModalProps) {
   const [settings, setSettings] = useState(initialSettings);
+  const [apiKeyDisplay, setApiKeyDisplay] = useState('');
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,13 +25,31 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
     };
   }, [onClose]);
 
+  useEffect(() => {
+    if (settings.apiKey) {
+      setApiKeyDisplay('********************');
+    } else {
+      setApiKeyDisplay('');
+    }
+  }, [settings.apiKey]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setSettings({ ...settings, [name]: value });
+    if (name === 'apiKey') {
+      setSettings({ ...settings, apiKey: value });
+      if (value) {
+        setApiKeyDisplay('********************');
+      } else {
+        setApiKeyDisplay('');
+      }
+    } else {
+      setSettings({ ...settings, [name]: value });
+    }
   };
 
   const handleSave = () => {
-    onSave(settings);
+    const { service, model, ...rest } = settings;
+    onSave(rest);
     onClose();
   };
 
@@ -92,21 +111,19 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
                 type="text"
                 id="apiKey"
                 name="apiKey"
-                value={settings.apiKey || ''}
+                value={apiKeyDisplay}
                 onChange={handleInputChange}
                 placeholder="Not set (will still work if set in .env file)"
-                className="mt-1 px-3 py-2 border rounded-md w-full focus:outline-none focus:border-blue-500"
+                className="mt-1 px-3 py-2 border rounded-md w-[calc(100%-120px)] focus:outline-none focus:border-blue-500"
               />
-              <a
-                href="https://makersuite.google.com/app/apikey"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-blue-500 hover:underline flex items-center gap-1"
+              <button
+                onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}
+                className="modern-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 whitespace-nowrap w-fit flex items-center gap-1"
                 title="Get API Key"
               >
                 Get API Key
                 <ExternalLink size={14} />
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -122,4 +139,3 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
     </div>
   );
 }
-

@@ -177,7 +177,7 @@ Contributions are welcome! If you have any ideas for improvements or bug fixes, 
 ## See also my Youtube Channel
 URL: https://www.youtube.com/@DIYSmartCode<br><br>
 <a href="https://www.youtube.com/@DIYSmartCode">
-  <img src="public/diysmartcode.png" width="700" alt="DIY Smart Code">
+  <img src="public/diysmartcode.png" width="900" alt="DIY Smart Code">
 </a>
 
 ## Build with
@@ -188,4 +188,3 @@ URL: https://www.youtube.com/@DIYSmartCode<br><br>
 ## License
 
 This project is licensed under the MIT License.
- 

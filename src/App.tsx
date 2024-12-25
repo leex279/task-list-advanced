@@ -203,6 +203,10 @@ export default function App() {
 
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!settings.apiKey) {
+      setFetchError('No API Key provided!');
+      return;
+    }
     setLoading(true);
     setFetchError(null);
     try {
@@ -312,15 +316,21 @@ export default function App() {
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder="Enter a prompt to generate a task list..."
                 className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                disabled={!settings.apiKey}
               />
               <button
                 type="submit"
                 className="ml-2 px-3 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
-                disabled={loading}
+                disabled={loading || !settings.apiKey}
               >
                 {loading ? 'Loading...' : <Send size={18} />}
               </button>
             </form>
+            {!settings.apiKey && (
+              <div className="text-center text-gray-500 mt-2">
+                No API Key provided!
+              </div>
+            )}
           </>
         )}
       </div>
@@ -346,4 +356,3 @@ export default function App() {
     </div>
   );
 }
- 
