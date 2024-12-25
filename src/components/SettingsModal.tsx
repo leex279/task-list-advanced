@@ -122,3 +122,4 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
     </div>
   );
 }
+

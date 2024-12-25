@@ -25,6 +25,8 @@ export default function App() {
       githubRepo: DEFAULT_GITHUB_REPO_URL,
       githubTaskLists: DEFAULT_GITHUB_TASKLISTS_URL,
       githubRawUrl: DEFAULT_GITHUB_RAW_URL,
+      service: 'Google',
+      model: 'gemini-2.0-flash-exp',
       apiKey: '',
     };
   });
@@ -212,7 +214,7 @@ export default function App() {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `Create a checklist in JSON format with the following structure: { "name": "Task List Name", "data": [ { "id": "unique-task-id", "text": "Task description", "completed": false, "isHeadline": false, "createdAt": "2024-07-20T12:00:00.000Z", "codeBlock": { "language": "javascript", "code": "console.log('Hello, world!');" } }, { "id": "unique-headline-id", "text": "Headline", "completed": false, "isHeadline": true, "createdAt": "2024-07-20T12:00:00.000Z" } ] } based on the following prompt: ${chatInput}`
+              text: `Create a checklist in JSON format with the following structure: { "name": "Task List Name", "data": [ { "id": "unique-task-id", "text": "Task description", "completed": false, "isHeadline": false, "createdAt": "2024-07-20T12:00:00.000Z", "codeBlock": { "language": "javascript", "code": "console.log('Hello, world!');" }, "optional": false }, { "id": "unique-headline-id", "text": "Headline", "completed": false, "isHeadline": true, "createdAt": "2024-07-20T12:00:00.000Z" } ] } based on the following prompt: ${chatInput}`
             }]
           }]
         }),
@@ -344,3 +346,4 @@ export default function App() {
     </div>
   );
 }
+ 

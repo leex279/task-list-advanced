@@ -14,6 +14,7 @@ A feature-rich task list application built with React, TypeScript, and Tailwind 
 -   **Link Processing:** Automatically convert URLs in task descriptions into clickable links.
 -   **Responsive Design:** Built with Tailwind CSS for a responsive and modern user interface.
 -   **Settings Management:** Configure GitHub repository settings for community task lists via an in-app settings modal.
+-   **AI Task Generation:** Generate task lists using a prompt with Google Gemini.
 
 ## How It Works
 
@@ -68,6 +69,7 @@ The application uses `@dnd-kit` for drag and drop functionality, `lucide-react` 
 7. Use the import/export buttons to save and load tasks.
 8. Load community task lists using the provided buttons.
 9. Click the settings icon (next to the beta badge) to open the settings modal and configure the GitHub repository settings for community task lists.
+10. Use the input field to generate a task list with Google Gemini.
 
 ## Configuration
 
@@ -76,8 +78,9 @@ The application allows you to configure the following settings via the settings 
 -   **GitHub Repository URL:** The URL of the GitHub repository where community task lists are stored.
 -   **GitHub Task Lists URL:** The API URL for fetching the list of available task lists from the GitHub repository.
 -   **GitHub Raw Content Base URL:** The base URL for fetching the raw content of individual task list JSON files.
+-   **Google API Key:** The API key for accessing the Google Gemini API.
 
-These settings are used to fetch and display the community task lists in the `TaskListSelector` component.
+These settings are used to fetch and display the community task lists in the `TaskListSelector` component and to generate task lists with Google Gemini.
 
 ### Environment Variables
 
@@ -108,7 +111,8 @@ The application uses a specific JSON format for importing and exporting tasks. T
       "codeBlock": {
         "language": "javascript",
         "code": "console.log('Hello, world!');"
-      }
+      },
+      "optional": false
     },
     {
       "id": "unique-headline-id",
@@ -132,6 +136,7 @@ The application uses a specific JSON format for importing and exporting tasks. T
     -   **`codeBlock`**: (Object, optional) An object containing code block information:
         -   **`language`**: (String, optional) The language of the code block (e.g., "javascript", "typescript", "jsx", "tsx").
         -   **`code`**: (String, optional) The code snippet.
+    -   **`optional`**: (Boolean, optional) Indicates whether the task is optional. Defaults to `false`.
 
 #### Building for Production
 
@@ -178,3 +183,4 @@ Contributions are welcome! If you have any ideas for improvements or bug fixes, 
 ## License
 
 This project is licensed under the MIT License.
+ 
