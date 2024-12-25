@@ -174,6 +174,11 @@ Contributions are welcome! If you have any ideas for improvements or bug fixes, 
 4. Push your branch to your forked repository.
 5. Submit a pull request.
 
+## See also my Youtube Channel
+URL: https://www.youtube.com/@DIYSmartCode<br><br>
+<a href="https://www.youtube.com/@DIYSmartCode">
+  <img src="public/smartcode-logo.png" width="400" alt="Smartcode">
+</a>
 
 ## Build with
 <a href="https://bolt.diy">
