@@ -83,26 +83,6 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
               className="mt-1 px-3 py-2 border rounded-md w-full focus:outline-none focus:border-blue-500"
             />
           </div>
-          <div className="flex gap-2">
-            <select
-              id="service"
-              name="service"
-              value={settings.service || 'Google'}
-              onChange={handleInputChange}
-              className="mt-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-            >
-              <option value="Google">Google</option>
-            </select>
-            <select
-              id="model"
-              name="model"
-              value={settings.model || 'gemini-2.0-flash-exp'}
-              onChange={handleInputChange}
-              className="mt-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-            >
-              <option value="gemini-2.0-flash-exp">Gemini 2.0 Flash</option>
-            </select>
-          </div>
           <div>
             <label htmlFor="apiKey" className="block text-sm font-medium text-gray-700">
               Google API Key:

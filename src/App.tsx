@@ -25,8 +25,6 @@ export default function App() {
       githubRepo: DEFAULT_GITHUB_REPO_URL,
       githubTaskLists: DEFAULT_GITHUB_TASKLISTS_URL,
       githubRawUrl: DEFAULT_GITHUB_RAW_URL,
-      service: 'Google',
-      model: 'gemini-2.0-flash-exp',
       apiKey: '',
     };
   });
@@ -192,8 +190,9 @@ export default function App() {
   };
 
   const handleSettingsSave = (newSettings: any) => {
-    setSettings(newSettings);
-    localStorage.setItem('settings', JSON.stringify(newSettings));
+    const { service, model, ...rest } = newSettings;
+    setSettings(rest);
+    localStorage.setItem('settings', JSON.stringify(rest));
     fetchTaskLists();
   };
 
@@ -205,7 +204,7 @@ export default function App() {
     setLoading(true);
     setFetchError(null);
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${settings.model}:generateContent?key=${settings.apiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${settings.apiKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -345,4 +344,3 @@ export default function App() {
     </div>
   );
 }
- 
