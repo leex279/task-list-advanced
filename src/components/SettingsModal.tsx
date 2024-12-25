@@ -113,7 +113,7 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
                 name="apiKey"
                 value={apiKeyDisplay}
                 onChange={handleInputChange}
-                placeholder="Not set (will still work if set in .env file)"
+                placeholder={apiKeyDisplay ? "********************" : "Paste your API key here!"}
                 className="mt-1 px-3 py-2 border rounded-md w-[calc(100%-120px)] focus:outline-none focus:border-blue-500"
               />
               <button
