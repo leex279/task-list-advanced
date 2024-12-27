@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckSquare, Settings, Send, HelpCircle } from 'lucide-react';
+import { CheckSquare, Settings, Send, HelpCircle, Paperclip } from 'lucide-react';
 import { Task } from './types/task';
 import { TaskInput } from './components/TaskInput';
 import { TaskList } from './components/TaskList';
@@ -21,6 +21,8 @@ export default function App() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [chatInput, setChatInput] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [settings, setSettings] = useState(() => {
     const storedSettings = localStorage.getItem('settings');
@@ -205,6 +207,16 @@ export default function App() {
   const completedTasks = tasks.filter((task) => !task.isHeadline && task.completed).length;
   const totalTasks = tasks.filter((task) => !task.isHeadline).length;
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedFile(event.target.files[0]);
+      setSelectedFileName(event.target.files[0].name);
+    } else {
+      setSelectedFile(null);
+      setSelectedFileName(null);
+    }
+  };
+
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!settings.apiKey) {
@@ -213,6 +225,19 @@ export default function App() {
     }
     setLoading(true);
     setFetchError(null);
+
+    let fileContent = '';
+    if (selectedFile) {
+      try {
+        fileContent = await selectedFile.text();
+      } catch (error) {
+        console.error('Error reading file:', error);
+        setFetchError('Failed to read file.');
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${settings.apiKey}`, {
         method: 'POST',
@@ -221,14 +246,16 @@ export default function App() {
         },
         body: JSON.stringify({
           contents: [{
-            parts: [{
-              text: `Create a checklist in JSON format with the following structure: { "name": "Task List Name", "data": [ { "id": "unique-task-id", "text": "Task description", "completed": false, "isHeadline": false, "createdAt": "2024-07-20T12:00:00.000Z", "codeBlock": { "language": "javascript", "code": "console.log('Hello, world!');" }, "optional": false }, { "id": "unique-headline-id", "text": "Headline", "completed": false, "isHeadline": true, "createdAt": "2024-07-20T12:00:00.000Z" } ] } based on the following prompt: ${chatInput}`
-            }]
+            parts: [
+              { text: `Create a checklist in JSON format with the following structure: { "name": "Task List Name", "data": [ { "id": "unique-task-id", "text": "Task description", "completed": false, "isHeadline": false, "createdAt": "2024-07-20T12:00:00.000Z", "codeBlock": { "language": "javascript", "code": "console.log('Hello, world!');" }, "optional": false }, { "id": "unique-headline-id", "text": "Headline", "completed": false, "isHeadline": true, "createdAt": "2024-07-20T12:00:00.000Z" } ] } based on the following prompt: ${chatInput}` },
+              ...(fileContent ? [{ text: `\n\nFile Content:\n${fileContent}` }] : [])
+            ]
           }]
         }),
       });
       if (!response.ok) {
-        throw new Error(`Failed to generate content: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(`Failed to generate content: ${response.statusText} - ${errorData.error?.message || 'No details provided'}`);
       }
       const data = await response.json();
       if (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
@@ -256,6 +283,8 @@ export default function App() {
     } finally {
       setLoading(false);
       setChatInput('');
+      setSelectedFile(null);
+      setSelectedFileName(null);
     }
   };
 
@@ -314,22 +343,34 @@ export default function App() {
               <h2 className="text-center text-gray-500 font-semibold mb-4">Load Community Lists</h2>
             )}
             <TaskListSelector availableLists={availableLists} onImportTaskList={handleImportTaskList} settings={settings} />
-            <form onSubmit={handleChatSubmit} className="flex items-center mt-4">
+            <form onSubmit={handleChatSubmit} className="flex flex-col items-start mt-4">
+              <div className="flex w-full">
+                <textarea
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="Enter a prompt to generate a task list, optionally attach files for analysis..."
+                  className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 resize-none mr-2"
+                  rows={3}
+                  disabled={!settings.apiKey}
+                />
+                <button
+                  type="submit"
+                  className="px-3 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
+                  disabled={loading || !settings.apiKey}
+                >
+                  {loading ? 'Loading...' : <Send size={18} />}
+                </button>
+              </div>
+              <label htmlFor="fileInput" className="cursor-pointer mt-2 flex items-center gap-1">
+                <Paperclip size={18} className="text-gray-400 hover:text-gray-600" />
+                {selectedFileName && <span className="text-sm text-gray-500">{selectedFileName}</span>}
+              </label>
               <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Enter a prompt to generate a task list..."
-                className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                disabled={!settings.apiKey}
+                type="file"
+                onChange={handleFileChange}
+                className="hidden"
+                id="fileInput"
               />
-              <button
-                type="submit"
-                className="ml-2 px-3 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
-                disabled={loading || !settings.apiKey}
-              >
-                {loading ? 'Loading...' : <Send size={18} />}
-              </button>
             </form>
             {!settings.apiKey && (
               <div className="text-center text-gray-500 mt-2">
