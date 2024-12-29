@@ -1,4 +1,4 @@
-    import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
     import { CheckSquare, Settings, Send, HelpCircle, Paperclip } from 'lucide-react';
     import { Task } from './types/task';
     import { TaskInput } from './components/TaskInput';
