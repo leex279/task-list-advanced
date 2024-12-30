@@ -30,16 +30,18 @@ export default function App() {
       githubRepo: DEFAULT_GITHUB_REPO_URL,
       service: 'Google',
       model: 'gemini-2.0-flash-exp',
-      apiKey: '',
+      googleApiKey: '',
+      githubApiKey: '',
     };
   });
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
 
   const fetchTaskLists = async (folderName = '') => {
     setFetchError(null);
     try {
-      const { githubRepo } = settings;
+      const { githubRepo, githubApiKey } = settings;
       const url = new URL(githubRepo);
       const parts = url.pathname.split('/').filter(Boolean);
       if (parts.length < 2) {
@@ -50,12 +52,19 @@ export default function App() {
       const githubTaskLists = `https://api.github.com/repos/${username}/${project}/contents/${folderName}`;
       const githubRawUrl = `https://raw.githubusercontent.com/${username}/${project}/main/${folderName}`;
 
-      const response = await fetch(githubTaskLists);
+      const headers: { [key: string]: string } = {
+        'Accept': 'application/vnd.github.v3+json',
+      };
+      if (githubApiKey) {
+        headers['Authorization'] = `token ${githubApiKey}`;
+      }
+
+      const response = await fetch(githubTaskLists, { headers });
       if (!response.ok) {
         if (response.status === 403) {
           const errorData = await response.json();
           if (errorData.message && errorData.message.includes('API rate limit exceeded')) {
-            setFetchError('GitHub API rate limit exceeded. Please try again later.');
+            setFetchError('GitHub API rate limit exceeded. Please try again later or add a GitHub API key in the settings.');
             return;
           }
         }
@@ -83,7 +92,7 @@ export default function App() {
 
   const fetchFolderNames = async () => {
     try {
-      const { githubRepo } = settings;
+      const { githubRepo, githubApiKey } = settings;
       const url = new URL(githubRepo);
       const parts = url.pathname.split('/').filter(Boolean);
       if (parts.length < 2) {
@@ -93,7 +102,14 @@ export default function App() {
       const project = parts[1];
       const githubFoldersUrl = `https://api.github.com/repos/${username}/${project}/contents`;
 
-      const response = await fetch(githubFoldersUrl);
+      const headers: { [key: string]: string } = {
+        'Accept': 'application/vnd.github.v3+json',
+      };
+      if (githubApiKey) {
+        headers['Authorization'] = `token ${githubApiKey}`;
+      }
+
+      const response = await fetch(githubFoldersUrl, { headers });
       if (!response.ok) {
         throw new Error(`Failed to fetch folders: ${response.statusText}`);
       }
@@ -109,11 +125,12 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (!availableLists.length) {
+    if (!initialFetchCompleted) {
       fetchTaskLists();
+      fetchFolderNames();
+      setInitialFetchCompleted(true);
     }
-    fetchFolderNames();
-  }, [settings.githubRepo]);
+  }, [settings.githubRepo, settings.apiKey, initialFetchCompleted]);
 
   useEffect(() => {
     const storedSettings = localStorage.getItem('settings');
@@ -273,8 +290,8 @@ export default function App() {
 
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!settings.apiKey) {
-      setFetchError('No API Key provided!');
+    if (!settings.googleApiKey) {
+      setFetchError('No Google API Key provided!');
       return;
     }
     setLoading(true);
@@ -293,7 +310,7 @@ export default function App() {
     }
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${settings.apiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${settings.googleApiKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -398,9 +415,20 @@ export default function App() {
             {fetchError ? (
               <div className="text-center text-red-500 font-semibold mb-4">
                 {fetchError}
+                <br />
+                <span className="text-sm text-gray-600">
+                  This might be due to limitations in the WebContainer environment.
+                </span>
                 <button onClick={fetchTaskLists} className="mt-2 text-blue-500 hover:underline">
                   Retry
                 </button>
+                <div className="mt-2 text-sm text-gray-600">
+                  Alternatively, you can try:
+                  <ul className="list-disc list-inside">
+                    <li>Importing a task list from a local JSON file.</li>
+                    <li>Manually pasting JSON data in the import modal.</li>
+                  </ul>
+                </div>
               </div>
             ) : (
               <h2 className="text-center text-gray-500 font-semibold">Load Community Lists</h2>
@@ -420,12 +448,12 @@ export default function App() {
                   placeholder="Enter a prompt to generate a task list, optionally attach files for analysis..."
                   className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 resize-none mr-2"
                   rows={3}
-                  disabled={!settings.apiKey}
+                  disabled={!settings.googleApiKey}
                 />
                 <button
                   type="submit"
                   className="px-3 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
-                  disabled={loading || !settings.apiKey}
+                  disabled={loading || !settings.googleApiKey}
                 >
                   {loading ? 'Loading...' : <Send size={18} />}
                 </button>
@@ -441,9 +469,9 @@ export default function App() {
                 id="fileInput"
               />
             </form>
-            {!settings.apiKey && (
+            {!settings.googleApiKey && (
               <div className="text-center text-gray-500 mt-2">
-                No API Key provided!
+                No Google API Key provided!
               </div>
             )}
           </>
