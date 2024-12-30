@@ -38,6 +38,9 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
 
+  // Cache for API responses
+  const apiCache: { [key: string]: any } = {};
+
   const fetchTaskLists = async (folderName = '') => {
     setFetchError(null);
     try {
@@ -49,8 +52,14 @@ export default function App() {
       }
       const username = parts[0];
       const project = parts[1];
-      const githubTaskLists = `https://api.github.com/repos/${username}/${project}/contents/${folderName}`;
+      const githubTaskListsUrl = `https://api.github.com/repos/${username}/${project}/contents/${folderName}`;
       const githubRawUrl = `https://raw.githubusercontent.com/${username}/${project}/main/${folderName}`;
+
+      // Check if the data is already in the cache
+      if (apiCache[githubTaskListsUrl]) {
+        setAvailableLists(apiCache[githubTaskListsUrl]);
+        return;
+      }
 
       const headers: { [key: string]: string } = {
         'Accept': 'application/vnd.github.v3+json',
@@ -59,7 +68,7 @@ export default function App() {
         headers['Authorization'] = `token ${githubApiKey}`;
       }
 
-      const response = await fetch(githubTaskLists, { headers });
+      const response = await fetch(githubTaskListsUrl, { headers });
       if (!response.ok) {
         if (response.status === 403) {
           const errorData = await response.json();
@@ -84,6 +93,9 @@ export default function App() {
 
       const filesData = await Promise.all(filePromises);
       setAvailableLists(filesData);
+
+      // Cache the API response
+      apiCache[githubTaskListsUrl] = filesData;
     } catch (error: any) {
       console.error('Error fetching task lists:', error);
       setFetchError(error.message || 'Failed to fetch task lists.');
@@ -102,6 +114,12 @@ export default function App() {
       const project = parts[1];
       const githubFoldersUrl = `https://api.github.com/repos/${username}/${project}/contents`;
 
+      // Check if the data is already in the cache
+      if (apiCache[githubFoldersUrl]) {
+        setAvailableFolders(apiCache[githubFoldersUrl]);
+        return;
+      }
+
       const headers: { [key: string]: string } = {
         'Accept': 'application/vnd.github.v3+json',
       };
@@ -119,8 +137,12 @@ export default function App() {
         .map((item: any) => item.name);
 
       setAvailableFolders(folderNames);
+
+      // Cache the API response
+      apiCache[githubFoldersUrl] = folderNames;
     } catch (error: any) {
       console.error('Error fetching folder names:', error);
+      setFetchError(error.message || 'Failed to fetch folder names.');
     }
   };
 
@@ -130,7 +152,7 @@ export default function App() {
       fetchFolderNames();
       setInitialFetchCompleted(true);
     }
-  }, [settings.githubRepo, settings.apiKey, initialFetchCompleted]);
+  }, [settings.githubRepo, settings.githubApiKey, initialFetchCompleted]);
 
   useEffect(() => {
     const storedSettings = localStorage.getItem('settings');
