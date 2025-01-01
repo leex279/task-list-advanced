@@ -13,7 +13,11 @@ export function ImportExport({ tasks, onImport }: ImportExportProps) {
   const [showImportModal, setShowImportModal] = useState(false);
 
   const handleExport = () => {
-    const name = prompt('Enter a name for the task list:', 'My Task List') || 'My Task List';
+    const name = prompt('Enter a name for the task list:', 'My Task List');
+    
+    // Return early if user clicks Cancel or enters empty name
+    if (!name) return;
+
     const json = exportTasks(tasks, name);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);

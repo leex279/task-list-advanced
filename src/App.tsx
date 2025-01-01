@@ -540,7 +540,7 @@ export default function App() {
         )}
       </div>
       <footer className="text-center p-4 text-gray-500 border-t">
-        <a href={settings.githubRepo} target="_blank" rel="noopener noreferrer" className="hover:underline">
+        <a href="https://github.com/leex279/task-list-advanced" target="_blank" rel="noopener noreferrer" className="hover:underline">
           GitHub Repository
         </a>
       </footer>

@@ -18,9 +18,9 @@ A modern task management application with code block support and AI task generat
 
 1. Clone and install:
 ```bash
-git clone https://github.com/yourusername/task-list-advanced.git
+git clone https://github.com/leex279/task-list-advanced.git
 cd task-list-advanced
-pnpm install
+npm install
 ```
 
 2. Create `.env` file:
@@ -30,7 +30,7 @@ VITE_DEV_MODE=true
 
 3. Start development server:
 ```bash
-pnpm run dev
+npm run dev
 ```
 
 4. Open `http://localhost:5173` in your browser
