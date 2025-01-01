@@ -367,26 +367,41 @@ export default function App() {
 
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!settings.googleApiKey) {
-      setFetchError('No Google API Key provided!');
-      return;
-    }
+    if (!chatInput.trim()) return;
+    
     setLoading(true);
-    setFetchError(null);
+    setError(null);
 
-    let fileContent = '';
-    if (selectedFile) {
-      try {
-        fileContent = await selectedFile.text();
-      } catch (error) {
-        console.error('Error reading file:', error);
-        setFetchError('Failed to read file.');
-        setLoading(false);
-        return;
-      }
-    }
+    const systemPrompt = `You are a task list generator that creates structured tasks with descriptions and code examples.
+Please generate tasks in the following JSON structure:
+{
+  "text": "Task title or headline",
+  "isHeadline": false,
+  "completed": false,
+  "richText": "Detailed description with formatting",
+  "codeBlock": {
+    "language": "javascript",
+    "code": "Your code example"
+  },
+  "optional": false
+}
+
+Each task should include:
+- A clear title in the "text" field
+- A detailed description in the "richText" field when appropriate
+- Code examples in the "codeBlock" field when relevant
+- Proper marking of headlines with "isHeadline": true
+- Optional tasks marked with "optional": true when appropriate
+- All tasks start with "completed": false
+
+Format the response as a valid JSON array of tasks.`;
 
     try {
+      const messages = [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: chatInput }
+      ];
+      
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${settings.googleApiKey}`, {
         method: 'POST',
         headers: {
@@ -522,9 +537,9 @@ export default function App() {
                 <textarea
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Enter a prompt to generate a task list, optionally attach files for analysis..."
+                  placeholder={`Enter a prompt to generate a task list...`}
                   className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 resize-none mr-2"
-                  rows={3}
+                  rows={8}
                   disabled={!settings.googleApiKey}
                 />
                 <button
