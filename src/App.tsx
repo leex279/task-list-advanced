@@ -532,38 +532,38 @@ Format the response as a valid JSON array of tasks.`;
               settings={settings}
               onFetchTaskLists={fetchTaskLists}
             />
-            <form onSubmit={handleChatSubmit} className="flex flex-col items-start mt-4">
-              <div className="flex w-full">
-                <textarea
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  placeholder={`Enter a prompt to generate a task list...`}
-                  className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 resize-none mr-2"
-                  rows={8}
-                  disabled={!settings.googleApiKey}
+            {settings.googleApiKey ? (
+              <form onSubmit={handleChatSubmit} className="flex flex-col items-start mt-4">
+                <div className="flex w-full">
+                  <textarea
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    placeholder="Enter a prompt to generate a task list..."
+                    className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 resize-none mr-2"
+                    rows={8}
+                  />
+                  <button
+                    type="submit"
+                    className="px-3 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
+                    disabled={loading}
+                  >
+                    {loading ? 'Loading...' : <Send size={18} />}
+                  </button>
+                </div>
+                <label htmlFor="fileInput" className="cursor-pointer mt-2 flex items-center gap-1">
+                  <Paperclip size={18} className="text-gray-400 hover:text-gray-600" />
+                  {selectedFileName && <span className="text-sm text-gray-500">{selectedFileName}</span>}
+                </label>
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="fileInput"
                 />
-                <button
-                  type="submit"
-                  className="px-3 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
-                  disabled={loading || !settings.googleApiKey}
-                >
-                  {loading ? 'Loading...' : <Send size={18} />}
-                </button>
-              </div>
-              <label htmlFor="fileInput" className="cursor-pointer mt-2 flex items-center gap-1">
-                <Paperclip size={18} className="text-gray-400 hover:text-gray-600" />
-                {selectedFileName && <span className="text-sm text-gray-500">{selectedFileName}</span>}
-              </label>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="hidden"
-                id="fileInput"
-              />
-            </form>
-            {!settings.googleApiKey && (
-              <div className="text-center text-gray-500 mt-2">
-                No Google API Key provided!
+              </form>
+            ) : (
+              <div className="text-center text-gray-500 mt-4">
+                Configure your Google API Key in settings to enable AI task generation
               </div>
             )}
           </>
