@@ -32,17 +32,33 @@ export default function App() {
   const [lastSelectedFolder, setLastSelectedFolder] = useState<string | null>(null);
   const [settings, setSettings] = useState(() => {
     const storedSettings = localStorage.getItem('settings');
-    return storedSettings ? JSON.parse(storedSettings) : {
-      githubRepo: DEFAULT_GITHUB_REPO_URL,
-      service: 'Google',
-      model: 'gemini-2.0-flash-exp',
-      googleApiKey: '',
-      githubApiKey: '',
-    };
+    try {
+      const parsed = storedSettings ? JSON.parse(storedSettings) : null;
+      return parsed || {
+        githubRepo: DEFAULT_GITHUB_REPO_URL,
+        service: 'Google',
+        model: 'gemini-2.0-flash-exp',
+        googleApiKey: '',
+        githubApiKey: '',
+      };
+    } catch (e) {
+      console.error('Error parsing stored settings:', e);
+      return {
+        githubRepo: DEFAULT_GITHUB_REPO_URL,
+        service: 'Google',
+        model: 'gemini-2.0-flash-exp',
+        googleApiKey: '',
+        githubApiKey: '',
+      };
+    }
   });
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('settings', JSON.stringify(settings));
+  }, [settings]);
 
   const fetchTaskLists = async (folderName = '') => {
     // For local development, fetch from public directory first
@@ -331,10 +347,9 @@ export default function App() {
     setShowConfirmationModal(false);
   };
 
-  const handleSettingsSave = (newSettings: Settings) => {
-    // Clear the API cache when settings change
-    Object.keys(apiCache).forEach(key => delete apiCache[key]);
+  const handleSettingsSave = (newSettings: typeof settings) => {
     setSettings(newSettings);
+    setShowSettingsModal(false);
   };
 
   const completedTasks = tasks.filter((task) => !task.isHeadline && task.completed).length;
