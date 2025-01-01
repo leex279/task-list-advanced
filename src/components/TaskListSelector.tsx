@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Task } from '../types/task';
 
 interface TaskListSelectorProps {
@@ -11,58 +11,39 @@ interface TaskListSelectorProps {
   onFetchTaskLists: (folderName?: string) => void;
 }
 
-export function TaskListSelector({ availableLists, availableFolders, onImportTaskList, settings, onFetchTaskLists }: TaskListSelectorProps) {
-  const [selectedFolder, setSelectedFolder] = useState('examples');
-
-  useEffect(() => {
-    onFetchTaskLists(selectedFolder);
-  }, [selectedFolder, onFetchTaskLists]);
-
+export function TaskListSelector({
+  availableLists,
+  onImportTaskList,
+}: TaskListSelectorProps) {
   const handleImport = async (url: string) => {
     try {
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Failed to fetch task list: ${response.statusText}`);
       }
-      const jsonData = await response.json();
-      onImportTaskList(jsonData.data);
+      const data = await response.json();
+      onImportTaskList(data.data.map((task: any) => ({
+        ...task,
+        createdAt: new Date(task.createdAt),
+      })));
     } catch (error) {
       console.error('Error importing task list:', error);
-      alert('Error importing task list: ' + error);
     }
   };
 
-  const handleFolderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const folderName = event.target.value;
-    setSelectedFolder(folderName);
-  };
-
   return (
-    <div className="text-center py-4 text-gray-500">
-      <div className="mb-4">
-        <label htmlFor="folderSelect" className="mr-2">Collection:</label>
-        <select id="folderSelect" value={selectedFolder} onChange={handleFolderChange} className="border rounded px-2 py-1">
-          <option value="" disabled>Select a collection</option>
-          {availableFolders.map((folder) => (
-            <option key={folder} value={folder}>{folder}</option>
-          ))}
-        </select>
-      </div>
-      {availableLists.length > 0 ? (
-        <div className="flex flex-wrap justify-center gap-2">
-          {availableLists.map((list) => (
-            <button
-              key={list.url}
-              onClick={() => handleImport(list.url)}
-              className="tag-button"
-            >
-              {list.name}
-            </button>
-          ))}
-        </div>
-      ) : (
-        <div>No predefined task lists available.</div>
-      )}
+    <div className="flex flex-wrap gap-2 justify-center">
+      {availableLists.map((list) => (
+        <button
+          key={list.url}
+          onClick={() => handleImport(list.url)}
+          className="px-3 py-1.5 text-sm bg-white text-gray-700 rounded-md border border-gray-200 
+            hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 
+            shadow-sm hover:shadow"
+        >
+          {list.name}
+        </button>
+      ))}
     </div>
   );
 }

@@ -1,0 +1,1 @@
+export const isLocalDevelopment = import.meta.env.VITE_DEV_MODE === 'true' || import.meta.env.DEV; 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, ExternalLink } from 'lucide-react';
+import { isLocalDevelopment } from '../utils/env';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -68,27 +69,55 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
 
   return (
     <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md sm:max-w-xl md:max-w-3xl">
+      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-gray-800 text-lg sm:text-xl md:text-2xl">Settings</h2>
+          <h2 className="text-gray-800 text-xl">Settings</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <X size={20} />
           </button>
         </div>
         <div className="space-y-4">
-          <div>
-            <label htmlFor="githubRepo" className="block text-sm font-medium text-gray-700">
-              GitHub Repository URL
-            </label>
-            <input
-              type="text"
-              id="githubRepo"
-              name="githubRepo"
-              value={settings.githubRepo}
-              onChange={handleInputChange}
-              className="mt-1 px-3 py-2 border rounded-md w-full focus:outline-none focus:border-blue-500"
-            />
-          </div>
+          {!isLocalDevelopment && (
+            <>
+              <div>
+                <label htmlFor="githubRepo" className="block text-sm font-medium text-gray-700">
+                  GitHub Repository URL:
+                </label>
+                <input
+                  type="text"
+                  id="githubRepo"
+                  name="githubRepo"
+                  value={settings.githubRepo}
+                  onChange={handleInputChange}
+                  className="mt-1 px-3 py-2 border rounded-md w-full focus:outline-none focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="githubApiKey" className="block text-sm font-medium text-gray-700">
+                  GitHub API Key:
+                </label>
+                <div className="flex items-center justify-between">
+                  <input
+                    type="password"
+                    id="githubApiKey"
+                    name="githubApiKey"
+                    value={githubApiKeyDisplay}
+                    onChange={handleInputChange}
+                    placeholder={githubApiKeyDisplay ? "********************" : "Paste your API key here!"}
+                    className="mt-1 px-3 py-2 border rounded-md w-[calc(100%-120px)] focus:outline-none focus:border-blue-500"
+                  />
+                  <button
+                    onClick={() => window.open('https://github.com/settings/tokens/new?description=Bolt.DIY', '_blank')}
+                    className="modern-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 whitespace-nowrap w-fit flex items-center gap-1"
+                    title="Get GitHub API Key"
+                  >
+                    Get API Key
+                    <ExternalLink size={14} />
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
           <div>
             <label htmlFor="googleApiKey" className="block text-sm font-medium text-gray-700">
               Google API Key:
@@ -113,36 +142,12 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
               </button>
             </div>
           </div>
-          <div>
-            <label htmlFor="githubApiKey" className="block text-sm font-medium text-gray-700">
-              GitHub API Key:
-            </label>
-            <div className="flex items-center justify-between">
-              <input
-                type="password"
-                id="githubApiKey"
-                name="githubApiKey"
-                value={githubApiKeyDisplay}
-                onChange={handleInputChange}
-                placeholder={githubApiKeyDisplay ? "********************" : "Paste your API key here!"}
-                className="mt-1 px-3 py-2 border rounded-md w-[calc(100%-120px)] focus:outline-none focus:border-blue-500"
-              />
-              <button
-                onClick={() => window.open('https://github.com/settings/tokens/new?description=Bolt.DIY', '_blank')}
-                className="modern-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 whitespace-nowrap w-fit flex items-center gap-1"
-                title="Get GitHub API Key"
-              >
-                Get API Key
-                <ExternalLink size={14} />
-              </button>
-            </div>
-          </div>
         </div>
-        <div className="flex justify-end gap-4 mt-4">
-          <button onClick={onClose} className="modern-button bg-gray-100 text-gray-700 hover:bg-gray-200">
+        <div className="mt-6 flex justify-end gap-2">
+          <button onClick={onClose} className="modern-button bg-gray-100 text-gray-700">
             Cancel
           </button>
-          <button onClick={handleSave} className="modern-button bg-blue-500 text-white hover:bg-blue-600">
+          <button onClick={handleSave} className="modern-button bg-blue-500 text-white">
             Save
           </button>
         </div>
