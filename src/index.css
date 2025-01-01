@@ -92,3 +92,26 @@ footer {
 .align-middle {
   vertical-align: middle;
 }
+
+/* Rich Text Editor Styles */
+.rich-text-editor .ql-toolbar {
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
+  border-color: #e5e7eb;
+}
+
+.rich-text-editor .ql-container {
+  border-bottom-left-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+  border-color: #e5e7eb;
+}
+
+.rich-text-editor .ql-editor {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.rich-text-editor .ql-editor:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
