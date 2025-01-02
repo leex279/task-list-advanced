@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { Download, ChevronRight } from 'lucide-react';
+import { Download, ChevronRight, Trash2, X } from 'lucide-react';
 import { ChatMessage } from '../types/chat';
 
 interface ChatHistoryProps {
   onClose: () => void;
 }
 
+interface FormattedMessage {
+  isJson: boolean;
+  content: string;
+  title?: string;
+}
+
 export function ChatHistory({ onClose }: ChatHistoryProps) {
-  const history: ChatMessage[] = JSON.parse(localStorage.getItem('aiChatHistory') || '[]');
+  const [history, setHistory] = useState<ChatMessage[]>(() => 
+    JSON.parse(localStorage.getItem('aiChatHistory') || '[]')
+  );
   const [expandedMessages, setExpandedMessages] = useState<number[]>([]);
 
   const downloadHistory = () => {
@@ -20,6 +28,19 @@ export function ChatHistory({ onClose }: ChatHistoryProps) {
     linkElement.click();
   };
 
+  const clearHistory = () => {
+    if (window.confirm('Are you sure you want to clear all chat history?')) {
+      localStorage.setItem('aiChatHistory', '[]');
+      setHistory([]);
+    }
+  };
+
+  const deleteEntry = (index: number) => {
+    const newHistory = history.filter((_, i) => i !== index);
+    localStorage.setItem('aiChatHistory', JSON.stringify(newHistory));
+    setHistory(newHistory);
+  };
+
   const toggleMessage = (index: number) => {
     setExpandedMessages(prev => 
       prev.includes(index) 
@@ -28,16 +49,17 @@ export function ChatHistory({ onClose }: ChatHistoryProps) {
     );
   };
 
-  const formatMessage = (content: string) => {
+  const formatMessage = (content: string): FormattedMessage => {
     // Remove ```json and ``` from the content
     const cleanContent = content.replace(/```json\n?|\n?```/g, '');
     
     try {
       // Try to parse as JSON to determine if it's a JSON response
-      JSON.parse(cleanContent);
+      const parsed = JSON.parse(cleanContent);
       return {
         isJson: true,
-        content: cleanContent
+        content: cleanContent,
+        title: parsed.name || 'Generated Tasks' // Extract the name from the JSON
       };
     } catch {
       return {
@@ -51,13 +73,22 @@ export function ChatHistory({ onClose }: ChatHistoryProps) {
     <div className="mt-8 pt-6 border-t">
       <div className="flex justify-between items-center mb-4">
         <h4 className="text-sm font-medium text-gray-900">AI Chat History</h4>
-        <button
-          onClick={downloadHistory}
-          className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
-        >
-          <Download size={14} />
-          Download
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={downloadHistory}
+            className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
+          >
+            <Download size={14} />
+            Download
+          </button>
+          <button
+            onClick={clearHistory}
+            className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700"
+          >
+            <Trash2 size={14} />
+            Clear All
+          </button>
+        </div>
       </div>
       
       <div className="max-h-[300px] overflow-y-auto border rounded-lg">
@@ -66,7 +97,7 @@ export function ChatHistory({ onClose }: ChatHistoryProps) {
         ) : (
           <div className="divide-y">
             {history.map((message, index) => {
-              const { isJson, content } = formatMessage(message.content);
+              const { isJson, content, title } = formatMessage(message.content);
               const isExpanded = expandedMessages.includes(index);
 
               return (
@@ -77,9 +108,18 @@ export function ChatHistory({ onClose }: ChatHistoryProps) {
                   }`}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-medium text-gray-900">
-                      {message.role === 'assistant' ? 'AI' : 'You'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-900">
+                        {message.role === 'assistant' ? (title || 'AI Response') : 'You'}
+                      </span>
+                      <button
+                        onClick={() => deleteEntry(index)}
+                        className="text-gray-400 hover:text-red-600 transition-colors"
+                        title="Delete entry"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                     <span className="text-xs text-gray-500">
                       {new Date(message.timestamp).toLocaleString()}
                     </span>
