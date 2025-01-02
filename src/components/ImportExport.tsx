@@ -23,7 +23,9 @@ export function ImportExport({ tasks, onImport }: ImportExportProps) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `tasks-${new Date().toISOString().split('T')[0]}.json`;
+    // Use the provided name in the filename, sanitize it for file system
+    const sanitizedName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    a.download = `${sanitizedName}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
