@@ -43,6 +43,12 @@ export function Tour({ onComplete }: TourProps) {
       position: 'bottom'
     },
     {
+      target: '.optional-checkbox',
+      title: 'Optional Tasks',
+      content: 'Mark tasks as optional to indicate they are not required for completion.',
+      position: 'bottom'
+    },
+    {
       target: '.ai-config-text',
       title: 'AI Task Generation',
       content: 'To use AI task generation, first add your Google API key in the settings. Once configured, you can automatically generate task lists from text descriptions.',

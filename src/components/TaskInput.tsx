@@ -91,7 +91,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
             >
               <AlignLeft size={20} />
             </button>
-            <label className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors cursor-pointer">
+            <label className="optional-checkbox flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors cursor-pointer">
               <input
                 type="checkbox"
                 checked={optional}

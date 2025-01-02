@@ -32,7 +32,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [showTour, setShowTour] = useState(() => {
     const hasSeenTour = localStorage.getItem('hasSeenTour');
-    return !hasSeenTour;
+    return !hasSeenTour && !settings.googleApiKey;
   });
 
   const fetchTaskLists = async () => {

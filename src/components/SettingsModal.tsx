@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, ExternalLink } from 'lucide-react';
 
 interface SettingsModalProps {
@@ -17,76 +17,114 @@ interface SettingsModalProps {
 
 export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModalProps) {
   const [settings, setSettings] = useState(initialSettings);
-  const [googleApiKeyDisplay, setGoogleApiKeyDisplay] = useState(initialSettings.googleApiKey);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const [clearing, setClearing] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSettings(prev => ({ ...prev, [name]: value }));
-    if (name === 'googleApiKey') {
-      setGoogleApiKeyDisplay(value);
+  const clearSiteData = async () => {
+    setClearing(true);
+    try {
+      // Clear localStorage
+      localStorage.clear();
+
+      // Clear sessionStorage
+      sessionStorage.clear();
+
+      // Clear cookies
+      document.cookie.split(";").forEach(cookie => {
+        document.cookie = cookie
+          .replace(/^ +/, "")
+          .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
+      });
+
+      // Clear IndexedDB
+      const databases = await window.indexedDB.databases();
+      databases.forEach(db => {
+        if (db.name) window.indexedDB.deleteDatabase(db.name);
+      });
+
+      // Clear Cache Storage
+      if ('caches' in window) {
+        const cacheKeys = await caches.keys();
+        await Promise.all(cacheKeys.map(key => caches.delete(key)));
+      }
+
+      // Reload the page to apply changes
+      window.location.reload();
+    } catch (error) {
+      console.error('Error clearing site data:', error);
+    } finally {
+      setClearing(false);
     }
   };
 
-  const handleSave = () => {
-    onSave(settings);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
-
   return (
-    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-gray-800 text-xl">Settings</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X size={20} />
-          </button>
-        </div>
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="googleApiKey" className="block text-sm font-medium text-gray-700">
-              Google API Key:
-            </label>
-            <div className="flex items-center justify-between">
-              <input
-                type="password"
-                id="googleApiKey"
-                name="googleApiKey"
-                value={googleApiKeyDisplay}
-                onChange={handleInputChange}
-                placeholder={googleApiKeyDisplay ? "********************" : "Paste your API key here!"}
-                className="mt-1 px-3 py-2 border rounded-md w-[calc(100%-120px)] focus:outline-none focus:border-blue-500"
-              />
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+        <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900">Settings</h3>
+              <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                <X size={20} />
+              </button>
+            </div>
+            
+            {/* Google API Key Section */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Google API Key
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="password"
+                  value={settings.googleApiKey || ''}
+                  onChange={(e) => setSettings({ ...settings, googleApiKey: e.target.value })}
+                  className="flex-1 px-3 py-2 border rounded-md"
+                  placeholder="Enter your API key"
+                />
+                <button
+                  onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}
+                  className="modern-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 whitespace-nowrap w-fit flex items-center gap-1"
+                  title="Get Google API Key"
+                >
+                  Get API Key
+                  <ExternalLink size={14} />
+                </button>
+              </div>
+            </div>
+
+            {/* Clear Site Data Section */}
+            <div className="mt-8 pt-6 border-t">
+              <h4 className="text-sm font-medium text-gray-900 mb-2">Clear Site Data</h4>
+              <p className="text-sm text-gray-500 mb-4">
+                This will clear all saved settings, tasks, and cached data. This action cannot be undone.
+              </p>
               <button
-                onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}
-                className="modern-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 whitespace-nowrap w-fit flex items-center gap-1"
-                title="Get Google API Key"
+                onClick={clearSiteData}
+                disabled={clearing}
+                className="px-4 py-2 text-sm text-red-600 border border-red-600 rounded-md hover:bg-red-50 transition-colors"
               >
-                Get API Key
-                <ExternalLink size={14} />
+                {clearing ? 'Clearing...' : 'Clear All Data'}
               </button>
             </div>
           </div>
-        </div>
-        <div className="mt-6 flex justify-end gap-2">
-          <button onClick={onClose} className="modern-button bg-gray-100 text-gray-700">
-            Cancel
-          </button>
-          <button onClick={handleSave} className="modern-button bg-blue-500 text-white">
-            Save
-          </button>
+
+          <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+            <button
+              type="button"
+              onClick={() => onSave(settings)}
+              className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>
