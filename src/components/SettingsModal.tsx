@@ -3,8 +3,16 @@ import { X, ExternalLink } from 'lucide-react';
 
 interface SettingsModalProps {
   onClose: () => void;
-  onSave: (settings: any) => void;
-  initialSettings: any;
+  onSave: (settings: {
+    service: string;
+    model: string;
+    googleApiKey: string;
+  }) => void;
+  initialSettings: {
+    service: string;
+    model: string;
+    googleApiKey: string;
+  };
 }
 
 export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModalProps) {

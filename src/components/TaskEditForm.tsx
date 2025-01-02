@@ -83,8 +83,7 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
         {showCodeInput && (
           <CodeBlockEditor
             code={code}
-            language="javascript"
-            onChange={(_, newCode) => setCode(newCode)}
+            onChange={(newCode) => setCode(newCode)}
           />
         )}
         {showRichTextEditor && (

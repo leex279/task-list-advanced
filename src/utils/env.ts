@@ -1,1 +1,1 @@
-export const isLocalDevelopment = import.meta.env.VITE_DEV_MODE === 'true' || import.meta.env.DEV; 
+// Remove this file entirely as we handle env in vite.config.ts 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PlusCircle, Code, Heading, AlignLeft } from 'lucide-react';
 import { RichTextEditor } from './RichTextEditor';
-import { CodeBlockEditor } from './CodeBlockEditor';
+import { CodeBlockEditor } from './code/CodeBlockEditor';
 
 interface TaskInputProps {
   onAddTask: (
@@ -19,7 +19,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
   const [showRichTextEditor, setShowRichTextEditor] = useState(false);
   const [isHeadline, setIsHeadline] = useState(false);
   const [code, setCode] = useState('');
-  const [language] = useState('javascript');
+  const language = 'javascript';
   const [richText, setRichText] = useState('');
   const [optional, setOptional] = useState(false);
 
