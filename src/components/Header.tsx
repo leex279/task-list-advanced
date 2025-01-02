@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckSquare, Settings } from 'lucide-react';
+import { CheckSquare, Settings, Download, Upload } from 'lucide-react';
 import { ImportExport } from './ImportExport';
 import { Task } from '../types/task';
 
@@ -18,7 +18,24 @@ export function Header({ onLogoClick, onSettingsClick, tasks, onImport }: Header
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Task List Advanced</h1>
       </div>
       <div className="flex items-center gap-2">
-        <ImportExport tasks={tasks} onImport={onImport} />
+        <div className="import-export-buttons flex gap-2">
+          <button
+            onClick={() => setShowExportModal(true)}
+            className="import-export-button flex items-center gap-2 px-3 py-2..."
+            title="Export tasks"
+          >
+            <Download size={16} />
+            Export
+          </button>
+          <button
+            onClick={() => setShowImportModal(true)}
+            className="import-export-button flex items-center gap-2 px-3 py-2..."
+            title="Import tasks"
+          >
+            <Upload size={16} />
+            Import
+          </button>
+        </div>
         <button
           onClick={onSettingsClick}
           className="text-gray-400 hover:text-gray-600"

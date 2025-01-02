@@ -45,7 +45,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
-      <div className="flex flex-wrap gap-2">
+      <div className="task-input flex flex-wrap gap-2">
         <input
           type="text"
           value={text}
@@ -55,14 +55,8 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
         />
         <button
           type="button"
-          onClick={() => {
-            setIsHeadline(!isHeadline);
-            if (!isHeadline) {
-              setShowCodeInput(false);
-              setShowRichTextEditor(false);
-            }
-          }}
-          className={`px-3 rounded-lg border transition-colors ${
+          onClick={() => setIsHeadline(!isHeadline)}
+          className={`headline-button px-3 rounded-lg border transition-colors ${
             isHeadline
               ? 'border-blue-500 text-blue-500'
               : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
@@ -76,22 +70,24 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
             <button
               type="button"
               onClick={() => setShowCodeInput(!showCodeInput)}
-              className={`px-3 rounded-lg border transition-colors ${
+              className={`code-button px-3 rounded-lg border transition-colors ${
                 showCodeInput
                   ? 'border-blue-500 text-blue-500'
                   : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
               }`}
+              title="Add code block"
             >
               <Code size={20} />
             </button>
             <button
               type="button"
               onClick={() => setShowRichTextEditor(!showRichTextEditor)}
-              className={`px-3 rounded-lg border transition-colors ${
+              className={`rich-text-button px-3 rounded-lg border transition-colors ${
                 showRichTextEditor
                   ? 'border-blue-500 text-blue-500'
                   : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
               }`}
+              title="Add rich text"
             >
               <AlignLeft size={20} />
             </button>

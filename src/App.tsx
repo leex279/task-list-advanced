@@ -10,6 +10,8 @@ import { ConfirmationModal } from './components/ConfirmationModal';
 import { SettingsModal } from './components/SettingsModal';
 import { HelpModal } from './components/HelpModal';
 import { ErrorNotification } from './components/ErrorNotification';
+import { IntroModal } from './components/IntroModal';
+import { Tour } from './components/tour/Tour';
 
 export default function App() {
   const [settings, setSettings] = useSettings();
@@ -28,6 +30,10 @@ export default function App() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showTour, setShowTour] = useState(() => {
+    const hasSeenTour = localStorage.getItem('hasSeenTour');
+    return !hasSeenTour;
+  });
 
   const fetchTaskLists = async () => {
     const localFiles = [
@@ -56,6 +62,12 @@ export default function App() {
   useEffect(() => {
     fetchTaskLists();
   }, []);
+
+  useEffect(() => {
+    if (!showTour) {
+      localStorage.setItem('hasSeenTour', 'true');
+    }
+  }, [showTour]);
 
   const handleLogoClick = () => {
     if (tasks.length > 0) {
@@ -153,6 +165,9 @@ export default function App() {
       )}
       {showHelpModal && (
         <HelpModal onClose={() => setShowHelpModal(false)} />
+      )}
+      {showTour && (
+        <Tour onComplete={() => setShowTour(false)} />
       )}
     </div>
   );

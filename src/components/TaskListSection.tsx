@@ -66,9 +66,9 @@ export function TaskListSection({
               onError={onError}
             />
           ) : (
-            <div className="text-center text-gray-500 mt-4">
-              Configure your Google API Key in settings to enable AI task generation
-            </div>
+            <p className="ai-config-text text-gray-600 text-center mt-4">
+              Configure your Google API key in settings to use AI task generation
+            </p>
           )}
         </>
       )}
