@@ -367,39 +367,55 @@ export default function App() {
 
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!settings.googleApiKey) {
+      setError('No Google API Key provided!');
+      return;
+    }
     if (!chatInput.trim()) return;
     
     setLoading(true);
     setError(null);
 
+    let fileContent = '';
+    if (selectedFile) {
+      try {
+        fileContent = await selectedFile.text();
+      } catch (error) {
+        console.error('Error reading file:', error);
+        setError('Failed to read the attached file.');
+        setLoading(false);
+        return;
+      }
+    }
+
     const systemPrompt = `You are a task list generator that creates structured tasks with descriptions and code examples.
-Please generate tasks in the following JSON structure:
-{
-  "text": "Task title or headline",
-  "isHeadline": false,
-  "completed": false,
-  "richText": "Detailed description with formatting",
-  "codeBlock": {
-    "language": "javascript",
-    "code": "Your code example"
-  },
-  "optional": false
-}
+    Please generate tasks in the following JSON structure:
+    {
+      "text": "Task title or headline",
+      "isHeadline": false,
+      "completed": false,
+      "richText": "Detailed description with formatting",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "Your code example"
+      },
+      "optional": false
+    }
 
-Each task should include:
-- A clear title in the "text" field
-- A detailed description in the "richText" field when appropriate
-- Code examples in the "codeBlock" field when relevant
-- Proper marking of headlines with "isHeadline": true
-- Optional tasks marked with "optional": true when appropriate
-- All tasks start with "completed": false
+    Each task should include:
+    - A clear title in the "text" field
+    - A detailed description in the "richText" field when appropriate
+    - Code examples in the "codeBlock" field when relevant
+    - Proper marking of headlines with "isHeadline": true
+    - Optional tasks marked with "optional": true when appropriate
+    - All tasks start with "completed": false
 
-Format the response as a valid JSON array of tasks.`;
+    Format the response as a valid JSON array of tasks.`;
 
     try {
       const messages = [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: chatInput }
+        { role: 'user', content: chatInput + (fileContent ? `\n\nFile content:\n${fileContent}` : '') }
       ];
       
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${settings.googleApiKey}`, {
@@ -441,13 +457,9 @@ Format the response as a valid JSON array of tasks.`;
         throw new Error('Invalid response format from API');
       }
     } catch (error: any) {
-      console.error('Error generating content:', error);
-      setFetchError(error.message || 'Failed to generate content.');
-    } finally {
+      console.error('Error generating tasks:', error);
+      setError(error.message || 'Failed to generate tasks. Please try again.');
       setLoading(false);
-      setChatInput('');
-      setSelectedFile(null);
-      setSelectedFileName(null);
     }
   };
 
