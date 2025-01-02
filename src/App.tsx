@@ -18,6 +18,14 @@ console.log('Development mode:', isLocalDevelopment);
 // Add cache at the top level
 const apiCache: { [key: string]: any } = {};
 
+const DEFAULT_SETTINGS = {
+  githubRepo: '',
+  service: 'Google',
+  model: 'gemini-2.0-flash-exp',
+  googleApiKey: '',
+  githubApiKey: ''
+};
+
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [availableLists, setAvailableLists] = useState<{ name: string; url: string }[]>([]);
@@ -31,33 +39,29 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [lastSelectedFolder, setLastSelectedFolder] = useState<string | null>(null);
   const [settings, setSettings] = useState(() => {
+    // Only use stored settings in development mode
+    if (!isLocalDevelopment) {
+      return DEFAULT_SETTINGS;
+    }
+
     const storedSettings = localStorage.getItem('settings');
     try {
       const parsed = storedSettings ? JSON.parse(storedSettings) : null;
-      return parsed || {
-        githubRepo: DEFAULT_GITHUB_REPO_URL,
-        service: 'Google',
-        model: 'gemini-2.0-flash-exp',
-        googleApiKey: '',
-        githubApiKey: '',
-      };
+      return parsed || DEFAULT_SETTINGS;
     } catch (e) {
       console.error('Error parsing stored settings:', e);
-      return {
-        githubRepo: DEFAULT_GITHUB_REPO_URL,
-        service: 'Google',
-        model: 'gemini-2.0-flash-exp',
-        googleApiKey: '',
-        githubApiKey: '',
-      };
+      return DEFAULT_SETTINGS;
     }
   });
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
 
+  // Only save settings to localStorage in development mode
   useEffect(() => {
-    localStorage.setItem('settings', JSON.stringify(settings));
+    if (isLocalDevelopment) {
+      localStorage.setItem('settings', JSON.stringify(settings));
+    }
   }, [settings]);
 
   const fetchTaskLists = async (folderName = '') => {
