@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Send, Paperclip } from 'lucide-react';
 import { generateTasks } from '../services/aiService';
+import { ChatMessage } from '../types/chat';
 
 interface AITaskGeneratorProps {
   apiKey: string;
@@ -24,11 +25,25 @@ export function AITaskGenerator({ apiKey, onTasksGenerated, onError }: AITaskGen
     }
   };
 
+  const addToChatHistory = (message: ChatMessage) => {
+    const history = JSON.parse(localStorage.getItem('aiChatHistory') || '[]');
+    history.push(message);
+    localStorage.setItem('aiChatHistory', JSON.stringify(history));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
     
     setLoading(true);
+
+    // Add user message to history
+    addToChatHistory({
+      role: 'user',
+      content: chatInput,
+      timestamp: Date.now(),
+      attachments: selectedFile ? [selectedFile.name] : undefined
+    });
 
     try {
       let fileContent = '';
@@ -42,6 +57,13 @@ export function AITaskGenerator({ apiKey, onTasksGenerated, onError }: AITaskGen
         const generatedText = data.candidates[0].content.parts[0].text;
         console.log('Generated text:', generatedText);
         
+        // Add assistant response to history right after getting the response
+        addToChatHistory({
+          role: 'assistant',
+          content: generatedText,
+          timestamp: Date.now()
+        });
+
         const jsonMatch = generatedText.match(/```json\n?(.*?)\n?```/s) || [null, generatedText];
         const jsonText = jsonMatch[1].trim();
         console.log('Extracted JSON:', jsonText);
