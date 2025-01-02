@@ -3,12 +3,7 @@ import { Task } from '../types/task';
 
 interface TaskListSelectorProps {
   availableLists: { name: string; url: string }[];
-  availableFolders: string[];
   onImportTaskList: (tasks: Task[]) => void;
-  settings: {
-    githubRepo: string;
-  };
-  onFetchTaskLists: (folderName?: string) => void;
 }
 
 export function TaskListSelector({

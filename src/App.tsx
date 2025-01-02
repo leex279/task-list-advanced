@@ -10,26 +10,22 @@ import { SettingsModal } from './components/SettingsModal';
 import { HelpModal } from './components/HelpModal';
 import { ErrorNotification } from './components/ErrorNotification';
 
-const DEFAULT_GITHUB_REPO_URL = import.meta.env.VITE_DEFAULT_GITHUB_REPO_URL;
-const isLocalDevelopment = import.meta.env.VITE_DEV_MODE === 'true' || import.meta.env.DEV;
-
+const isLocalDevelopment = import.meta.env.VITE_DEV_MODE;
+console.log('VITE_DEV_MODE:', import.meta.env.VITE_DEV_MODE, typeof import.meta.env.VITE_DEV_MODE);
 console.log('Development mode:', isLocalDevelopment);
 
 // Add cache at the top level
 const apiCache: { [key: string]: any } = {};
 
 const DEFAULT_SETTINGS = {
-  githubRepo: '',
   service: 'Google',
   model: 'gemini-2.0-flash-exp',
-  googleApiKey: '',
-  githubApiKey: ''
+  googleApiKey: ''
 };
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [availableLists, setAvailableLists] = useState<{ name: string; url: string }[]>([]);
-  const [availableFolders, setAvailableFolders] = useState<string[]>([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -37,13 +33,7 @@ export default function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [lastSelectedFolder, setLastSelectedFolder] = useState<string | null>(null);
   const [settings, setSettings] = useState(() => {
-    // Only use stored settings in development mode
-    if (!isLocalDevelopment) {
-      return DEFAULT_SETTINGS;
-    }
-
     const storedSettings = localStorage.getItem('settings');
     try {
       const parsed = storedSettings ? JSON.parse(storedSettings) : null;
@@ -53,188 +43,38 @@ export default function App() {
       return DEFAULT_SETTINGS;
     }
   });
-  const [fetchError, setFetchError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [initialFetchCompleted, setInitialFetchCompleted] = useState(false);
 
-  // Only save settings to localStorage in development mode
   useEffect(() => {
-    if (isLocalDevelopment) {
-      localStorage.setItem('settings', JSON.stringify(settings));
-    }
+    localStorage.setItem('settings', JSON.stringify(settings));
   }, [settings]);
 
-  const fetchTaskLists = async (folderName = '') => {
-    // For local development, fetch from public directory first
-    if (isLocalDevelopment) {
-      const localFiles = [
-        '/tasklists/simple-example-list.json',
-        '/tasklists/windows-ollama-bolt-install.json'
-      ];
-      
-      // Check cache first
-      if (apiCache['localLists']) {
-        setAvailableLists(apiCache['localLists']);
-        return;
-      }
-
-      try {
-        // Fetch all files from the public directory
-        const filePromises = localFiles.map(async (path) => {
-          const response = await fetch(path);
-          if (!response.ok) {
-            throw new Error(`Failed to fetch local task list: ${response.statusText}`);
-          }
-          const data = await response.json();
-          return { name: data.name, url: path };
-        });
-
-        const results = await Promise.all(filePromises);
-        setAvailableLists(results);
-        apiCache['localLists'] = results;
-        setInitialFetchCompleted(true);
-        return;
-      } catch (error) {
-        console.error('Error fetching local task lists:', error);
-        setFetchError('Failed to load local task lists. Check if the files exist in public/tasklists/');
-        setInitialFetchCompleted(true);
-        return;
-      }
-    }
-
-    // Only proceed with GitHub fetching if we're not in development
-    const githubTaskListsUrl = `${settings.githubTaskListsUrl}${folderName ? `/${folderName}` : ''}`;
-    const githubRawUrl = `${settings.githubRawUrl}${folderName ? `/${folderName}` : ''}`;
-
-    // Check cache first
-    if (apiCache[githubTaskListsUrl]) {
-      setAvailableLists(apiCache[githubTaskListsUrl]);
-      return;
-    }
-
+  const fetchTaskLists = async () => {
+    const localFiles = [
+      '/tasklists/simple-example-list.json',
+      '/tasklists/windows-ollama-bolt-install.json'
+    ];
+    
     try {
-      const headers: HeadersInit = {};
-      if (settings.githubApiKey) {
-        headers.Authorization = `token ${settings.githubApiKey}`;
-      }
-
-      const response = await fetch(githubTaskListsUrl, { headers });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch task lists: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      const filePromises = data
-        .filter((item: any) => item.type === 'file' && item.name.endsWith('.json'))
-        .map(async (item: any) => {
-          // Check cache for individual file requests
-          if (apiCache[item.download_url]) {
-            return apiCache[item.download_url];
-          }
-
-          const fileResponse = await fetch(`${githubRawUrl}/${item.name}`);
-          if (!fileResponse.ok) {
-            throw new Error(`Failed to fetch task list: ${fileResponse.statusText}`);
-          }
-          const jsonData = await fileResponse.json();
-          const result = { name: jsonData.name, url: item.download_url };
-          
-          // Cache individual file responses
-          apiCache[item.download_url] = result;
-          return result;
-        });
-
-      const filesData = await Promise.all(filePromises);
-      setAvailableLists(filesData);
-
-      // Cache the API response
-      apiCache[githubTaskListsUrl] = filesData;
-    } catch (error: any) {
-      console.error('Error fetching task lists:', error);
-      setFetchError(error.message || 'Failed to fetch task lists.');
-      // Clear loading state on error
-      setAvailableLists([]);
-    }
-  };
-
-  const fetchFolderNames = async () => {
-    if (isLocalDevelopment) {
-      // In development, just set the folders we know exist in public/tasklists
-      setAvailableFolders(['examples']);
-      return;
-    }
-
-    try {
-      const { githubRepo, githubApiKey } = settings;
-      const url = new URL(githubRepo);
-      const parts = url.pathname.split('/').filter(Boolean);
-      if (parts.length < 2) {
-        throw new Error("Invalid GitHub repository URL");
-      }
-      const username = parts[0];
-      const project = parts[1];
-      const githubFoldersUrl = `https://api.github.com/repos/${username}/${project}/contents`;
-
-      // Check if the data is already in the cache
-      if (apiCache[githubFoldersUrl]) {
-        setAvailableFolders(apiCache[githubFoldersUrl]);
-        return;
-      }
-
-      const headers: { [key: string]: string } = {
-        'Accept': 'application/vnd.github.v3+json',
-      };
-      if (githubApiKey) {
-        headers['Authorization'] = `token ${githubApiKey}`;
-      }
-
-      const response = await fetch(githubFoldersUrl, { headers });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch folders: ${response.statusText}`);
-      }
-      const data = await response.json();
-      const folderNames = data
-        .filter((item: any) => item.type === 'dir')
-        .map((item: any) => item.name);
-
-      setAvailableFolders(folderNames);
-
-      // Cache the API response
-      apiCache[githubFoldersUrl] = folderNames;
-    } catch (error: any) {
-      console.error('Error fetching folder names:', error);
-      setFetchError(error.message || 'Failed to fetch folder names.');
-    }
-  };
-
-  useEffect(() => {
-    if (!initialFetchCompleted && isLocalDevelopment) {
-      fetchTaskLists();
-      fetchFolderNames();
-      setInitialFetchCompleted(true);
-    }
-  }, [initialFetchCompleted]);
-
-  useEffect(() => {
-    const storedSettings = localStorage.getItem('settings');
-    if (storedSettings) {
-      let initialSettings = JSON.parse(storedSettings);
-      let githubTaskLists = '';
-      let githubRawUrl = '';
-      try {
-        const url = new URL(initialSettings.githubRepo);
-        const parts = url.pathname.split('/').filter(Boolean);
-        if (parts.length >= 2) {
-          const username = parts[0];
-          const project = parts[1];
-          githubTaskLists = `https://api.github.com/repos/${username}/${project}/contents/tasklists`;
-          githubRawUrl = `https://raw.githubusercontent.com/${username}/${project}/main/tasklists`;
+      const filePromises = localFiles.map(async (path) => {
+        const response = await fetch(path);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch local task list: ${response.statusText}`);
         }
-      } catch (error) {
-        console.error("Invalid URL:", error);
-      }
-      setSettings({...initialSettings, githubTaskLists, githubRawUrl});
+        const data = await response.json();
+        return { name: data.name, url: path };
+      });
+
+      const results = await Promise.all(filePromises);
+      setAvailableLists(results);
+    } catch (error) {
+      console.error('Error fetching local task lists:', error);
+      setError('Failed to load task lists.');
     }
+  };
+
+  useEffect(() => {
+    fetchTaskLists();
   }, []);
 
   const addTask = (
@@ -467,15 +307,6 @@ export default function App() {
     }
   };
 
-  const handleFolderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const folderName = event.target.value;
-    setSelectedFolder(folderName);
-    if (lastSelectedFolder !== folderName) {
-      fetchTaskLists(folderName);
-      setLastSelectedFolder(folderName);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <div className="absolute top-4 left-4 flex items-center gap-2">
@@ -525,10 +356,7 @@ export default function App() {
             )}
             <TaskListSelector
               availableLists={availableLists}
-              availableFolders={availableFolders}
               onImportTaskList={handleImportTaskList}
-              settings={settings}
-              onFetchTaskLists={fetchTaskLists}
             />
             {settings.googleApiKey ? (
               <form onSubmit={handleChatSubmit} className="flex flex-col items-start mt-4">
