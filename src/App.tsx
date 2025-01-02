@@ -520,25 +520,7 @@ export default function App() {
           </>
         ) : (
           <>
-            {fetchError ? (
-              <div className="text-center text-red-500 font-semibold mb-4">
-                {fetchError}
-                <br />
-                <span className="text-sm text-gray-600">
-                  This might be due to limitations in the WebContainer environment.
-                </span>
-                <button onClick={fetchTaskLists} className="mt-2 text-blue-500 hover:underline">
-                  Retry
-                </button>
-                <div className="mt-2 text-sm text-gray-600">
-                  Alternatively, you can try:
-                  <ul className="list-disc list-inside">
-                    <li>Importing a task list from a local JSON file.</li>
-                    <li>Manually pasting JSON data in the import modal.</li>
-                  </ul>
-                </div>
-              </div>
-            ) : (
+            {!isLocalDevelopment && (
               <h2 className="text-center text-gray-600 text-sm font-medium mb-3">Examples</h2>
             )}
             <TaskListSelector
