@@ -40,8 +40,10 @@ export async function generateTasks(apiKey: string, prompt: string, fileContent?
     body: JSON.stringify({
       contents: [{
         parts: [
-          { text: `Create a task list in JSON format following this structure exactly. The task list should be for: ${prompt}` },
-          ...(fileContent ? [{ text: `\n\nUse this additional context:\n${fileContent}` }] : [])
+          { text: systemPrompt },
+          { text: `\n\nCreate a task list for: ${prompt}` },
+          ...(fileContent ? [{ text: `\n\nUse this additional context:\n${fileContent}` }] : []),
+          { text: "\n\nRespond ONLY with the JSON, no additional text or markdown formatting." }
         ]
       }]
     }),

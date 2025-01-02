@@ -40,17 +40,38 @@ export function AITaskGenerator({ apiKey, onTasksGenerated, onError }: AITaskGen
       
       if (data.candidates?.[0]?.content?.parts?.[0]) {
         const generatedText = data.candidates[0].content.parts[0].text;
-        const parsedData = JSON.parse(generatedText.replace(/```json\n/g, '').replace(/```/g, ''));
+        console.log('Generated text:', generatedText);
         
-        if (parsedData?.data) {
-          const newTasks = parsedData.data.map((task: any) => ({
-            ...task,
-            createdAt: new Date(task.createdAt),
-          }));
-          onTasksGenerated(newTasks);
+        const jsonMatch = generatedText.match(/```json\n?(.*?)\n?```/s) || [null, generatedText];
+        const jsonText = jsonMatch[1].trim();
+        console.log('Extracted JSON:', jsonText);
+
+        try {
+          const parsedData = JSON.parse(jsonText);
+          console.log('Parsed data:', parsedData);
+          
+          if (parsedData?.data) {
+            const newTasks = parsedData.data.map((task: any) => ({
+              ...task,
+              createdAt: new Date(task.createdAt || new Date()),
+              id: task.id || crypto.randomUUID()
+            }));
+            onTasksGenerated(newTasks);
+            setChatInput('');
+            setSelectedFile(null);
+            setSelectedFileName(null);
+          } else {
+            throw new Error('Invalid task list format');
+          }
+        } catch (parseError) {
+          console.error('Parse error:', parseError);
+          onError('Failed to parse generated tasks. Invalid format.');
         }
+      } else {
+        throw new Error('Invalid AI response format');
       }
     } catch (error: any) {
+      console.error('Generation error:', error);
       onError(error.message || 'Failed to generate tasks');
     } finally {
       setLoading(false);
