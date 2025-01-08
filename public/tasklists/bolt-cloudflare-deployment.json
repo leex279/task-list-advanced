@@ -1,0 +1,412 @@
+{
+  "name": "Bolt Cloudflare Deployment",
+  "data": [
+    {
+      "id": "github-headline",
+      "text": "GitHub Setup",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": null,
+      "optional": false
+    },
+    {
+      "id": "github-signin",
+      "text": "Sign in or create a GitHub account",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "https://github.com/"
+      },
+      "richText": "<p>Go to the GitHub website and either log in to your existing account, or create a new one.</p>",
+      "optional": false
+    },
+    {
+      "id": "github-browse-bolt",
+      "text": "Browse to the Bolt.diy GitHub page",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "https://github.com/stackblitz-labs/bolt.diy/"
+      },
+      "richText": "<p>Navigate to the Bolt.diy repository on GitHub.</p>",
+      "optional": false
+    },
+    {
+      "id": "github-fork",
+      "text": "Fork the Bolt.diy repository",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Click the <strong>Fork</strong> button to create a copy of the repository in your GitHub account.</p>",
+      "optional": false
+    },
+    {
+      "id": "github-switch-branch",
+      "text": "Switch to the stable branch",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Use the branch dropdown menu to switch to the <strong>stable</strong> branch.</p>",
+      "optional": false
+    },
+    {
+      "id": "github-delete-tool-versions",
+      "text": "Delete and Commit the .tool-versions file",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>Open the <code>.tool-versions</code> file delete and commit (save) it.</p><p><strong>Note:</strong> This file can cause deployment issues.</p>",
+      "optional": false
+    },
+    {
+      "id": "github-delete-wrangler-toml",
+      "text": "Delete and Commit the wrangler.toml file",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>Open the <code>wrangler.toml</code>&nbsp;file delete and commit (save) it.</p><p><strong>Note:</strong> This file can cause issues with Cloudflare deployments.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-headline",
+      "text": "Cloudflare Setup",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": null,
+      "optional": false
+    },
+    {
+      "id": "cloudflare-signin",
+      "text": "Sign in or create a Cloudflare account",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "https://dash.cloudflare.com/login"
+      },
+      "richText": "<p>Go to the Cloudflare website and sign in or create a new account.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-workers-pages",
+      "text": "Navigate to Workers & Pages",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>In the Cloudflare dashboard, click on 'Workers & Pages'.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-create-new",
+      "text": "Create a new project",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Click the 'Create' button.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-connect-git",
+      "text": "Connect to Git",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Select the 'Pages' tab and click 'Connect to Git'.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-select-github-account",
+      "text": "Select your GitHub account and repository",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Choose your GitHub account and select the forked Bolt.diy repository.</p><p><strong>Note:</strong> If this is the first time connecting, you'll need to authorize Cloudflare.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-configure-deploy-options",
+      "text": "Configure Setup and Deploy options",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "npm install pnpm & pnpm install & pnpm run build"
+      },
+      "richText": "<p>Configure the deployment settings:</p><ol><li>Set the <strong>Framework preset</strong> to 'Remix'.</li><li>Modify the <strong>Build command</strong> to: <code>npm install pnpm &amp; pnpm install &amp; pnpm run build</code></li></ol>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-add-environment-variables",
+      "text": "Add Environment Variables",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>Add your environment variables as defined in your .env file, do <strong>not</strong> include the equals sign in variable names</p><p><strong>Warning:</strong> Ensure to use <code>pnpm run build</code> to avoid styling issues.</p>",
+      "optional": true
+    },
+    {
+      "id": "cloudflare-setup-and-deploy",
+      "text": "Click 'Setup and Deploy'",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p> Click the 'Setup and Deploy' button.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-initial-build-fail",
+      "text": "Initial build failure expected",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>The initial deployment will likely fail with an error related to modules. This is expected as <code>nodejs_compat</code> has not been set.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-continue-to-project",
+      "text": "Continue to Project",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>Click 'Continue to project' and agree to the warning prompt.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-settings-runtime",
+      "text": "Navigate to Runtime Settings",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>Click on 'Settings' and scroll down to 'Runtime'.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-set-compatibility-date",
+      "text": "Set Compatibility Date",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Set the 'Compatibility date' to '2024-09-02'.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-set-compatibility-flags",
+      "text": "Set Compatability Flags",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Set 'Compatibility flags' to 'nodejs_compat'.</p> <p><strong>Note:</strong> You will need to type this in as it is not in the dropdown list.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-set-branch-control",
+      "text": "Change Branch control to 'stable'",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>On 'Branch control', set the branch to <strong>stable</strong></p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-deployments-retry",
+      "text": "Retry the deployment",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Navigate to the 'Deployments' tab and retry the deployment.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-wait-for-success",
+      "text": "Wait for successful deployment",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Wait for the deployment to complete successfully.</p><p><strong>Note:</strong> Due to caching, the page may not load correctly at first.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-deployment-test",
+      "text": "Test your new Bolt.diy Deployment",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Open the generated or custom URL and verify that everything is working as expected.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-optional-headline",
+      "text": "Optional Steps",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": null,
+      "optional": true
+    },
+    {
+      "id": "github-sync-fork",
+      "text": "Sync your Fork to latest changes",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>On your forked GitHub repo, change branch to 'Stable' (or which ever one you are updating), and click the 'Sync fork' dropdown</p>",
+      "optional": true
+    },
+    {
+      "id": "github-update-branch",
+      "text": "Update your branch",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Click on <strong>Update branch</strong>.</p><p><strong>Note:</strong> Do not click on <strong>Discard commits</strong> to avoid having to delete the <code>.tool-versions</code> and <code>wrangler.toml</code> files again.</p>",
+      "optional": true
+    },
+    {
+      "id": "cloudflare-redeploy-on-sync",
+      "text": "Automatic Redeploy",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Modifying the branch automatically trigger a rebuild and deployment on Cloudflare. No further action required other than wait.</p>",
+      "optional": true
+    },
+    {
+      "id": "github-troubleshooting-headline",
+      "text": "Troubleshooting",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": null,
+      "optional": true
+    },
+    {
+      "id": "troubleshooting-styling-issue",
+      "text": "Styling issue, module error or vite missing?",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Styling on the Bolt.diy page is jacked up, you get a module error or vite missing? then you have used <code>npm install</code> and/or not updated the build command. Check the instructions.</p>",
+      "optional": true
+    },
+    {
+      "id": "troubleshooting-pnpm-plugin-error",
+      "text": "Error: pnpm plugin is not installed?",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>Error: pnpm plugin is not installed? You did not remove the <code>.tool-versions</code> and/or <code>wrangler.toml</code> from your forked repo. See comment <a href=\"https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/108\" rel=\"noopener noreferrer\" target=\"_blank\">https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/108</a></p>",
+      "optional": true
+    },
+    {
+      "id": "troubleshooting-safari-issues",
+      "text": "Experiencing caching issues in Safari?",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>There are some known issues with Safari that cause a bunch of cache errors. Try Chrome/Edge/Firefox. No known fix yet. See comments:</p><p><a href=\"https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/91\" rel=\"noopener noreferrer\" target=\"_blank\">https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/91</a></p><p><a href=\"https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/131\" rel=\"noopener noreferrer\" target=\"_blank\">https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/131</a></p>",
+      "optional": true
+    },
+    {
+      "id": "troubleshooting-general-error",
+      "text": "General Error?",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>Error message after following guide? Likely did not change branch to stable. Check instructions for details and comment <a href=\"https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/76\" rel=\"noopener noreferrer\" target=\"_blank\">https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/76</a></p>",
+      "optional": true
+    },
+    {
+      "id": "troubleshooting-securing-deployment",
+      "text": "Want to secure your Cloudflare Pages Deployment down?",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>Want to secure your Cloudflare Pages Deployment down, see comment <a href=\"https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/61\" rel=\"noopener noreferrer\" target=\"_blank\">https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/61</a></p>",
+      "optional": true
+    },
+    {
+      "id": "troubleshooting-equals-signs",
+      "text": "Equals signs in environment variables?",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Make sure there are not equals signs in your environment variables</p>",
+      "optional": true
+    },
+    {
+      "id": "troubleshooting-compatibility-flags",
+      "text": "Compatibility flag issues?",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Make sure to set the compatability_flags date and nodejs_compat</p>",
+      "optional": true
+    },
+    {
+      "id": "troubleshooting-stable-branch",
+      "text": "Using stable branch?",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Ensure you are using the stable branch (see latest docs)</p>",
+      "optional": true
+    },
+    {
+      "id": "cac3889f-9033-4607-be97-10330fe19a2d",
+      "text": "Info / Additional Options",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2025-01-08T18:35:06.256Z"
+    },
+    {
+      "id": "cloudflare-custom-url",
+      "text": "Setup a Custom URL",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>If you have a custom domain setup in Cloudflare, add a subdomain to connect it to your deployment.</p>",
+      "optional": true
+    },
+    {
+      "id": "github-actions-update",
+      "text": "Understanding GitHub Actions",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "richText": "<p>The project uses GitHub Actions on commits. Modifications to files will activate the runner.</p><p><strong>Note:</strong> No action is required here, this is just for your information.</p>",
+      "optional": true
+    }
+  ]
+}
