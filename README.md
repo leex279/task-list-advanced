@@ -14,6 +14,24 @@ A modern task management application with code block support and AI task generat
 - 🔗 Automatic URL to clickable link conversion
 - 🎨 Clean, modern UI with responsive design
 
+## Planned Features
+
+- [ ] 🔍 Filter tasks by all/active/completed
+- [ ] 📦 Archive completed tasks
+- [ ] 🌓 Dark/light mode toggle
+- [ ] 📱 Progressive Web App (PWA) support for offline use
+- [ ] 📂 Collapsible task groups/headlines
+- [ ] 🔎 Searchable knowledge base
+- [ ] 📊 Improved UI/UX:
+  - [ ] Consistent minimum height for task boxes
+  - [ ] Scrollable task container for better space management
+  - [ ] Enhanced mobile responsiveness
+  - [ ] App container with drop shadow and rounded corners
+  - [ ] Toggle between code/details views (one at a time)
+  - [ ] Improved z-index handling for warning blocks
+- [ ] 🏷️ Enhanced development features:
+  - [ ] Systematic ID usage for easier CSS handling
+  
 ## Quick Start
 
 1. Clone and install:
@@ -27,7 +45,6 @@ npm install
 ```env
 VITE_DEV_MODE=true
 ```
-
 3. Start development server:
 ```bash
 npm run dev
@@ -108,3 +125,4 @@ URL: https://www.youtube.com/@DIYSmartCode<br><br>
 ## License
 
 This project is licensed under the MIT License.
+
