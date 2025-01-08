@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { PlusCircle, Code, Heading, AlignLeft } from 'lucide-react';
 import { RichTextEditor } from './RichTextEditor';
+import { CodeBlockEditor } from './code/CodeBlockEditor';
 
 interface TaskInputProps {
-  onAddTask: (text: string, isHeadline: boolean, codeBlock?: { language: string; code: string }, richText?: string, optional?: boolean) => void;
+  onAddTask: (
+    text: string,
+    isHeadline: boolean,
+    codeBlock?: { language: string; code: string },
+    richText?: string,
+    optional?: boolean
+  ) => void;
 }
 
 export function TaskInput({ onAddTask }: TaskInputProps) {
@@ -12,7 +19,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
   const [showRichTextEditor, setShowRichTextEditor] = useState(false);
   const [isHeadline, setIsHeadline] = useState(false);
   const [code, setCode] = useState('');
-  const [language, setLanguage] = useState('javascript');
+  const language = 'javascript';
   const [richText, setRichText] = useState('');
   const [optional, setOptional] = useState(false);
 
@@ -38,7 +45,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
-      <div className="flex flex-wrap gap-2">
+      <div className="task-input flex flex-wrap gap-2">
         <input
           type="text"
           value={text}
@@ -48,14 +55,8 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
         />
         <button
           type="button"
-          onClick={() => {
-            setIsHeadline(!isHeadline);
-            if (!isHeadline) {
-              setShowCodeInput(false);
-              setShowRichTextEditor(false);
-            }
-          }}
-          className={`px-3 rounded-lg border transition-colors ${
+          onClick={() => setIsHeadline(!isHeadline)}
+          className={`headline-button px-3 rounded-lg border transition-colors ${
             isHeadline
               ? 'border-blue-500 text-blue-500'
               : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
@@ -69,33 +70,35 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
             <button
               type="button"
               onClick={() => setShowCodeInput(!showCodeInput)}
-              className={`px-3 rounded-lg border transition-colors ${
+              className={`code-button px-3 rounded-lg border transition-colors ${
                 showCodeInput
                   ? 'border-blue-500 text-blue-500'
                   : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
               }`}
+              title="Add code block"
             >
               <Code size={20} />
             </button>
             <button
               type="button"
               onClick={() => setShowRichTextEditor(!showRichTextEditor)}
-              className={`px-3 rounded-lg border transition-colors ${
+              className={`rich-text-button px-3 rounded-lg border transition-colors ${
                 showRichTextEditor
                   ? 'border-blue-500 text-blue-500'
                   : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
               }`}
+              title="Add rich text"
             >
               <AlignLeft size={20} />
             </button>
-            <label className="flex items-center gap-1">
+            <label className="optional-checkbox flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors cursor-pointer">
               <input
                 type="checkbox"
                 checked={optional}
                 onChange={(e) => setOptional(e.target.checked)}
-                className="rounded border-gray-300 text-blue-500 focus:ring-blue-500"
+                className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
               />
-              <span className="text-sm text-gray-500">Optional</span>
+              <span className="text-sm font-medium text-gray-600">Optional</span>
             </label>
           </>
         )}
@@ -108,25 +111,12 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
         </button>
       </div>
 
-      {!isHeadline && showCodeInput && (
-        <div className="space-y-2">
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="px-3 py-1.5 rounded-md border border-gray-200 text-sm"
-          >
-            <option value="javascript">JavaScript</option>
-            <option value="typescript">TypeScript</option>
-            <option value="jsx">JSX</option>
-            <option value="tsx">TSX</option>
-          </select>
-          <textarea
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="Enter code here..."
-            className="w-full h-24 px-4 py-2 rounded-lg border border-gray-200 font-mono text-sm focus:outline-none focus:border-blue-500 transition-colors"
-          />
-        </div>
+      {showCodeInput && (
+        <CodeBlockEditor
+          language="javascript"
+          code={code}
+          onChange={(_, code) => setCode(code)}
+        />
       )}
       {!isHeadline && showRichTextEditor && (
         <div className="space-y-2">
