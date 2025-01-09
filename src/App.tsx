@@ -40,6 +40,7 @@ export default function App() {
       '/tasklists/simple-example-list.json',
       '/tasklists/windows-ollama-bolt-install.json',
       '/tasklists/bolt-cloudflare-deployment.json'
+      '/tasklists/macOS-install-bolt-diy.json'
     ];
     
     try {
