@@ -39,7 +39,7 @@ export default function App() {
     const localFiles = [
       '/tasklists/simple-example-list.json',
       '/tasklists/windows-ollama-bolt-install.json',
-      '/tasklists/bolt-cloudflare-deployment.json'
+      '/tasklists/bolt-cloudflare-deployment.json',
       '/tasklists/macOS-install-bolt-diy.json'
     ];
     
