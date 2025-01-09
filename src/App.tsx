@@ -38,7 +38,7 @@ export default function App() {
   const fetchTaskLists = async () => {
     const localFiles = [
       '/tasklists/simple-example-list.json',
-      '/tasklists/windows-ollama-bolt-install.json',
+      '/tasklists/windows-bolt-install.json',
       '/tasklists/bolt-cloudflare-deployment.json',
       '/tasklists/macOS-install-bolt-diy.json'
     ];
