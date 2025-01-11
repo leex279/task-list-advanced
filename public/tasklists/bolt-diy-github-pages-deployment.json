@@ -31,6 +31,10 @@
       "completed": false,
       "isHeadline": false,
       "createdAt": "2025-01-11T17:56:30.878Z",
+	  "codeBlock": {
+        "language": "javascript",
+        "code": "Implement a FAQ/Troubleshooting page for bolt.diy. The page should be able to build static html and deployed on github pages later.\nFeatures\n- Language toggle right side with globe icon (english/german)\n- Toggle dark/light mode bottom right (default dark)\n- Troubleshoot/FAQ items are shown as accordion\nGenerals Requirements\nModern, clean, accessible, responsive styling, state of the art\nUse SVGs instead of pngs, jpgs for images\nfor icons use a library of your choice, dont use svgs for it\nNice/modern animations/effects\ncolorschema magenta/dark/white\nensure all features are working and shown in the preview\nensure the webapp has base path with a proper name, cause we deploy it into a specific folder on git pages, instead of into the root"
+      },
       "optional": false
     },
     {
