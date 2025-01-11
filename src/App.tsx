@@ -40,7 +40,8 @@ export default function App() {
       '/tasklists/simple-example-list.json',
       '/tasklists/windows-bolt-install.json',
       '/tasklists/bolt-cloudflare-deployment.json',
-      '/tasklists/macOS-install-bolt-diy.json'
+      '/tasklists/macOS-install-bolt-diy.json',
+      '/tasklists/bolt-diy-github-pages-deployment.json'
     ];
     
     try {
