@@ -48,7 +48,7 @@
       "createdAt": "2024-12-22T13:36:46.623Z",
       "codeBlock": {
         "language": "javascript",
-        "code": "npm install -g pnpm"
+        "code": "sudo npm install -g pnpm"
       }
     },
     {
