@@ -1,0 +1,112 @@
+{
+  "name": "Ollama Installation + bolt.diy",
+  "data": [
+    {
+      "id": "89cb5100-5879-46cc-a4df-b9a148292b49",
+      "text": "Ollama",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2025-01-19T13:19:28.020Z"
+    },
+    {
+      "id": "efe7e5fb-07e1-4d65-9724-681b7dacf353",
+      "text": "Download Ollama",
+      "completed": true,
+      "isHeadline": false,
+      "createdAt": "2025-01-19T13:17:05.448Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "https://ollama.com/download"
+      },
+      "optional": false
+    },
+    {
+      "id": "0c54ace7-1272-49a8-84c6-97d485789216",
+      "text": "Install Ollama",
+      "completed": true,
+      "isHeadline": false,
+      "createdAt": "2025-01-19T13:17:39.763Z",
+      "optional": false
+    },
+    {
+      "id": "4490168a-ccc3-4b0b-ace9-ebf03866acc9",
+      "text": "Configure Enviroment variables",
+      "completed": true,
+      "isHeadline": false,
+      "createdAt": "2025-01-19T13:53:26.940Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "OLLAMA_HOST=0.0.0.0\nOLLAMA_ORIGINS=*"
+      },
+      "optional": false
+    },
+    {
+      "id": "2b48f9c0-337c-4270-96fd-856831c49e4a",
+      "text": "Ollama docs",
+      "completed": true,
+      "isHeadline": false,
+      "createdAt": "2025-01-19T20:42:26.162Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "https://github.com/ollama/ollama/blob/main/docs/faq.md"
+      },
+      "optional": false
+    },
+    {
+      "id": "e6b3e9c0-0f30-40b8-980e-c2fd8b4a6f6f",
+      "text": "Download/Run Model",
+      "completed": true,
+      "isHeadline": false,
+      "createdAt": "2025-01-19T20:35:07.466Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "https://ollama.com/mannix/qwen2.5-coder"
+      },
+      "optional": false
+    },
+    {
+      "id": "72f9554e-fd71-4bf5-8edf-9e0b773b2074",
+      "text": "bolt.diy",
+      "completed": false,
+      "isHeadline": true,
+      "createdAt": "2025-01-19T13:19:35.234Z"
+    },
+    {
+      "id": "e720914c-d560-4af4-b060-df23af63f1fb",
+      "text": "Set context size",
+      "completed": true,
+      "isHeadline": false,
+      "createdAt": "2025-01-19T19:02:42.793Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "DEFAULT_NUM_CTX=4096"
+      },
+      "richText": "<p><strong><u>Example Calculation for my AMD 7900 XTX 24GB GPU</u></strong></p><p><br></p><p>For the <strong>Q4_0 quantization</strong> of the model (approximately 13GB in size), you have more headroom with <strong>24GB of VRAM</strong>. Here's how you can estimate the context size:</p><h3>VRAM Breakdown</h3><ul><li><strong>Model size</strong>: ~13GB.</li><li><strong>Overhead (framework, system, etc.)</strong>: ~1-2GB.</li><li><strong>Remaining VRAM</strong>: ~9-10GB available for context and additional computations.</li></ul><p><br></p><h3>Context Size Estimate</h3><p>In Q4_0 quantization:</p><ul><li>Each <strong>1,000 tokens</strong> typically uses ~0.5-1GB of VRAM (depending on implementation).</li></ul><p>Given this:</p><ul><li>With ~9GB free, you can safely set the context size to around <strong>9,000–10,000 tokens</strong> without maxing out VRAM.</li></ul>",
+      "optional": false
+    },
+    {
+      "id": "bad5a19c-1a27-478a-8d73-795be46d3e82",
+      "text": "Configure Ollama",
+      "completed": true,
+      "isHeadline": false,
+      "createdAt": "2025-01-19T13:19:46.439Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "http://127.0.0.1:11434 (localhost not working!)"
+      },
+      "optional": false
+    },
+    {
+      "id": "bb0593b7-1e86-41ea-a395-8d656968f6cc",
+      "text": "Test Prompt",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2025-01-19T19:09:31.850Z",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "Make a Tic Tac Toe game in html, css and js + vite a webserver"
+      },
+      "optional": false
+    }
+  ]
+}
