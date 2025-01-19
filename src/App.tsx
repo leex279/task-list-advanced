@@ -42,7 +42,7 @@ export default function App() {
       '/tasklists/bolt-cloudflare-deployment.json',
       '/tasklists/macOS-install-bolt-diy.json',
       '/tasklists/ollama-installation-bolt.json',
-      '/tasklists/bolt-diy-github-pages-deployment.json'
+      '/tasklists/bolt-diy-github-pages-deployment.json',
     ];
     
     try {
