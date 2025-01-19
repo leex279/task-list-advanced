@@ -11,7 +11,7 @@
     {
       "id": "efe7e5fb-07e1-4d65-9724-681b7dacf353",
       "text": "Download Ollama",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-01-19T13:17:05.448Z",
       "codeBlock": {
@@ -23,7 +23,7 @@
     {
       "id": "0c54ace7-1272-49a8-84c6-97d485789216",
       "text": "Install Ollama",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-01-19T13:17:39.763Z",
       "optional": false
@@ -31,7 +31,7 @@
     {
       "id": "4490168a-ccc3-4b0b-ace9-ebf03866acc9",
       "text": "Configure Enviroment variables",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-01-19T13:53:26.940Z",
       "codeBlock": {
@@ -43,7 +43,7 @@
     {
       "id": "2b48f9c0-337c-4270-96fd-856831c49e4a",
       "text": "Ollama docs",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-01-19T20:42:26.162Z",
       "codeBlock": {
@@ -55,7 +55,7 @@
     {
       "id": "e6b3e9c0-0f30-40b8-980e-c2fd8b4a6f6f",
       "text": "Download/Run Model",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-01-19T20:35:07.466Z",
       "codeBlock": {
@@ -74,7 +74,7 @@
     {
       "id": "e720914c-d560-4af4-b060-df23af63f1fb",
       "text": "Set context size",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-01-19T19:02:42.793Z",
       "codeBlock": {
@@ -87,7 +87,7 @@
     {
       "id": "bad5a19c-1a27-478a-8d73-795be46d3e82",
       "text": "Configure Ollama",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-01-19T13:19:46.439Z",
       "codeBlock": {
