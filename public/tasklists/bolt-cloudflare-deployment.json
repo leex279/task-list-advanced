@@ -43,7 +43,10 @@
       "completed": false,
       "isHeadline": false,
       "createdAt": "2024-03-20T12:00:00.000Z",
-      "codeBlock": null,
+      "codeBlock": {
+        "language": "javascript",
+        "code": "! Make sure to uncheck \"Copy main branch only\""
+      },
       "richText": "<p>Click the <strong>Fork</strong> button to create a copy of the repository in your GitHub account.</p>",
       "optional": false
     },
@@ -100,22 +103,15 @@
     },
     {
       "id": "cloudflare-workers-pages",
-      "text": "Navigate to Workers & Pages",
+      "text": "Navigate to  ...",
       "completed": false,
       "isHeadline": false,
       "createdAt": "2024-03-20T12:00:00.000Z",
-      "codeBlock": null,
-      "richText": "<p>In the Cloudflare dashboard, click on 'Workers & Pages'.</p>",
-      "optional": false
-    },
-    {
-      "id": "cloudflare-create-new",
-      "text": "Create a new project",
-      "completed": false,
-      "isHeadline": false,
-      "createdAt": "2024-03-20T12:00:00.000Z",
-      "codeBlock": null,
-      "richText": "<p>Click the 'Create' button.</p>",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "Compute (Workers) => Workers & Pages"
+      },
+      "richText": "<p>In the Cloudflare dashboard, click on 'Workers &amp; Pages'.</p>",
       "optional": false
     },
     {
@@ -126,6 +122,16 @@
       "createdAt": "2024-03-20T12:00:00.000Z",
       "codeBlock": null,
       "richText": "<p>Select the 'Pages' tab and click 'Connect to Git'.</p>",
+      "optional": false
+    },
+    {
+      "id": "cloudflare-create-new",
+      "text": "Create a new project",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>Click the 'Create' button.</p>",
       "optional": false
     },
     {
@@ -198,32 +204,16 @@
       "optional": false
     },
     {
-      "id": "cloudflare-set-compatibility-date",
-      "text": "Set Compatibility Date",
-      "completed": false,
-      "isHeadline": false,
-      "createdAt": "2024-03-20T12:00:00.000Z",
-      "codeBlock": null,
-      "richText": "<p>Set the 'Compatibility date' to '2024-09-02'.</p>",
-      "optional": false
-    },
-    {
       "id": "cloudflare-set-compatibility-flags",
       "text": "Set Compatability Flags",
       "completed": false,
       "isHeadline": false,
       "createdAt": "2024-03-20T12:00:00.000Z",
-      "codeBlock": null,
-      "richText": "<p>Set 'Compatibility flags' to 'nodejs_compat'.</p> <p><strong>Note:</strong> You will need to type this in as it is not in the dropdown list.</p>",
-      "optional": false
-    },
-    {
-      "id": "cloudflare-set-branch-control",
-      "text": "Change Branch control to 'stable'",
-      "completed": false,
-      "isHeadline": false,
-      "createdAt": "2024-03-20T12:00:00.000Z",
-      "richText": "<p>On 'Branch control', set the branch to <strong>stable</strong></p>",
+      "codeBlock": {
+        "language": "javascript",
+        "code": "nodejs_compat"
+      },
+      "richText": "<p>Set 'Compatibility flags' to 'nodejs_compat'.</p><p><strong>Note:</strong> You will need to type this in as it is not in the dropdown list.</p>",
       "optional": false
     },
     {
@@ -267,6 +257,16 @@
       "optional": true
     },
     {
+      "id": "cloudflare-custom-url",
+      "text": "Setup a Custom URL",
+      "completed": false,
+      "isHeadline": false,
+      "createdAt": "2024-03-20T12:00:00.000Z",
+      "codeBlock": null,
+      "richText": "<p>If you have a custom domain setup in Cloudflare, add a subdomain to connect it to your deployment.</p>",
+      "optional": true
+    },
+    {
       "id": "github-sync-fork",
       "text": "Sync your Fork to latest changes",
       "completed": false,
@@ -274,26 +274,6 @@
       "createdAt": "2024-03-20T12:00:00.000Z",
       "codeBlock": null,
       "richText": "<p>On your forked GitHub repo, change branch to 'Stable' (or which ever one you are updating), and click the 'Sync fork' dropdown</p>",
-      "optional": true
-    },
-    {
-      "id": "github-update-branch",
-      "text": "Update your branch",
-      "completed": false,
-      "isHeadline": false,
-      "createdAt": "2024-03-20T12:00:00.000Z",
-      "codeBlock": null,
-      "richText": "<p>Click on <strong>Update branch</strong>.</p><p><strong>Note:</strong> Do not click on <strong>Discard commits</strong> to avoid having to delete the <code>.tool-versions</code> and <code>wrangler.toml</code> files again.</p>",
-      "optional": true
-    },
-    {
-      "id": "cloudflare-redeploy-on-sync",
-      "text": "Automatic Redeploy",
-      "completed": false,
-      "isHeadline": false,
-      "createdAt": "2024-03-20T12:00:00.000Z",
-      "codeBlock": null,
-      "richText": "<p>Modifying the branch automatically trigger a rebuild and deployment on Cloudflare. No further action required other than wait.</p>",
       "optional": true
     },
     {
@@ -344,15 +324,6 @@
       "optional": true
     },
     {
-      "id": "troubleshooting-securing-deployment",
-      "text": "Want to secure your Cloudflare Pages Deployment down?",
-      "completed": false,
-      "isHeadline": false,
-      "createdAt": "2024-03-20T12:00:00.000Z",
-      "richText": "<p>Want to secure your Cloudflare Pages Deployment down, see comment <a href=\"https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/61\" rel=\"noopener noreferrer\" target=\"_blank\">https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/61</a></p>",
-      "optional": true
-    },
-    {
       "id": "troubleshooting-equals-signs",
       "text": "Equals signs in environment variables?",
       "completed": false,
@@ -368,8 +339,7 @@
       "completed": false,
       "isHeadline": false,
       "createdAt": "2024-03-20T12:00:00.000Z",
-      "codeBlock": null,
-      "richText": "<p>Make sure to set the compatability_flags date and nodejs_compat</p>",
+      "richText": "<p>Make sure to set the compatability_flags date and <strong><em>nodejs_compat</em></strong></p>",
       "optional": true
     },
     {
@@ -390,22 +360,12 @@
       "createdAt": "2025-01-08T18:35:06.256Z"
     },
     {
-      "id": "cloudflare-custom-url",
-      "text": "Setup a Custom URL",
+      "id": "troubleshooting-securing-deployment",
+      "text": "Authentication (Login)",
       "completed": false,
       "isHeadline": false,
       "createdAt": "2024-03-20T12:00:00.000Z",
-      "codeBlock": null,
-      "richText": "<p>If you have a custom domain setup in Cloudflare, add a subdomain to connect it to your deployment.</p>",
-      "optional": true
-    },
-    {
-      "id": "github-actions-update",
-      "text": "Understanding GitHub Actions",
-      "completed": false,
-      "isHeadline": false,
-      "createdAt": "2024-03-20T12:00:00.000Z",
-      "richText": "<p>The project uses GitHub Actions on commits. Modifications to files will activate the runner.</p><p><strong>Note:</strong> No action is required here, this is just for your information.</p>",
+      "richText": "<p>Want to secure your Cloudflare Pages Deployment with Zero Trust Login  ?<a href=\"https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/61\" rel=\"noopener noreferrer\" target=\"_blank\">https://thinktank.ottomator.ai/t/deploying-bolt-diy-with-cloudflare-pages-the-easy-way/2403/61</a></p>",
       "optional": true
     }
   ]
