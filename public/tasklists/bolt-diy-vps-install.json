@@ -4,14 +4,14 @@
     {
       "id": "92b69f53-72dc-431c-9de1-18fb17a915f5",
       "text": "Prequirements",
-      "completed": true,
+      "completed": false,
       "isHeadline": true,
       "createdAt": "2025-02-08T19:17:10.551Z"
     },
     {
       "id": "8dd60c04-2ca4-4919-bf2c-07de8706cda9",
       "text": "Domain points already to the server you want to run it!",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T19:17:45.396Z",
       "optional": false
@@ -27,7 +27,7 @@
     {
       "id": "task-3",
       "text": "Install Certbot, Nginx and GIT",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2024-07-20T12:00:00.000Z",
       "optional": false,
@@ -39,7 +39,7 @@
     {
       "id": "f3ff725c-1622-47a3-ad9b-fc48c9b28ef4",
       "text": "Install NodeJS",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-07T21:05:37.928Z",
       "codeBlock": {
@@ -51,7 +51,7 @@
     {
       "id": "ab287701-0a06-468f-abde-6ddb8a771294",
       "text": "Install PM2 and PNPM",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-07T21:07:20.085Z",
       "codeBlock": {
@@ -71,7 +71,7 @@
     {
       "id": "fbc31baf-9062-4dd7-97da-6d02ea4c6c2c",
       "text": "Change Directory (where you want to install)",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-07T21:10:14.840Z",
       "codeBlock": {
@@ -83,7 +83,7 @@
     {
       "id": "task-4",
       "text": "Clone Repository",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2024-07-20T12:00:00.000Z",
       "optional": false,
@@ -95,7 +95,7 @@
     {
       "id": "a85b59a8-f7cc-4bad-bec6-f1767ac7029a",
       "text": "Go to the cloned folder",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-07T21:12:53.303Z",
       "codeBlock": {
@@ -107,7 +107,7 @@
     {
       "id": "9252c575-3143-41b8-9582-fc526d11dcb8",
       "text": "Install Depedencies",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-07T21:13:52.838Z",
       "codeBlock": {
@@ -119,7 +119,7 @@
     {
       "id": "31ee8bd5-216e-4e02-b29b-da2505313fdd",
       "text": "Change Owner to user bolt (or the user you use)",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-07T21:15:44.187Z",
       "codeBlock": {
@@ -131,7 +131,7 @@
     {
       "id": "ee81ce45-e60c-4525-b838-47f7afe29306",
       "text": "Copy .env.example to .env.local",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-07T21:22:41.346Z",
       "codeBlock": {
@@ -143,7 +143,7 @@
     {
       "id": "09195dc7-a8f3-4123-941f-a31bde4a7496",
       "text": "Build and Run (Testrun)",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-07T21:24:05.742Z",
       "codeBlock": {
@@ -155,7 +155,7 @@
     {
       "id": "task-1",
       "text": "Start bolt.diy via pm2 + Update before (Production run)",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2024-07-20T12:00:00.000Z",
       "optional": false,
@@ -167,7 +167,7 @@
     {
       "id": "14b9aeb5-0b3a-414b-9aba-891033cb189d",
       "text": "Save configuration for PM2",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T14:30:59.288Z",
       "codeBlock": {
@@ -186,7 +186,7 @@
     {
       "id": "9e59f7c2-bfad-41d3-a522-5cc7befcef16",
       "text": "Open nginx config",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T14:35:05.230Z",
       "codeBlock": {
@@ -198,7 +198,7 @@
     {
       "id": "e5636df5-306e-41d4-923b-966f98ef48b9",
       "text": "Copy/Paste this into the file and replace domain",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T17:15:19.655Z",
       "codeBlock": {
@@ -210,7 +210,7 @@
     {
       "id": "fd8e22ed-5ab4-443d-b514-9b531f37edcc",
       "text": "Reload Config",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T17:18:04.026Z",
       "codeBlock": {
@@ -222,7 +222,7 @@
     {
       "id": "55d0df29-6f22-4f56-95d6-5de52c7c7a77",
       "text": "Create/Install Certificate (SSL/HTTPS)",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T14:35:04.177Z",
       "codeBlock": {
@@ -234,7 +234,7 @@
     {
       "id": "c7cb506e-aae4-4b81-8017-a4771a0df1f0",
       "text": "Edit nginx config again and paste it the location",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T14:35:06.721Z",
       "codeBlock": {
@@ -246,7 +246,7 @@
     {
       "id": "1ec0d5b6-e71c-4343-8794-20d8a553ae07",
       "text": "Reload Config again",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T17:18:05.156Z",
       "codeBlock": {
@@ -258,7 +258,7 @@
     {
       "id": "031fb345-c77a-48a4-b6c5-fdbe714701ad",
       "text": "Check your Domain if it is up and running :)",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T17:18:06.208Z",
       "optional": false
@@ -274,7 +274,7 @@
     {
       "id": "bcb24669-0518-4d1a-9ea8-9981dda2f24d",
       "text": "Enable Basic Auth Login",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T17:30:04.530Z",
       "codeBlock": {
@@ -286,7 +286,7 @@
     {
       "id": "24af9d7a-6d45-41bc-93c8-543b7d9c8a7a",
       "text": "Install dependencies",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T17:33:01.091Z",
       "codeBlock": {
@@ -298,7 +298,7 @@
     {
       "id": "b24068c4-2c09-4cef-8079-9524bae27274",
       "text": "Create a user and password",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T17:30:05.456Z",
       "codeBlock": {
@@ -310,7 +310,7 @@
     {
       "id": "f25760b0-7f4d-4216-be3d-3c62142f7c71",
       "text": "Reload Config again",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-08T17:34:03.454Z",
       "codeBlock": {
@@ -322,14 +322,14 @@
     {
       "id": "8e21d078-cadd-4282-a56e-e0c1858ad473",
       "text": "Troubleshooting",
-      "completed": true,
+      "completed": false,
       "isHeadline": true,
       "createdAt": "2025-02-07T21:58:21.402Z"
     },
     {
       "id": "f9c41a7f-e42a-4552-bc65-6bd11a18b0ad",
       "text": "Low Memory Errors => Increase SWAP File",
-      "completed": true,
+      "completed": false,
       "isHeadline": false,
       "createdAt": "2025-02-07T21:58:57.949Z",
       "codeBlock": {
