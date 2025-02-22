@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, ExternalLink } from 'lucide-react';
 import { ChatHistory } from './ChatHistory';
+import { ImportExamplesButton } from './admin/ImportExamplesButton';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -14,41 +15,31 @@ interface SettingsModalProps {
     model: string;
     googleApiKey: string;
   };
+  isAdmin?: boolean;
 }
 
-export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModalProps) {
+export function SettingsModal({ onClose, onSave, initialSettings, isAdmin }: SettingsModalProps) {
   const [settings, setSettings] = useState(initialSettings);
   const [clearing, setClearing] = useState(false);
 
   const clearSiteData = async () => {
     setClearing(true);
     try {
-      // Clear localStorage
       localStorage.clear();
-
-      // Clear sessionStorage
       sessionStorage.clear();
-
-      // Clear cookies
       document.cookie.split(";").forEach(cookie => {
         document.cookie = cookie
           .replace(/^ +/, "")
           .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
       });
-
-      // Clear IndexedDB
       const databases = await window.indexedDB.databases();
       databases.forEach(db => {
         if (db.name) window.indexedDB.deleteDatabase(db.name);
       });
-
-      // Clear Cache Storage
       if ('caches' in window) {
         const cacheKeys = await caches.keys();
         await Promise.all(cacheKeys.map(key => caches.delete(key)));
       }
-
-      // Reload the page to apply changes
       window.location.reload();
     } catch (error) {
       console.error('Error clearing site data:', error);
@@ -93,6 +84,32 @@ export function SettingsModal({ onClose, onSave, initialSettings }: SettingsModa
                 </button>
               </div>
             </div>
+
+            {/* Admin Section */}
+            {isAdmin && (
+              <div className="mt-8 pt-6 border-t">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-medium text-gray-900">Admin Tools</h4>
+                  <div className="text-xs text-gray-500">Admin Access</div>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h5 className="text-sm font-medium text-gray-700 mb-2">Example Lists</h5>
+                    <p className="text-xs text-gray-600 mb-3">
+                      Import example task lists into the database. These lists will be available to all users.
+                    </p>
+                    <ImportExamplesButton
+                      onSuccess={() => {
+                        alert('Example lists imported successfully!');
+                      }}
+                      onError={(error) => {
+                        alert(error);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Clear Site Data Section */}
             <div className="mt-8 pt-6 border-t">

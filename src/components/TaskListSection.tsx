@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Task } from '../types/task';
 import { TaskList } from './TaskList';
 import { TaskListSelector } from './TaskListSelector';
 import { AITaskGenerator } from './AITaskGenerator';
+import { getExampleLists } from '../services/taskListService';
 
 interface TaskListSectionProps {
   tasks: Task[];
@@ -12,10 +13,10 @@ interface TaskListSectionProps {
   onDuplicate: (id: string) => void;
   onReorder: (tasks: Task[]) => void;
   onCheckAllSubTasks: (headlineId: string) => void;
-  availableLists: { name: string; url: string }[];
   onImportTaskList: (tasks: Task[]) => void;
   googleApiKey?: string;
   onError: (error: string) => void;
+  isAdmin: boolean;
 }
 
 export function TaskListSection({
@@ -26,11 +27,30 @@ export function TaskListSection({
   onDuplicate,
   onReorder,
   onCheckAllSubTasks,
-  availableLists,
   onImportTaskList,
   googleApiKey,
-  onError
+  onError,
+  isAdmin
 }: TaskListSectionProps) {
+  const [exampleLists, setExampleLists] = React.useState<{ name: string; data: Task[] }[]>([]);
+
+  useEffect(() => {
+    const fetchExampleLists = async () => {
+      try {
+        const lists = await getExampleLists();
+        setExampleLists(lists.map(list => ({
+          name: list.name,
+          data: list.data
+        })));
+      } catch (error) {
+        console.error('Error fetching example lists:', error);
+        onError('Failed to load example lists');
+      }
+    };
+
+    fetchExampleLists();
+  }, [onError]);
+
   const completedTasks = tasks.filter((task) => !task.isHeadline && task.completed).length;
   const totalTasks = tasks.filter((task) => !task.isHeadline).length;
 
@@ -39,7 +59,7 @@ export function TaskListSection({
       {tasks.length > 0 ? (
         <>
           {totalTasks > 0 && (
-            <div className="mb-4 text-sm text-gray-600">
+            <div className="text-sm text-gray-600 mb-4">
               {completedTasks} of {totalTasks} tasks completed
             </div>
           )}
@@ -59,7 +79,7 @@ export function TaskListSection({
             <h2 className="text-center text-gray-600 text-sm font-medium mb-3">Examples</h2>
           )}
           <TaskListSelector
-            availableLists={availableLists}
+            exampleLists={exampleLists}
             onImportTaskList={onImportTaskList}
           />
           {googleApiKey ? (

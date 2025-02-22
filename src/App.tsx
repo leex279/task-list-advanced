@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { HelpCircle } from 'lucide-react';
 import { useSettings } from './hooks/useSettings';
 import { useTasks } from './hooks/useTasks';
+import { useAuth } from './hooks/useAuth';
 import { Header } from './components/Header';
 import { TaskInput } from './components/TaskInput';
 import { TaskListSection } from './components/TaskListSection';
@@ -12,9 +13,13 @@ import { HelpModal } from './components/HelpModal';
 import { ErrorNotification } from './components/ErrorNotification';
 import { IntroModal } from './components/IntroModal';
 import { Tour } from './components/tour/Tour';
+import { AuthModal } from './components/auth/AuthModal';
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { supabase } from './lib/supabase';
 
 export default function App() {
   const [settings, setSettings] = useSettings();
+  const { user, loading: authLoading, isAdmin } = useAuth();
   const {
     tasks,
     setTasks,
@@ -26,54 +31,48 @@ export default function App() {
     reorderTasks
   } = useTasks();
 
-  const [availableLists, setAvailableLists] = useState<{ name: string; url: string }[]>([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+  const [isFirstUser, setIsFirstUser] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showTour, setShowTour] = useState(() => {
     const hasSeenTour = localStorage.getItem('hasSeenTour');
     return !hasSeenTour && !settings.googleApiKey;
   });
 
-  const fetchTaskLists = async () => {
-    const localFiles = [
-      '/tasklists/simple-example-list.json',
-      '/tasklists/windows-bolt-install.json',
-      '/tasklists/bolt-cloudflare-deployment.json',
-      '/tasklists/macOS-install-bolt-diy.json',
-      '/tasklists/ollama-installation-bolt.json',
-      '/tasklists/bolt-diy-vps-install.json',
-      '/tasklists/bolt-diy-github-pages-deployment.json',
-    ];
-    
-    try {
-      const filePromises = localFiles.map(async (path) => {
-        const response = await fetch(path);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch local task list: ${response.statusText}`);
+  useEffect(() => {
+    // Check if this is the first user
+    const checkFirstUser = async () => {
+      try {
+        const { count, error: countError } = await supabase
+          .from('users')
+          .select('*', { count: 'exact', head: true });
+
+        if (countError) {
+          if (countError.code === '42501') {
+            setIsFirstUser(true);
+          } else {
+            console.error('Error checking user count:', countError);
+          }
+        } else {
+          setIsFirstUser(!count || count === 0);
         }
-        const data = await response.json();
-        return { name: data.name, url: path };
-      });
 
-      const results = await Promise.all(filePromises);
-      setAvailableLists(results);
-    } catch (error) {
-      console.error('Error fetching local task lists:', error);
-      setError('Failed to load task lists.');
+        if (!user && !authLoading) {
+          setShowAuthModal(true);
+        }
+      } catch (error) {
+        console.error('Error checking first user:', error);
+      }
+    };
+
+    if (!authLoading) {
+      checkFirstUser();
     }
-  };
-
-  useEffect(() => {
-    fetchTaskLists();
-  }, []);
-
-  useEffect(() => {
-    if (!showTour) {
-      localStorage.setItem('hasSeenTour', 'true');
-    }
-  }, [showTour]);
+  }, [authLoading, user]);
 
   const handleLogoClick = () => {
     if (tasks.length > 0) {
@@ -118,19 +117,35 @@ export default function App() {
     return false;
   };
 
+  if (showAdminDashboard && isAdmin) {
+    return (
+      <AdminDashboard 
+        onClose={() => setShowAdminDashboard(false)}
+        onError={setError}
+        onEditList={(list) => {
+          setTasks(list.data);
+          setShowAdminDashboard(false);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <div className="absolute top-4 left-4 flex items-center gap-2">
         <span className="beta-badge">beta</span>
       </div>
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
+
       <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
           <Header
             onLogoClick={handleLogoClick}
             onSettingsClick={() => setShowSettingsModal(true)}
+            onAdminClick={() => setShowAdminDashboard(true)}
             tasks={tasks}
             onImport={setTasks}
+            isAdmin={isAdmin}
           />
           <TaskInput onAddTask={addTask} />
         </div>
@@ -142,12 +157,13 @@ export default function App() {
           onDuplicate={duplicateTask}
           onReorder={reorderTasks}
           onCheckAllSubTasks={checkAllSubTasks}
-          availableLists={availableLists}
           onImportTaskList={setTasks}
           googleApiKey={settings.googleApiKey}
           onError={setError}
+          isAdmin={isAdmin}
         />
       </div>
+
       <Footer />
       <button
         onClick={() => setShowHelpModal(true)}
@@ -156,6 +172,7 @@ export default function App() {
       >
         <HelpCircle size={24} />
       </button>
+
       {showConfirmationModal && (
         <ConfirmationModal
           onConfirm={handleConfirmReload}
@@ -168,6 +185,7 @@ export default function App() {
           onClose={() => setShowSettingsModal(false)}
           onSave={handleSettingsSave}
           initialSettings={settings}
+          isAdmin={isAdmin}
         />
       )}
       {showHelpModal && (
@@ -175,6 +193,12 @@ export default function App() {
       )}
       {showTour && (
         <Tour onComplete={() => setShowTour(false)} />
+      )}
+      {showAuthModal && (
+        <AuthModal
+          onClose={() => setShowAuthModal(false)}
+          isFirstUser={isFirstUser}
+        />
       )}
     </div>
   );

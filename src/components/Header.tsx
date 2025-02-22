@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import { CheckSquare, Settings, Download, Upload } from 'lucide-react';
+import { CheckSquare, Settings, Shield, Download, Upload } from 'lucide-react';
 import { Task } from '../types/task';
 import { ExportModal } from './ExportModal';
 
 interface HeaderProps {
   onLogoClick: () => void;
   onSettingsClick: () => void;
+  onAdminClick: () => void;
   tasks: Task[];
   onImport: (tasks: Task[]) => void;
+  isAdmin?: boolean;
 }
 
-export function Header({ onLogoClick, onSettingsClick, tasks, onImport }: HeaderProps) {
+export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onImport, isAdmin }: HeaderProps) {
   const [showExportModal, setShowExportModal] = useState(false);
 
   const handleExport = (name: string) => {
-    const exportData = {
-      name,
-      data: tasks
-    };
-    
-    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataStr = JSON.stringify({ name, data: tasks }, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     
     const sanitizedName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -81,6 +78,16 @@ export function Header({ onLogoClick, onSettingsClick, tasks, onImport }: Header
             Import
           </button>
         </div>
+        {isAdmin && (
+          <button
+            onClick={onAdminClick}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            title="Admin Dashboard"
+          >
+            <Shield size={16} />
+            Admin
+          </button>
+        )}
         <button
           onClick={onSettingsClick}
           className="text-gray-400 hover:text-gray-600"

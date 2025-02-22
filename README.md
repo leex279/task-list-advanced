@@ -13,25 +13,12 @@ A modern task management application with code block support and AI task generat
 - 📑 Organize tasks with headlines and subtasks
 - 🔗 Automatic URL to clickable link conversion
 - 🎨 Clean, modern UI with responsive design
+- 🔒 User authentication and admin dashboard
+- 💾 Database storage with Supabase
+- 📋 Example task lists
+- 🔄 Task duplication
+- 🔍 Rich text descriptions with formatting
 
-## Planned Features
-
-- [ ] 🔍 Filter tasks by all/active/completed
-- [ ] 📦 Archive completed tasks
-- [ ] 🌓 Dark/light mode toggle
-- [ ] 📱 Progressive Web App (PWA) support for offline use
-- [ ] 📂 Collapsible task groups/headlines
-- [ ] 🔎 Searchable knowledge base
-- [ ] 📊 Improved UI/UX:
-  - [ ] Consistent minimum height for task boxes
-  - [ ] Scrollable task container for better space management
-  - [ ] Enhanced mobile responsiveness
-  - [ ] App container with drop shadow and rounded corners
-  - [ ] Toggle between code/details views (one at a time)
-  - [ ] Improved z-index handling for warning blocks
-- [ ] 🏷️ Enhanced development features:
-  - [ ] Systematic ID usage for easier CSS handling
-  
 ## Quick Start
 
 1. Clone and install:
@@ -41,16 +28,40 @@ cd task-list-advanced
 npm install
 ```
 
-2. Create `.env` file:
-```env
-VITE_DEV_MODE=true
-```
+2. Set up environment variables:
+   - Copy `.env.example` to `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Update the `.env` file with your Supabase credentials:
+     - Create a new project at [Supabase](https://supabase.com)
+     - Get your project URL and anon key from the project settings
+     - Update `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in `.env`
+
 3. Start development server:
 ```bash
 npm run dev
 ```
 
 4. Open `http://localhost:5173` in your browser
+
+## Authentication
+
+The first user to sign up will automatically become an admin. Subsequent users will be regular users by default.
+
+### Admin Features
+- Create and manage task lists
+- Save example lists for all users
+- Import example lists into the database
+- Edit and delete task lists
+
+## Database Setup
+
+The application uses Supabase for data storage. The database schema and migrations are automatically handled when you connect to Supabase.
+
+### Tables
+- `task_lists`: Stores all task lists
+- `users`: Manages user data and roles
 
 ## Core Components
 
@@ -62,10 +73,14 @@ The application is built using several key components:
   - `TaskItem`: Individual task display and editing
   - `CodeBlock`: Syntax-highlighted code display
 
-- **Features**
-  - `RichTextEditor`: Format task descriptions
-  - `ImportExport`: Save and load task lists
-  - `SettingsModal`: Configure AI integration
+- **Admin Features**
+  - `AdminDashboard`: Manage task lists and example lists
+  - `ListEditor`: Create and edit task lists
+  - `SaveListModal`: Save lists with options for example lists
+
+- **Authentication**
+  - `AuthModal`: Handle user sign up and sign in
+  - `useAuth`: Manage authentication state
 
 ## AI Task Generation
 
@@ -95,7 +110,8 @@ Tasks are stored in JSON format:
         "language": "javascript",
         "code": "console.log('Hello!');"
       },
-      "optional": false
+      "optional": false,
+      "richText": "<p>Detailed description</p>"
     }
   ]
 }
@@ -110,6 +126,8 @@ Built with:
 - DND Kit for drag and drop
 - Prism.js for code highlighting
 - Google Gemini API for AI features
+- Supabase for database and authentication
+- React Quill for rich text editing
 
 ## See also my Youtube Channel
 URL: https://www.youtube.com/@DIYSmartCode<br><br>
@@ -125,4 +143,3 @@ URL: https://www.youtube.com/@DIYSmartCode<br><br>
 ## License
 
 This project is licensed under the MIT License.
-
