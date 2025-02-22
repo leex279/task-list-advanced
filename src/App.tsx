@@ -40,7 +40,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [showTour, setShowTour] = useState(() => {
     const hasSeenTour = localStorage.getItem('hasSeenTour');
-    return !hasSeenTour && !settings.googleApiKey;
+    return !hasSeenTour;
   });
 
   useEffect(() => {
@@ -60,10 +60,6 @@ export default function App() {
         } else {
           setIsFirstUser(!count || count === 0);
         }
-
-        if (!user && !authLoading) {
-          setShowAuthModal(true);
-        }
       } catch (error) {
         console.error('Error checking first user:', error);
       }
@@ -72,7 +68,7 @@ export default function App() {
     if (!authLoading) {
       checkFirstUser();
     }
-  }, [authLoading, user]);
+  }, [authLoading]);
 
   const handleLogoClick = () => {
     if (tasks.length > 0) {
@@ -89,6 +85,11 @@ export default function App() {
   const handleSettingsSave = (newSettings: typeof settings) => {
     setSettings(newSettings);
     setShowSettingsModal(false);
+  };
+
+  const handleTourComplete = () => {
+    localStorage.setItem('hasSeenTour', 'true');
+    setShowTour(false);
   };
 
   const checkAllSubTasks = (headlineId: string) => {
@@ -146,6 +147,7 @@ export default function App() {
             tasks={tasks}
             onImport={setTasks}
             isAdmin={isAdmin}
+            user={user}
           />
           <TaskInput onAddTask={addTask} />
         </div>
@@ -192,7 +194,7 @@ export default function App() {
         <HelpModal onClose={() => setShowHelpModal(false)} />
       )}
       {showTour && (
-        <Tour onComplete={() => setShowTour(false)} />
+        <Tour onComplete={handleTourComplete} />
       )}
       {showAuthModal && (
         <AuthModal

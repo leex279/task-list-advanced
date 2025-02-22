@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CheckSquare, Settings, Shield, Download, Upload } from 'lucide-react';
 import { Task } from '../types/task';
 import { ExportModal } from './ExportModal';
+import { User } from '@supabase/supabase-js';
 
 interface HeaderProps {
   onLogoClick: () => void;
@@ -10,9 +11,10 @@ interface HeaderProps {
   tasks: Task[];
   onImport: (tasks: Task[]) => void;
   isAdmin?: boolean;
+  user: User | null;
 }
 
-export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onImport, isAdmin }: HeaderProps) {
+export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onImport, isAdmin, user }: HeaderProps) {
   const [showExportModal, setShowExportModal] = useState(false);
 
   const handleExport = (name: string) => {

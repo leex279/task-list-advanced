@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { X, ExternalLink } from 'lucide-react';
+import { X, ExternalLink, LogOut, LogIn } from 'lucide-react';
 import { ChatHistory } from './ChatHistory';
 import { ImportExamplesButton } from './admin/ImportExamplesButton';
+import { supabase } from '../lib/supabase';
+import { AuthModal } from './auth/AuthModal';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -21,6 +23,7 @@ interface SettingsModalProps {
 export function SettingsModal({ onClose, onSave, initialSettings, isAdmin }: SettingsModalProps) {
   const [settings, setSettings] = useState(initialSettings);
   const [clearing, setClearing] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const clearSiteData = async () => {
     setClearing(true);
@@ -45,6 +48,15 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin }: Set
       console.error('Error clearing site data:', error);
     } finally {
       setClearing(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      window.location.reload();
+    } catch (error) {
+      console.error('Error signing out:', error);
     }
   };
 
@@ -85,31 +97,57 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin }: Set
               </div>
             </div>
 
-            {/* Admin Section */}
-            {isAdmin && (
-              <div className="mt-8 pt-6 border-t">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-sm font-medium text-gray-900">Admin Tools</h4>
-                  <div className="text-xs text-gray-500">Admin Access</div>
-                </div>
-                <div className="space-y-4">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h5 className="text-sm font-medium text-gray-700 mb-2">Example Lists</h5>
-                    <p className="text-xs text-gray-600 mb-3">
-                      Import example task lists into the database. These lists will be available to all users.
-                    </p>
-                    <ImportExamplesButton
-                      onSuccess={() => {
-                        alert('Example lists imported successfully!');
-                      }}
-                      onError={(error) => {
-                        alert(error);
-                      }}
-                    />
-                  </div>
-                </div>
+            {/* Authentication Section */}
+            <div className="mt-8 pt-6 border-t">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-sm font-medium text-gray-900">Authentication</h4>
+                {isAdmin && <div className="text-xs text-gray-500">Admin Access</div>}
               </div>
-            )}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                {isAdmin ? (
+                  <>
+                    <h5 className="text-sm font-medium text-gray-700 mb-2">Admin Tools</h5>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-xs text-gray-600 mb-3">
+                          Import example task lists into the database. These lists will be available to all users.
+                        </p>
+                        <ImportExamplesButton
+                          onSuccess={() => {
+                            alert('Example lists imported successfully!');
+                          }}
+                          onError={(error) => {
+                            alert(error);
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <button
+                          onClick={handleSignOut}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:text-red-700 transition-colors"
+                        >
+                          <LogOut size={16} />
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Sign in to access admin features and manage task lists.
+                    </p>
+                    <button
+                      onClick={() => setShowAuthModal(true)}
+                      className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                    >
+                      <LogIn size={16} />
+                      Sign In
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Clear Site Data Section */}
             <div className="mt-8 pt-6 border-t">
@@ -147,6 +185,16 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin }: Set
           </div>
         </div>
       </div>
+
+      {showAuthModal && (
+        <AuthModal
+          onClose={() => {
+            setShowAuthModal(false);
+            window.location.reload(); // Refresh after auth to update state
+          }}
+          isFirstUser={false}
+        />
+      )}
     </div>
   );
 }

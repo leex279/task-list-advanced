@@ -38,12 +38,111 @@ npm install
      - Get your project URL and anon key from the project settings
      - Update `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in `.env`
 
-3. Start development server:
+3. Set up the database:
+   - Go to your Supabase project dashboard
+   - Navigate to the SQL Editor
+   - Create the required tables by running the following migrations in order:
+
+   a. Create task lists table:
+   ```sql
+   CREATE TABLE IF NOT EXISTS task_lists (
+     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+     name text NOT NULL,
+     data jsonb NOT NULL,
+     created_at timestamptz DEFAULT now(),
+     user_id uuid REFERENCES auth.users(id),
+     is_example boolean DEFAULT false
+   );
+
+   ALTER TABLE task_lists ENABLE ROW LEVEL SECURITY;
+   ```
+
+   b. Set up RLS policies for task lists:
+   ```sql
+   -- Public read access for example lists
+   CREATE POLICY "Public read access for example lists"
+     ON task_lists
+     FOR SELECT
+     USING (
+       is_example = true OR 
+       (auth.role() = 'authenticated' AND auth.jwt() -> 'user_metadata' ->> 'role' = 'admin')
+     );
+
+   -- Admin write access
+   CREATE POLICY "Admin write access"
+     ON task_lists
+     FOR INSERT
+     TO authenticated
+     WITH CHECK (
+       auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
+     );
+
+   -- Admin update access
+   CREATE POLICY "Admin update access"
+     ON task_lists
+     FOR UPDATE
+     TO authenticated
+     USING (
+       auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
+     );
+
+   -- Admin delete access
+   CREATE POLICY "Admin delete access"
+     ON task_lists
+     FOR DELETE
+     TO authenticated
+     USING (
+       auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
+     );
+   ```
+
+   c. Create users table and triggers:
+   ```sql
+   -- Create users table
+   CREATE TABLE IF NOT EXISTS users (
+     id uuid PRIMARY KEY REFERENCES auth.users,
+     email text NOT NULL,
+     role text NOT NULL DEFAULT 'user',
+     created_at timestamptz DEFAULT now()
+   );
+
+   -- Enable RLS
+   ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+   -- Allow public read access to user count
+   CREATE POLICY "Allow public read access to user count"
+     ON users
+     FOR SELECT
+     TO anon
+     USING (true);
+
+   -- Create trigger function
+   CREATE OR REPLACE FUNCTION public.handle_new_user()
+   RETURNS TRIGGER AS $$
+   BEGIN
+     INSERT INTO public.users (id, email, role)
+     VALUES (
+       NEW.id,
+       NEW.email,
+       COALESCE(NEW.raw_user_meta_data->>'role', 'user')
+     );
+     RETURN NEW;
+   END;
+   $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+   -- Create trigger for new user signup
+   DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+   CREATE TRIGGER on_auth_user_created
+     AFTER INSERT ON auth.users
+     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+   ```
+
+4. Start development server:
 ```bash
 npm run dev
 ```
 
-4. Open `http://localhost:5173` in your browser
+5. Open `http://localhost:5173` in your browser
 
 ## Authentication
 
@@ -57,11 +156,28 @@ The first user to sign up will automatically become an admin. Subsequent users w
 
 ## Database Setup
 
-The application uses Supabase for data storage. The database schema and migrations are automatically handled when you connect to Supabase.
+The application uses Supabase for data storage. The database schema includes:
 
 ### Tables
 - `task_lists`: Stores all task lists
+  - `id`: UUID primary key
+  - `name`: Task list name
+  - `data`: JSONB field containing tasks
+  - `created_at`: Timestamp
+  - `user_id`: Reference to auth.users
+  - `is_example`: Boolean flag for example lists
+
 - `users`: Manages user data and roles
+  - `id`: UUID primary key (references auth.users)
+  - `email`: User's email
+  - `role`: User role (admin/user)
+  - `created_at`: Timestamp
+
+### Security
+- Row Level Security (RLS) policies protect data access
+- Example lists are publicly readable
+- Admin users have full CRUD access
+- Regular users have limited access
 
 ## Core Components
 

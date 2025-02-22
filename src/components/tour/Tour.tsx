@@ -199,6 +199,7 @@ export function Tour({ onComplete }: TourProps) {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
+      localStorage.setItem('hasSeenTour', 'true');
       onComplete();
     }
   };
@@ -207,6 +208,11 @@ export function Tour({ onComplete }: TourProps) {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const handleSkip = () => {
+    localStorage.setItem('hasSeenTour', 'true');
+    onComplete();
   };
 
   return (
@@ -221,7 +227,7 @@ export function Tour({ onComplete }: TourProps) {
           <div className="flex justify-between items-center mb-2">
             <h3 className="font-semibold text-gray-800">{steps[currentStep].title}</h3>
             <button
-              onClick={onComplete}
+              onClick={handleSkip}
               className="text-gray-400 hover:text-gray-600"
             >
               <X size={16} />
@@ -239,7 +245,7 @@ export function Tour({ onComplete }: TourProps) {
                 </button>
               ) : (
                 <button
-                  onClick={onComplete}
+                  onClick={handleSkip}
                   className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900"
                 >
                   Skip

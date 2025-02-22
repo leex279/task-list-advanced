@@ -18,13 +18,12 @@ export async function saveTaskList(name: string, tasks: Task[], isExample = fals
   }));
 
   // First, try to find an existing list with this name
-  const { data: existingList } = await supabase
+  const { data: existingLists } = await supabase
     .from('task_lists')
     .select('id')
-    .eq('name', name)
-    .single();
+    .eq('name', name);
 
-  if (existingList) {
+  if (existingLists && existingLists.length > 0) {
     // Update existing list
     const { data, error } = await supabase
       .from('task_lists')
@@ -32,7 +31,7 @@ export async function saveTaskList(name: string, tasks: Task[], isExample = fals
         data: uncheckedTasks,
         is_example: isExample
       })
-      .eq('id', existingList.id)
+      .eq('id', existingLists[0].id)
       .select()
       .single();
 
