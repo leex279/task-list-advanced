@@ -9,6 +9,7 @@ interface TaskListSectionProps {
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }, richText?: string) => void;
+  onDuplicate: (id: string) => void;
   onReorder: (tasks: Task[]) => void;
   onCheckAllSubTasks: (headlineId: string) => void;
   availableLists: { name: string; url: string }[];
@@ -22,6 +23,7 @@ export function TaskListSection({
   onToggle,
   onDelete,
   onEdit,
+  onDuplicate,
   onReorder,
   onCheckAllSubTasks,
   availableLists,
@@ -46,6 +48,7 @@ export function TaskListSection({
             onToggle={onToggle}
             onDelete={onDelete}
             onEdit={onEdit}
+            onDuplicate={onDuplicate}
             onReorder={onReorder}
             onCheckAllSubTasks={onCheckAllSubTasks}
           />
@@ -74,4 +77,4 @@ export function TaskListSection({
       )}
     </>
   );
-} 
+}

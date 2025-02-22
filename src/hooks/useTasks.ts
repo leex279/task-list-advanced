@@ -24,6 +24,23 @@ export function useTasks() {
     setTasks(prev => [...prev, newTask]);
   };
 
+  const duplicateTask = (id: string) => {
+    const taskIndex = tasks.findIndex(task => task.id === id);
+    if (taskIndex !== -1) {
+      const taskToDuplicate = tasks[taskIndex];
+      const duplicatedTask: Task = {
+        ...taskToDuplicate,
+        id: crypto.randomUUID(),
+        completed: false,
+        createdAt: new Date()
+      };
+      
+      const newTasks = [...tasks];
+      newTasks.splice(taskIndex + 1, 0, duplicatedTask);
+      setTasks(newTasks);
+    }
+  };
+
   const toggleTask = (id: string) => {
     setTasks(prev =>
       prev.map((task) =>
@@ -58,9 +75,10 @@ export function useTasks() {
     tasks,
     setTasks,
     addTask,
+    duplicateTask,
     toggleTask,
     deleteTask,
     editTask,
     reorderTasks
   };
-} 
+}

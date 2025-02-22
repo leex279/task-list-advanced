@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CheckSquare, Settings, Download, Upload } from 'lucide-react';
 import { Task } from '../types/task';
+import { ExportModal } from './ExportModal';
 
 interface HeaderProps {
   onLogoClick: () => void;
@@ -10,14 +11,21 @@ interface HeaderProps {
 }
 
 export function Header({ onLogoClick, onSettingsClick, tasks, onImport }: HeaderProps) {
-  const handleExport = () => {
-    const dataStr = JSON.stringify({ data: tasks }, null, 2);
+  const [showExportModal, setShowExportModal] = useState(false);
+
+  const handleExport = (name: string) => {
+    const exportData = {
+      name,
+      data: tasks
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     
-    const exportFileDefaultName = 'tasks.json';
+    const sanitizedName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.setAttribute('download', `${sanitizedName}.json`);
     linkElement.click();
   };
 
@@ -57,7 +65,7 @@ export function Header({ onLogoClick, onSettingsClick, tasks, onImport }: Header
       <div className="flex items-center gap-2">
         <div className="import-export-buttons flex gap-2">
           <button
-            onClick={handleExport}
+            onClick={() => setShowExportModal(true)}
             className="import-export-button flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
             title="Export tasks"
           >
@@ -81,6 +89,13 @@ export function Header({ onLogoClick, onSettingsClick, tasks, onImport }: Header
           <Settings size={18} />
         </button>
       </div>
+
+      {showExportModal && (
+        <ExportModal
+          onClose={() => setShowExportModal(false)}
+          onExport={handleExport}
+        />
+      )}
     </div>
   );
-} 
+}

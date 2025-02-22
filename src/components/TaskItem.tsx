@@ -8,11 +8,12 @@ interface TaskItemProps {
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }, richText?: string, optional?: boolean) => void;
+  onDuplicate: (id: string) => void;
   onCheckAllSubTasks?: (headlineId: string) => void;
   tasks: Task[];
 }
 
-export function TaskItem({ task, onToggle, onDelete, onEdit, onCheckAllSubTasks, tasks }: TaskItemProps) {
+export function TaskItem({ task, onToggle, onDelete, onEdit, onDuplicate, onCheckAllSubTasks, tasks }: TaskItemProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   if (isEditing) {
@@ -34,6 +35,7 @@ export function TaskItem({ task, onToggle, onDelete, onEdit, onCheckAllSubTasks,
       onToggle={onToggle}
       onEdit={() => setIsEditing(true)}
       onDelete={onDelete}
+      onDuplicate={onDuplicate}
       onCheckAllSubTasks={onCheckAllSubTasks}
       tasks={tasks}
     />

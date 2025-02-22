@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Trash2, Edit2, CheckSquare, AlignLeft } from 'lucide-react';
+import { Check, Trash2, Edit2, CheckSquare, AlignLeft, Copy } from 'lucide-react';
 import { Task } from '../types/task';
 import { CodeBlock } from './code/CodeBlock';
 import { TaskText } from './TaskText';
@@ -10,11 +10,12 @@ interface TaskDisplayProps {
   onToggle: (id: string) => void;
   onEdit: () => void;
   onDelete: (id: string) => void;
+  onDuplicate: (id: string) => void;
   onCheckAllSubTasks?: (headlineId: string) => void;
   tasks: Task[];
 }
 
-export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTasks, tasks }: TaskDisplayProps) {
+export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onCheckAllSubTasks, tasks }: TaskDisplayProps) {
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
 
   if (task.isHeadline) {
@@ -66,6 +67,13 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
                 <AlignLeft size={18} />
               </button>
             )}
+            <button
+              onClick={() => onDuplicate(task.id)}
+              className="text-gray-400 hover:text-blue-500 transition-colors"
+              title="Duplicate task"
+            >
+              <Copy size={18} />
+            </button>
             <button
               onClick={() => onEdit()}
               className="text-gray-400 hover:text-blue-500 transition-colors"
@@ -138,6 +146,13 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onCheckAllSubTas
           )}
         </div>
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={() => onDuplicate(task.id)}
+            className="text-gray-400 hover:text-blue-500 transition-colors"
+            title="Duplicate task"
+          >
+            <Copy size={18} />
+          </button>
           <button
             onClick={() => onEdit()}
             className="text-gray-400 hover:text-blue-500 transition-colors"

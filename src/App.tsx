@@ -19,6 +19,7 @@ export default function App() {
     tasks,
     setTasks,
     addTask,
+    duplicateTask,
     toggleTask,
     deleteTask,
     editTask,
@@ -138,6 +139,7 @@ export default function App() {
           onToggle={toggleTask}
           onDelete={deleteTask}
           onEdit={editTask}
+          onDuplicate={duplicateTask}
           onReorder={reorderTasks}
           onCheckAllSubTasks={checkAllSubTasks}
           availableLists={availableLists}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { X } from 'lucide-react';
 
 interface TourStep {
@@ -16,6 +16,7 @@ export function Tour({ onComplete }: TourProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [tooltipStyle, setTooltipStyle] = useState({});
   const [arrowStyle, setArrowStyle] = useState({});
+  const positioningRef = useRef<number>();
 
   const steps: TourStep[] = [
     {
@@ -63,89 +64,96 @@ export function Tour({ onComplete }: TourProps) {
   ];
 
   const positionTooltip = useCallback(() => {
-    const target = document.querySelector(steps[currentStep].target);
-    if (!target) return;
-
-    const rect = target.getBoundingClientRect();
-    const position = steps[currentStep].position;
-    const tooltipWidth = 300;
-    const tooltipHeight = 150;
-    const arrowSize = 8;
-    const spacing = 16;
-
-    let tooltipStyle = {
-      position: 'fixed' as const,
-      zIndex: 1000,
-    };
-
-    let arrowStyle = {
-      position: 'absolute' as const,
-      width: '0',
-      height: '0',
-      border: `${arrowSize}px solid transparent`,
-    };
-
-    switch (position) {
-      case 'top':
-        tooltipStyle = {
-          ...tooltipStyle,
-          top: rect.top - tooltipHeight - (arrowSize + spacing),
-          left: rect.left + (rect.width / 2) - (tooltipWidth / 2),
-        };
-        arrowStyle = {
-          ...arrowStyle,
-          bottom: -arrowSize * 2,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          borderTopColor: 'white',
-        };
-        break;
-      case 'bottom':
-        tooltipStyle = {
-          ...tooltipStyle,
-          top: rect.bottom + (arrowSize + spacing),
-          left: rect.left + (rect.width / 2) - (tooltipWidth / 2),
-        };
-        arrowStyle = {
-          ...arrowStyle,
-          top: -arrowSize * 2,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          borderBottomColor: 'white',
-        };
-        break;
-      case 'left':
-        tooltipStyle = {
-          ...tooltipStyle,
-          top: rect.top + (rect.height / 2) - (tooltipHeight / 2),
-          left: rect.left - tooltipWidth - (arrowSize + spacing),
-        };
-        arrowStyle = {
-          ...arrowStyle,
-          right: -arrowSize * 2,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          borderLeftColor: 'white',
-        };
-        break;
-      case 'right':
-        tooltipStyle = {
-          ...tooltipStyle,
-          top: rect.top + (rect.height / 2) - (tooltipHeight / 2),
-          left: rect.right + (arrowSize + spacing),
-        };
-        arrowStyle = {
-          ...arrowStyle,
-          left: -arrowSize * 2,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          borderRightColor: 'white',
-        };
-        break;
+    if (positioningRef.current) {
+      cancelAnimationFrame(positioningRef.current);
     }
 
-    setTooltipStyle(tooltipStyle);
-    setArrowStyle(arrowStyle);
+    positioningRef.current = requestAnimationFrame(() => {
+      const target = document.querySelector(steps[currentStep].target);
+      if (!target) return;
+
+      const rect = target.getBoundingClientRect();
+      const position = steps[currentStep].position;
+      const tooltipWidth = 300;
+      const tooltipHeight = 150;
+      const arrowSize = 8;
+      const spacing = 16;
+
+      let newTooltipStyle = {
+        position: 'fixed' as const,
+        zIndex: 1000,
+        width: `${tooltipWidth}px`,
+      };
+
+      let newArrowStyle = {
+        position: 'absolute' as const,
+        width: '0',
+        height: '0',
+        border: `${arrowSize}px solid transparent`,
+      };
+
+      switch (position) {
+        case 'top':
+          newTooltipStyle = {
+            ...newTooltipStyle,
+            top: rect.top - tooltipHeight - (arrowSize + spacing),
+            left: rect.left + (rect.width / 2) - (tooltipWidth / 2),
+          };
+          newArrowStyle = {
+            ...newArrowStyle,
+            bottom: -arrowSize * 2,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            borderTopColor: 'white',
+          };
+          break;
+        case 'bottom':
+          newTooltipStyle = {
+            ...newTooltipStyle,
+            top: rect.bottom + (arrowSize + spacing),
+            left: rect.left + (rect.width / 2) - (tooltipWidth / 2),
+          };
+          newArrowStyle = {
+            ...newArrowStyle,
+            top: -arrowSize * 2,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            borderBottomColor: 'white',
+          };
+          break;
+        case 'left':
+          newTooltipStyle = {
+            ...newTooltipStyle,
+            top: rect.top + (rect.height / 2) - (tooltipHeight / 2),
+            left: rect.left - tooltipWidth - (arrowSize + spacing),
+          };
+          newArrowStyle = {
+            ...newArrowStyle,
+            right: -arrowSize * 2,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            borderLeftColor: 'white',
+          };
+          break;
+        case 'right':
+          newTooltipStyle = {
+            ...newTooltipStyle,
+            top: rect.top + (rect.height / 2) - (tooltipHeight / 2),
+            left: rect.right + (arrowSize + spacing),
+          };
+          newArrowStyle = {
+            ...newArrowStyle,
+            left: -arrowSize * 2,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            borderRightColor: 'white',
+          };
+          break;
+      }
+
+      setTooltipStyle(newTooltipStyle);
+      setArrowStyle(newArrowStyle);
+    });
   }, [currentStep, steps]);
 
   useEffect(() => {
@@ -163,9 +171,7 @@ export function Tour({ onComplete }: TourProps) {
     window.addEventListener('resize', positionTooltip);
 
     // Set up ResizeObserver to handle content changes
-    const resizeObserver = new ResizeObserver(() => {
-      positionTooltip();
-    });
+    const resizeObserver = new ResizeObserver(positionTooltip);
 
     if (target) {
       resizeObserver.observe(target);
@@ -181,28 +187,13 @@ export function Tour({ onComplete }: TourProps) {
       if (target) {
         target.classList.remove('tour-highlight');
       }
+
+      // Cancel any pending animation frames
+      if (positioningRef.current) {
+        cancelAnimationFrame(positioningRef.current);
+      }
     };
   }, [currentStep, positionTooltip]);
-
-  // Add mutation observer to handle DOM changes
-  useEffect(() => {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(() => {
-        positionTooltip();
-      });
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      characterData: true
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [positionTooltip]);
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -223,7 +214,7 @@ export function Tour({ onComplete }: TourProps) {
       <div className="fixed inset-0 z-40 bg-black bg-opacity-50" />
       <div className="fixed inset-0 z-50 pointer-events-none">
         <div 
-          className="bg-white rounded-lg shadow-xl p-4 w-[300px] pointer-events-auto relative"
+          className="bg-white rounded-lg shadow-xl p-4 pointer-events-auto relative"
           style={tooltipStyle}
         >
           <div className="arrow" style={arrowStyle} />
@@ -278,4 +269,4 @@ export function Tour({ onComplete }: TourProps) {
       </div>
     </>
   );
-} 
+}

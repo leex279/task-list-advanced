@@ -20,11 +20,12 @@ interface TaskListProps {
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }, richText?: string) => void;
+  onDuplicate: (id: string) => void;
   onReorder: (tasks: Task[]) => void;
   onCheckAllSubTasks: (headlineId: string) => void;
 }
 
-export function TaskList({ tasks, onToggle, onDelete, onEdit, onReorder, onCheckAllSubTasks }: TaskListProps) {
+export function TaskList({ tasks, onToggle, onDelete, onEdit, onDuplicate, onReorder, onCheckAllSubTasks }: TaskListProps) {
   const sensors = useSensors(
     useSensor(MouseSensor),
     useSensor(TouchSensor)
@@ -65,6 +66,7 @@ export function TaskList({ tasks, onToggle, onDelete, onEdit, onReorder, onCheck
               onToggle={onToggle}
               onDelete={onDelete}
               onEdit={onEdit}
+              onDuplicate={onDuplicate}
               hasHeadlines={hasHeadlines}
               onCheckAllSubTasks={task.isHeadline ? onCheckAllSubTasks : undefined}
               tasks={tasks}

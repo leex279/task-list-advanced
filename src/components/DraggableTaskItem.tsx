@@ -9,13 +9,14 @@ interface DraggableTaskItemProps {
   task: Task;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
-  onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }, richText?: string) => void;
+  onEdit: (id: string, text: string, codeBlock?: { language: string; code: string }, richText?: string, optional?: boolean) => void;
+  onDuplicate: (id: string) => void;
   hasHeadlines: boolean;
   onCheckAllSubTasks?: (headlineId: string) => void;
   tasks: Task[];
 }
 
-export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, hasHeadlines, onCheckAllSubTasks, tasks }: DraggableTaskItemProps) {
+export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, onDuplicate, hasHeadlines, onCheckAllSubTasks, tasks }: DraggableTaskItemProps) {
   const {
     attributes,
     listeners,
@@ -52,6 +53,7 @@ export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, hasHeadlin
             onToggle={onToggle}
             onDelete={onDelete}
             onEdit={onEdit}
+            onDuplicate={onDuplicate}
             onCheckAllSubTasks={onCheckAllSubTasks}
             tasks={tasks}
           />
