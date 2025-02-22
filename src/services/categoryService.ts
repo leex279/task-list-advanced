@@ -8,8 +8,36 @@ export interface Category {
   updated_at: string;
 }
 
+// Default categories for development mode
+const DEFAULT_CATEGORIES = [
+  { name: 'installation', description: 'Installation guides and setup instructions' },
+  { name: 'deployment', description: 'Deployment procedures and configurations' },
+  { name: 'configuration', description: 'Configuration and customization guides' },
+  { name: 'tutorial', description: 'Step-by-step tutorials and learning materials' },
+  { name: 'example', description: 'Example implementations and demonstrations' },
+  { name: 'documentation', description: 'Documentation and reference materials' },
+  { name: 'setup', description: 'Initial setup and environment configuration' },
+  { name: 'guide', description: 'General guides and how-to instructions' }
+].map(cat => ({
+  id: crypto.randomUUID(),
+  name: cat.name,
+  description: cat.description,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString()
+}));
+
+// Development mode task list categories mapping
+const DEV_TASK_LIST_CATEGORIES: Record<string, string[]> = {};
+
+const isDev = import.meta.env.DEV || import.meta.env.VITE_DEV_MODE === 'true';
+
 export async function getCategories(): Promise<Category[]> {
   try {
+    if (isDev) {
+      console.log('[CategoryService] Development mode: Using default categories');
+      return DEFAULT_CATEGORIES;
+    }
+
     const { data, error } = await supabase
       .from('categories')
       .select('*')
@@ -17,18 +45,30 @@ export async function getCategories(): Promise<Category[]> {
 
     if (error) {
       console.error('Error fetching categories:', error);
-      throw new Error('Failed to fetch categories');
+      return DEFAULT_CATEGORIES;
     }
 
-    return data || [];
+    return data || DEFAULT_CATEGORIES;
   } catch (error) {
     console.error('Error in getCategories:', error);
-    throw error;
+    return DEFAULT_CATEGORIES;
   }
 }
 
 export async function createCategory(name: string, description?: string): Promise<Category> {
   try {
+    if (isDev) {
+      const newCategory = {
+        id: crypto.randomUUID(),
+        name: name.toLowerCase(),
+        description,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      DEFAULT_CATEGORIES.push(newCategory);
+      return newCategory;
+    }
+
     const { data, error } = await supabase
       .from('categories')
       .insert([{ name: name.toLowerCase(), description }])
@@ -49,6 +89,14 @@ export async function createCategory(name: string, description?: string): Promis
 
 export async function deleteCategory(name: string): Promise<void> {
   try {
+    if (isDev) {
+      const index = DEFAULT_CATEGORIES.findIndex(c => c.name.toLowerCase() === name.toLowerCase());
+      if (index !== -1) {
+        DEFAULT_CATEGORIES.splice(index, 1);
+      }
+      return;
+    }
+
     const { error } = await supabase
       .from('categories')
       .delete()
@@ -66,32 +114,56 @@ export async function deleteCategory(name: string): Promise<void> {
 
 export async function getTaskListCategories(taskListId: string): Promise<string[]> {
   try {
+    if (isDev) {
+      console.log('[CategoryService] Development mode: Getting task list categories', {
+        taskListId,
+        categories: DEV_TASK_LIST_CATEGORIES[taskListId] || []
+      });
+      return DEV_TASK_LIST_CATEGORIES[taskListId] || [];
+    }
+
     const { data, error } = await supabase
       .from('task_list_categories')
-      .select('categories!inner(name)')
+      .select('categories(name)')
       .eq('task_list_id', taskListId);
 
     if (error) {
       console.error('Error fetching task list categories:', error);
-      throw new Error('Failed to fetch task list categories');
+      return [];
     }
 
     return data.map(row => row.categories.name);
   } catch (error) {
     console.error('Error in getTaskListCategories:', error);
-    throw error;
+    return [];
   }
 }
 
 export async function updateTaskListCategories(taskListId: string, categoryNames: string[]): Promise<void> {
+  console.log('[CategoryService] Updating task list categories:', {
+    taskListId,
+    categoryNames,
+    isDev
+  });
+
+  if (isDev) {
+    DEV_TASK_LIST_CATEGORIES[taskListId] = categoryNames;
+    console.log('[CategoryService] Development mode: Updated categories', DEV_TASK_LIST_CATEGORIES);
+    return;
+  }
+
   try {
-    // First get category IDs
+    // Get category IDs for the given names
     const { data: categories, error: categoriesError } = await supabase
       .from('categories')
       .select('id')
-      .in('name', categoryNames);
+      .in('name', categoryNames.map(name => name.toLowerCase()));
 
-    if (categoriesError) throw categoriesError;
+    if (categoriesError) {
+      console.error('Error getting category IDs:', categoriesError);
+      return;
+    }
+
     const categoryIds = categories.map(cat => cat.id);
 
     // Delete existing associations
@@ -100,9 +172,12 @@ export async function updateTaskListCategories(taskListId: string, categoryNames
       .delete()
       .eq('task_list_id', taskListId);
 
-    if (deleteError) throw deleteError;
+    if (deleteError) {
+      console.error('Error deleting existing categories:', deleteError);
+      return;
+    }
 
-    // Insert new ones if there are any
+    // Insert new associations if there are any categories
     if (categoryIds.length > 0) {
       const { error: insertError } = await supabase
         .from('task_list_categories')
@@ -113,10 +188,17 @@ export async function updateTaskListCategories(taskListId: string, categoryNames
           }))
         );
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error('Error inserting new categories:', insertError);
+        return;
+      }
     }
+
+    console.log('[CategoryService] Successfully updated categories');
   } catch (error) {
     console.error('Error in updateTaskListCategories:', error);
-    throw error;
+    if (!isDev) {
+      throw error;
+    }
   }
 }

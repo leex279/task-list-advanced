@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Task } from '../types/task';
 import { ChevronDown } from 'lucide-react';
+import { getCategories } from '../services/categoryService';
 
 interface TaskListSelectorProps {
   exampleLists: { name: string; data: Task[]; categories?: string[] }[];
@@ -11,17 +12,91 @@ export function TaskListSelector({
   exampleLists,
   onImportTaskList,
 }: TaskListSelectorProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [availableCategories, setAvailableCategories] = useState<{
+    original: string;
+    lower: string;
+  }[]>([]);
 
-  // Get unique categories
-  const categories = ['all', ...new Set(exampleLists.flatMap(list => list.categories || []))].sort();
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        console.log('[TaskListSelector] Fetching categories...');
+        const data = await getCategories();
+        console.log('[TaskListSelector] Fetched categories:', data);
+        
+        const formattedCategories = data.map(cat => ({
+          original: cat.name,
+          lower: cat.name.toLowerCase()
+        })).sort((a, b) => a.lower.localeCompare(b.lower));
+        
+        console.log('[TaskListSelector] Formatted categories:', formattedCategories);
+        setAvailableCategories(formattedCategories);
+      } catch (error) {
+        console.error('[TaskListSelector] Error fetching categories:', error);
+      }
+    };
 
-  // Filter lists by selected category
-  const filteredLists = exampleLists.filter(list => 
-    selectedCategory === 'all' || 
-    (list.categories && list.categories.includes(selectedCategory))
-  );
+    fetchCategories();
+  }, []);
+
+  // Filter lists by selected categories
+  const filteredLists = exampleLists.filter(list => {
+    console.log('\n[TaskListSelector] Filtering list:', {
+      listName: list.name,
+      listCategories: list.categories,
+      selectedCategories: selectedCategories
+    });
+
+    if (selectedCategories.length === 0) {
+      console.log('[TaskListSelector] No categories selected, showing all lists');
+      return true;
+    }
+    
+    if (!list.categories || !Array.isArray(list.categories) || list.categories.length === 0) {
+      console.log('[TaskListSelector] List has no categories, filtering out');
+      return false;
+    }
+    
+    const listCategoriesLower = list.categories.map(cat => cat.toLowerCase());
+    console.log('[TaskListSelector] List categories (lowercase):', listCategoriesLower);
+    
+    const hasMatchingCategory = selectedCategories.some(selectedCat => {
+      const matches = listCategoriesLower.includes(selectedCat.toLowerCase());
+      console.log('[TaskListSelector] Checking category match:', {
+        selectedCategory: selectedCat,
+        matches: matches
+      });
+      return matches;
+    });
+
+    console.log('[TaskListSelector] List matches filter:', hasMatchingCategory);
+    return hasMatchingCategory;
+  });
+
+  console.log('[TaskListSelector] Filtered lists result:', {
+    totalLists: exampleLists.length,
+    filteredLists: filteredLists.length,
+    filteredListNames: filteredLists.map(l => l.name)
+  });
+
+  const toggleCategory = (category: string) => {
+    console.log('[TaskListSelector] Toggling category:', {
+      category: category,
+      currentlySelected: selectedCategories
+    });
+
+    setSelectedCategories(prev => {
+      const categoryLower = category.toLowerCase();
+      const newCategories = prev.includes(categoryLower)
+        ? prev.filter(c => c !== categoryLower)
+        : [...prev, categoryLower];
+      
+      console.log('[TaskListSelector] New selected categories:', newCategories);
+      return newCategories;
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -33,8 +108,10 @@ export function TaskListSelector({
               hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
               shadow-sm transition-all duration-200 min-w-[160px] flex items-center justify-between gap-2"
           >
-            <span className="capitalize">
-              {selectedCategory === 'all' ? 'All Categories' : selectedCategory}
+            <span>
+              {selectedCategories.length === 0 
+                ? 'All Categories' 
+                : `${selectedCategories.length} selected`}
             </span>
             <ChevronDown
               size={16}
@@ -43,19 +120,31 @@ export function TaskListSelector({
           </button>
 
           {dropdownOpen && (
-            <div className="absolute top-full left-0 mt-1 w-48 bg-white border rounded-md shadow-lg z-10 py-1">
-              {categories.map((category) => (
+            <div className="absolute top-full left-0 mt-1 w-64 bg-white border rounded-md shadow-lg z-10 py-1">
+              <div className="p-2 border-b">
                 <button
-                  key={category}
                   onClick={() => {
-                    setSelectedCategory(category);
-                    setDropdownOpen(false);
+                    console.log('[TaskListSelector] Clearing all categories');
+                    setSelectedCategories([]);
                   }}
-                  className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 transition-colors
-                    ${selectedCategory === category ? 'bg-blue-50 text-blue-700' : 'text-gray-700'}`}
+                  className="text-sm text-blue-500 hover:text-blue-600"
                 >
-                  <span className="capitalize">{category === 'all' ? 'All Categories' : category}</span>
+                  Clear all
                 </button>
+              </div>
+              {availableCategories.map(({ original, lower }) => (
+                <label
+                  key={lower}
+                  className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedCategories.includes(lower)}
+                    onChange={() => toggleCategory(lower)}
+                    className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">{original}</span>
+                </label>
               ))}
             </div>
           )}
@@ -79,7 +168,11 @@ export function TaskListSelector({
                 {list.categories.slice(0, 2).map(category => (
                   <span
                     key={category}
-                    className="px-1.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full truncate max-w-[80px]"
+                    className={`px-1.5 py-0.5 text-xs font-medium rounded-full truncate max-w-[80px] ${
+                      selectedCategories.includes(category.toLowerCase())
+                        ? 'bg-blue-100 text-blue-600'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}
                   >
                     {category}
                   </span>
