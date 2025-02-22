@@ -2,6 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fixed File Changes Section */
+.file-changes-section {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem;
+  margin: -1rem -1rem 1rem -1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.file-changes-section.collapsed {
+  cursor: pointer;
+}
+
+.file-changes-section.collapsed .content {
+  display: none;
+}
+
+.file-changes-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.file-changes-section p {
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+.file-changes-section ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  color: #4b5563;
+}
+
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
@@ -130,4 +171,12 @@ footer {
   background: white;
   border-radius: 0.5rem;
   z-index: -1;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

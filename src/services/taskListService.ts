@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { Task } from '../types/task';
+import { updateTaskListCategories } from './categoryService';
 
 export interface TaskList {
   id: string;
@@ -8,9 +9,10 @@ export interface TaskList {
   created_at: string;
   user_id: string | null;
   is_example?: boolean;
+  categories?: string[];
 }
 
-export async function saveTaskList(name: string, tasks: Task[], isExample = false) {
+export async function saveTaskList(name: string, tasks: Task[], isExample = false, categories: string[] = []) {
   // Ensure all tasks are unchecked before saving
   const uncheckedTasks = tasks.map(task => ({
     ...task,
@@ -23,38 +25,58 @@ export async function saveTaskList(name: string, tasks: Task[], isExample = fals
     .select('id')
     .eq('name', name);
 
-  if (existingLists && existingLists.length > 0) {
-    // Update existing list
-    const { data, error } = await supabase
-      .from('task_lists')
-      .update({
-        data: uncheckedTasks,
-        is_example: isExample
-      })
-      .eq('id', existingLists[0].id)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
-  } else {
-    // Create new list
-    const { data, error } = await supabase
-      .from('task_lists')
-      .insert([
-        {
-          name,
+  try {
+    if (existingLists && existingLists.length > 0) {
+      // Update existing list
+      const { data, error } = await supabase
+        .from('task_lists')
+        .update({
           data: uncheckedTasks,
-          is_example: isExample,
-          user_id: isExample ? null : (await supabase.auth.getUser()).data.user?.id
-        }
-      ])
-      .select()
-      .single();
+          is_example: isExample
+        })
+        .eq('id', existingLists[0].id)
+        .select()
+        .single();
 
-    if (error) throw error;
-    return data;
+      if (error) throw error;
+
+      // Update categories
+      await updateTaskListCategories(existingLists[0].id, categories);
+      return data;
+    } else {
+      // Create new list
+      const { data, error } = await supabase
+        .from('task_lists')
+        .insert([
+          {
+            name,
+            data: uncheckedTasks,
+            is_example: isExample,
+            user_id: isExample ? null : (await supabase.auth.getUser()).data.user?.id
+          }
+        ])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Add categories
+      await updateTaskListCategories(data.id, categories);
+      return data;
+    }
+  } catch (error) {
+    console.error('Error saving task list:', error);
+    throw error;
   }
+}
+
+export async function updateTaskCategories(id: string, categories: string[]) {
+  const { error } = await supabase
+    .from('task_lists')
+    .update({ categories })
+    .eq('id', id);
+
+  if (error) throw error;
 }
 
 export async function getTaskLists() {
@@ -75,7 +97,6 @@ export async function getExampleLists() {
       .eq('is_example', true)
       .order('name');
 
-    // If we get a 404 or any other error, fall back to local files
     if (error || !data) {
       console.log('Falling back to local example lists');
       return fetchLocalExampleLists();
@@ -113,12 +134,13 @@ async function fetchLocalExampleLists() {
             name: data.name,
             data: data.data.map((task: any) => ({
               ...task,
-              completed: false, // Ensure local example tasks are also unchecked
+              completed: false,
               createdAt: new Date(task.createdAt || new Date())
             })),
             is_example: true,
             created_at: new Date().toISOString(),
-            user_id: null
+            user_id: null,
+            categories: inferCategories(data.name)
           };
         } catch (error) {
           console.error(`Error loading example list ${url}:`, error);
@@ -127,12 +149,27 @@ async function fetchLocalExampleLists() {
       })
     );
 
-    // Filter out any failed loads
     return lists.filter((list): list is TaskList => list !== null);
   } catch (error) {
     console.error('Error loading local example lists:', error);
     return [];
   }
+}
+
+function inferCategories(name: string): string[] {
+  const categories = new Set<string>();
+  const nameLower = name.toLowerCase();
+  
+  if (nameLower.includes('install')) categories.add('installation');
+  if (nameLower.includes('deploy')) categories.add('deployment');
+  if (nameLower.includes('config')) categories.add('configuration');
+  if (nameLower.includes('example')) categories.add('example');
+  if (nameLower.includes('tutorial')) categories.add('tutorial');
+  if (nameLower.includes('guide')) categories.add('guide');
+  if (nameLower.includes('setup')) categories.add('setup');
+  if (nameLower.includes('bolt')) categories.add('bolt');
+  
+  return Array.from(categories);
 }
 
 export async function deleteTaskList(id: string) {
@@ -144,45 +181,33 @@ export async function deleteTaskList(id: string) {
   if (error) throw error;
 }
 
-export async function importExampleList(url: string) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch task list: ${response.statusText}`);
+export async function importJsonFiles(files: FileList) {
+  const results = {
+    imported: 0,
+    errors: [] as string[]
+  };
+
+  for (const file of files) {
+    if (!file.name.endsWith('.json')) {
+      results.errors.push(`${file.name}: Not a JSON file`);
+      continue;
     }
-    const data = await response.json();
-    return saveTaskList(data.name, data.data, true);
-  } catch (error) {
-    console.error(`Error importing example list ${url}:`, error);
-    throw error;
-  }
-}
 
-export async function importAllExampleLists() {
-  const localFiles = [
-    '/tasklists/simple-example-list.json',
-    '/tasklists/windows-bolt-install.json',
-    '/tasklists/bolt-cloudflare-deployment.json',
-    '/tasklists/macOS-install-bolt-diy.json',
-    '/tasklists/ollama-installation-bolt.json',
-    '/tasklists/bolt-diy-vps-install.json',
-    '/tasklists/bolt-diy-github-pages-deployment.json',
-  ];
+    try {
+      const content = await file.text();
+      const data = JSON.parse(content);
 
-  const results = await Promise.allSettled(localFiles.map(importExampleList));
-  
-  const failures = results.filter((result): result is PromiseRejectedResult => 
-    result.status === 'rejected'
-  );
+      if (!data.name || !Array.isArray(data.data)) {
+        results.errors.push(`${file.name}: Invalid task list format`);
+        continue;
+      }
 
-  if (failures.length > 0) {
-    console.error('Some example lists failed to import:', failures);
-    throw new Error(`Failed to import ${failures.length} example lists`);
+      await saveTaskList(data.name, data.data, true, inferCategories(data.name));
+      results.imported++;
+    } catch (error) {
+      results.errors.push(`${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 
-  return results
-    .filter((result): result is PromiseFullfilledResult<TaskList> => 
-      result.status === 'fulfilled'
-    )
-    .map(result => result.value);
+  return results;
 }

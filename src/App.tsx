@@ -15,7 +15,7 @@ import { IntroModal } from './components/IntroModal';
 import { Tour } from './components/tour/Tour';
 import { AuthModal } from './components/auth/AuthModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';
-import { supabase } from './lib/supabase';
+import { supabase, checkDatabaseConnection } from './lib/supabase';
 
 export default function App() {
   const [settings, setSettings] = useSettings();
@@ -44,30 +44,57 @@ export default function App() {
   });
 
   useEffect(() => {
-    // Check if this is the first user
-    const checkFirstUser = async () => {
-      try {
-        const { count, error: countError } = await supabase
-          .from('users')
-          .select('*', { count: 'exact', head: true });
+    let mounted = true;
 
-        if (countError) {
-          if (countError.code === '42501') {
-            setIsFirstUser(true);
-          } else {
-            console.error('Error checking user count:', countError);
+    // Check database connection and first user status
+    const initialize = async () => {
+      try {
+        // Check database connection first
+        const { ok, error: connectionError } = await checkDatabaseConnection();
+        if (!ok && mounted) {
+          setError(connectionError || 'Failed to connect to the database');
+          return;
+        }
+
+        if (!authLoading && mounted) {
+          const { count, error: countError } = await supabase
+            .from('users')
+            .select('*', { count: 'exact', head: true });
+
+          if (countError) {
+            if (countError.code === '42501' && mounted) {
+              setIsFirstUser(true);
+            } else {
+              console.error('Error checking user count:', {
+                code: countError.code,
+                message: countError.message,
+                details: countError.details
+              });
+              if (mounted) {
+                setError('Failed to check user count. Please try again later.');
+              }
+            }
+          } else if (mounted) {
+            setIsFirstUser(!count || count === 0);
           }
-        } else {
-          setIsFirstUser(!count || count === 0);
         }
       } catch (error) {
-        console.error('Error checking first user:', error);
+        console.error('Error during initialization:', {
+          name: error instanceof Error ? error.name : 'Unknown',
+          message: error instanceof Error ? error.message : 'Unknown error occurred',
+          stack: error instanceof Error ? error.stack : undefined
+        });
+        if (mounted) {
+          setError('Failed to initialize application. Please try again later.');
+        }
       }
     };
 
-    if (!authLoading) {
-      checkFirstUser();
-    }
+    initialize();
+
+    return () => {
+      mounted = false;
+    };
   }, [authLoading]);
 
   const handleLogoClick = () => {
@@ -138,8 +165,8 @@ export default function App() {
       </div>
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
-      <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
+      <div className="sticky top-0 z-50 bg-white shadow-sm">
+        <div className="max-w-2xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <Header
             onLogoClick={handleLogoClick}
             onSettingsClick={() => setShowSettingsModal(true)}
@@ -151,6 +178,9 @@ export default function App() {
           />
           <TaskInput onAddTask={addTask} />
         </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <TaskListSection
           tasks={tasks}
           onToggle={toggleTask}
