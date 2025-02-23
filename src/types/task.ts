@@ -11,13 +11,3 @@ export interface Task {
   richText?: string;
   optional?: boolean;
 }
-
-export interface TaskListCategory {
-  id: string;
-  name: string;
-  description?: string;
-}
-
-export interface TaskListWithCategory extends Task {
-  category?: string;
-}

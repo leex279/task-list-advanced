@@ -15,7 +15,7 @@ import { IntroModal } from './components/IntroModal';
 import { Tour } from './components/tour/Tour';
 import { AuthModal } from './components/auth/AuthModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';
-import { supabase, checkDatabaseConnection } from './lib/supabase';
+import { supabase } from './lib/supabase';
 
 export default function App() {
   const [settings, setSettings] = useSettings();
@@ -39,62 +39,35 @@ export default function App() {
   const [isFirstUser, setIsFirstUser] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showTour, setShowTour] = useState(() => {
-    const hasSeenTour = localStorage.getItem('hasSeenTour');
-    return !hasSeenTour;
+    const hasSeenTour = sessionStorage.getItem('hasSeenTour');
+    return !hasSeenTour && !settings.googleApiKey;
   });
 
   useEffect(() => {
-    let mounted = true;
-
-    // Check database connection and first user status
-    const initialize = async () => {
+    // Check if this is the first user
+    const checkFirstUser = async () => {
       try {
-        // Check database connection first
-        const { ok, error: connectionError } = await checkDatabaseConnection();
-        if (!ok && mounted) {
-          setError(connectionError || 'Failed to connect to the database');
-          return;
-        }
+        const { count, error: countError } = await supabase
+          .from('users')
+          .select('*', { count: 'exact', head: true });
 
-        if (!authLoading && mounted) {
-          const { count, error: countError } = await supabase
-            .from('users')
-            .select('*', { count: 'exact', head: true });
-
-          if (countError) {
-            if (countError.code === '42501' && mounted) {
-              setIsFirstUser(true);
-            } else {
-              console.error('Error checking user count:', {
-                code: countError.code,
-                message: countError.message,
-                details: countError.details
-              });
-              if (mounted) {
-                setError('Failed to check user count. Please try again later.');
-              }
-            }
-          } else if (mounted) {
-            setIsFirstUser(!count || count === 0);
+        if (countError) {
+          if (countError.code === '42501') {
+            setIsFirstUser(true);
+          } else {
+            console.error('Error checking user count:', countError);
           }
+        } else {
+          setIsFirstUser(!count || count === 0);
         }
       } catch (error) {
-        console.error('Error during initialization:', {
-          name: error instanceof Error ? error.name : 'Unknown',
-          message: error instanceof Error ? error.message : 'Unknown error occurred',
-          stack: error instanceof Error ? error.stack : undefined
-        });
-        if (mounted) {
-          setError('Failed to initialize application. Please try again later.');
-        }
+        console.error('Error checking first user:', error);
       }
     };
 
-    initialize();
-
-    return () => {
-      mounted = false;
-    };
+    if (!authLoading) {
+      checkFirstUser();
+    }
   }, [authLoading]);
 
   const handleLogoClick = () => {
@@ -115,7 +88,7 @@ export default function App() {
   };
 
   const handleTourComplete = () => {
-    localStorage.setItem('hasSeenTour', 'true');
+    sessionStorage.setItem('hasSeenTour', 'true');
     setShowTour(false);
   };
 
@@ -165,8 +138,8 @@ export default function App() {
       </div>
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
-      <div className="sticky top-0 z-50 bg-white shadow-sm">
-        <div className="max-w-2xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
           <Header
             onLogoClick={handleLogoClick}
             onSettingsClick={() => setShowSettingsModal(true)}
@@ -174,13 +147,9 @@ export default function App() {
             tasks={tasks}
             onImport={setTasks}
             isAdmin={isAdmin}
-            user={user}
           />
           <TaskInput onAddTask={addTask} />
         </div>
-      </div>
-
-      <div className="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <TaskListSection
           tasks={tasks}
           onToggle={toggleTask}
@@ -218,6 +187,8 @@ export default function App() {
           onSave={handleSettingsSave}
           initialSettings={settings}
           isAdmin={isAdmin}
+          user={user}
+          onShowAuth={() => setShowAuthModal(true)}
         />
       )}
       {showHelpModal && (

@@ -28,7 +28,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
           ],
         }}
       />
-      <style>{`
+      <style jsx global>{`
         .rich-text-editor .ql-container {
           min-height: 120px;
           max-height: 400px;

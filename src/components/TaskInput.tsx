@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { PlusCircle, Code, Heading, AlignLeft, Tag } from 'lucide-react';
+import { PlusCircle, Code, Heading, AlignLeft } from 'lucide-react';
 import { RichTextEditor } from './RichTextEditor';
 import { CodeBlockEditor } from './code/CodeBlockEditor';
-import { CategorySelector } from './CategorySelector';
 
 interface TaskInputProps {
   onAddTask: (
@@ -10,8 +9,7 @@ interface TaskInputProps {
     isHeadline: boolean,
     codeBlock?: { language: string; code: string },
     richText?: string,
-    optional?: boolean,
-    categories?: string[]
+    optional?: boolean
   ) => void;
 }
 
@@ -24,8 +22,6 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
   const language = 'javascript';
   const [richText, setRichText] = useState('');
   const [optional, setOptional] = useState(false);
-  const [showCategorySelector, setShowCategorySelector] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,8 +31,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
         isHeadline,
         !isHeadline && showCodeInput && code.trim() ? { language, code: code.trim() } : undefined,
         !isHeadline && showRichTextEditor ? richText.trim() : undefined,
-        !isHeadline ? optional : undefined,
-        selectedCategories.length > 0 ? selectedCategories : undefined
+        !isHeadline ? optional : undefined
       );
       setText('');
       setCode('');
@@ -45,7 +40,6 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
       setShowRichTextEditor(false);
       setIsHeadline(false);
       setOptional(false);
-      setSelectedCategories([]);
     }
   };
 
@@ -97,18 +91,6 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
             >
               <AlignLeft size={20} />
             </button>
-            <button
-              type="button"
-              onClick={() => setShowCategorySelector(!showCategorySelector)}
-              className={`category-button px-3 rounded-lg border transition-colors ${
-                showCategorySelector
-                  ? 'border-blue-500 text-blue-500'
-                  : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
-              }`}
-              title="Add categories"
-            >
-              <Tag size={20} />
-            </button>
             <label className="optional-checkbox flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors cursor-pointer">
               <input
                 type="checkbox"
@@ -143,12 +125,6 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
             onChange={setRichText}
           />
         </div>
-      )}
-      {showCategorySelector && (
-        <CategorySelector
-          selectedCategories={selectedCategories}
-          onUpdateCategories={setSelectedCategories}
-        />
       )}
     </form>
   );

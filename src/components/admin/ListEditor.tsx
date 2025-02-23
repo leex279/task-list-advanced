@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Save, X, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { TaskInput } from '../TaskInput';
 import { TaskList } from '../TaskList';
 import { Task } from '../../types/task';
 import { saveTaskList } from '../../services/taskListService';
-import { getCategories } from '../../services/categoryService';
 
 interface ListEditorProps {
   list?: {
@@ -12,7 +11,6 @@ interface ListEditorProps {
     name: string;
     data: Task[];
     is_example?: boolean;
-    categories?: string[];
   };
   onSave: () => void;
   onCancel: () => void;
@@ -23,24 +21,7 @@ export function ListEditor({ list, onSave, onCancel, onError }: ListEditorProps)
   const [name, setName] = useState(list?.name || '');
   const [tasks, setTasks] = useState<Task[]>(list?.data || []);
   const [isExample, setIsExample] = useState(list?.is_example || false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(list?.categories || []);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getCategories();
-        setAvailableCategories(data.map(cat => cat.name).sort());
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-        onError('Failed to load categories');
-      }
-    };
-
-    fetchCategories();
-  }, [onError]);
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -55,7 +36,7 @@ export function ListEditor({ list, onSave, onCancel, onError }: ListEditorProps)
 
     setSaving(true);
     try {
-      await saveTaskList(name, tasks, isExample, selectedCategories);
+      await saveTaskList(name, tasks, isExample);
       onSave();
     } catch (error) {
       console.error('Error saving list:', error);
@@ -132,14 +113,6 @@ export function ListEditor({ list, onSave, onCancel, onError }: ListEditorProps)
     setTasks(newTasks);
   };
 
-  const toggleCategory = (category: string) => {
-    setSelectedCategories(prev => 
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -180,54 +153,6 @@ export function ListEditor({ list, onSave, onCancel, onError }: ListEditorProps)
                   <Save size={16} />
                   {saving ? 'Saving...' : 'Save List'}
                 </button>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <div className="relative">
-                <div className="flex flex-wrap gap-2 items-center">
-                  <button
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="px-3 py-2 text-sm bg-white border rounded-md hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    {selectedCategories.length === 0 ? 'Select Categories' : `${selectedCategories.length} categories`}
-                  </button>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedCategories.map((category) => (
-                      <div
-                        key={category}
-                        className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-sm"
-                      >
-                        {category}
-                        <button
-                          onClick={() => toggleCategory(category)}
-                          className="p-0.5 hover:bg-blue-100 rounded-full transition-colors"
-                        >
-                          <X size={14} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {dropdownOpen && (
-                  <div className="absolute top-full left-0 mt-1 w-64 bg-white border rounded-md shadow-lg z-10 py-1">
-                    {availableCategories.map((category) => (
-                      <label
-                        key={category}
-                        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedCategories.includes(category)}
-                          onChange={() => toggleCategory(category)}
-                          className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <span className="text-sm text-gray-700 capitalize">{category}</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
           </div>

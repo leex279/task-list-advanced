@@ -10,16 +10,16 @@ export function useAuth() {
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
-      setIsAdmin(session?.user?.user_metadata?.role === 'admin' || false);
+      setUser(session?.user ?? null);
+      setIsAdmin(session?.user?.user_metadata?.role === 'admin' ?? false);
       setLoading(false);
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      const currentUser = session?.user || null;
+      const currentUser = session?.user ?? null;
       setUser(currentUser);
-      setIsAdmin(currentUser?.user_metadata?.role === 'admin' || false);
+      setIsAdmin(currentUser?.user_metadata?.role === 'admin' ?? false);
       setLoading(false);
     });
 

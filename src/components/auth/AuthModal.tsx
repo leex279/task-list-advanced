@@ -12,6 +12,7 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSignUp, setIsSignUp] = useState(isFirstUser);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -30,15 +31,13 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
     setError(null);
 
     try {
-      if (isFirstUser) {
-        // Sign up the first user as admin
+      if (isSignUp) {
+        // Sign up
         const { data, error: signUpError } = await supabase.auth.signUp({
           email: email.trim(),
           password: password.trim(),
           options: {
-            data: {
-              role: 'admin'
-            }
+            data: isFirstUser ? { role: 'admin' } : undefined
           }
         });
 
@@ -57,7 +56,7 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
         }
 
       } else {
-        // Sign in existing user
+        // Sign in
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password: password.trim()
@@ -87,7 +86,7 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">
-            {isFirstUser ? 'Create Admin Account' : 'Sign In'}
+            {isFirstUser ? 'Create Admin Account' : (isSignUp ? 'Create Account' : 'Sign In')}
           </h2>
           {!isFirstUser && (
             <button 
@@ -137,11 +136,11 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
               required
               minLength={6}
-              autoComplete={isFirstUser ? 'new-password' : 'current-password'}
+              autoComplete={isSignUp ? 'new-password' : 'current-password'}
               disabled={loading}
-              placeholder={isFirstUser ? 'Create a password' : 'Enter your password'}
+              placeholder={isSignUp ? 'Create a password' : 'Enter your password'}
             />
-            {isFirstUser && (
+            {isSignUp && (
               <p className="mt-1 text-xs text-gray-500">
                 Password must be at least 6 characters long
               </p>
@@ -152,6 +151,16 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
             <div className="p-3 bg-red-50 border border-red-200 rounded-md" role="alert">
               <p className="text-sm text-red-600">{error}</p>
             </div>
+          )}
+
+          {!isFirstUser && (
+            <button
+              type="button"
+              onClick={() => setIsSignUp(!isSignUp)}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              {isSignUp ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
+            </button>
           )}
 
           <button
@@ -165,10 +174,10 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                {isFirstUser ? 'Creating Account...' : 'Signing In...'}
+                {isFirstUser ? 'Creating Account...' : (isSignUp ? 'Creating Account...' : 'Signing In...')}
               </span>
             ) : (
-              isFirstUser ? 'Create Account' : 'Sign In'
+              isFirstUser ? 'Create Account' : (isSignUp ? 'Sign Up' : 'Sign In')
             )}
           </button>
         </form>

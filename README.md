@@ -23,7 +23,7 @@ A modern task management application with code block support and AI task generat
 
 1. Clone and install:
 ```bash
-git clone https://github.com/leex279/task-list-advanced.git
+git clone https://github.com/yourusername/task-list-advanced.git
 cd task-list-advanced
 npm install
 ```
@@ -39,103 +39,125 @@ npm install
      - Update `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in `.env`
 
 3. Set up the database:
-   - Go to your Supabase project dashboard
-   - Navigate to the SQL Editor
-   - Create the required tables by running the following migrations in order:
+   - Create a new Supabase project
+   - Run the following SQL in the Supabase SQL editor:
 
-   a. Create task lists table:
-   ```sql
-   CREATE TABLE IF NOT EXISTS task_lists (
-     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-     name text NOT NULL,
-     data jsonb NOT NULL,
-     created_at timestamptz DEFAULT now(),
-     user_id uuid REFERENCES auth.users(id),
-     is_example boolean DEFAULT false
-   );
+```sql
+-- Create task_lists table
+CREATE TABLE IF NOT EXISTS task_lists (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  data jsonb NOT NULL,
+  created_at timestamptz DEFAULT now(),
+  user_id uuid REFERENCES auth.users(id),
+  is_example boolean DEFAULT false
+);
 
-   ALTER TABLE task_lists ENABLE ROW LEVEL SECURITY;
-   ```
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+  id uuid PRIMARY KEY REFERENCES auth.users,
+  email text NOT NULL,
+  role text NOT NULL DEFAULT 'user',
+  created_at timestamptz DEFAULT now()
+);
 
-   b. Set up RLS policies for task lists:
-   ```sql
-   -- Public read access for example lists
-   CREATE POLICY "Public read access for example lists"
-     ON task_lists
-     FOR SELECT
-     USING (
-       is_example = true OR 
-       (auth.role() = 'authenticated' AND auth.jwt() -> 'user_metadata' ->> 'role' = 'admin')
-     );
+-- Enable Row Level Security
+ALTER TABLE task_lists ENABLE ROW LEVEL SECURITY;
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
-   -- Admin write access
-   CREATE POLICY "Admin write access"
-     ON task_lists
-     FOR INSERT
-     TO authenticated
-     WITH CHECK (
-       auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
-     );
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_task_lists_is_example ON task_lists (is_example);
+CREATE INDEX IF NOT EXISTS idx_task_lists_user_id ON task_lists (user_id);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users (role);
 
-   -- Admin update access
-   CREATE POLICY "Admin update access"
-     ON task_lists
-     FOR UPDATE
-     TO authenticated
-     USING (
-       auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
-     );
+-- Task Lists Policies
+CREATE POLICY "Public read access for example lists"
+  ON task_lists
+  FOR SELECT
+  USING (
+    is_example = true OR 
+    (auth.role() = 'authenticated' AND auth.jwt() -> 'user_metadata' ->> 'role' = 'admin')
+  );
 
-   -- Admin delete access
-   CREATE POLICY "Admin delete access"
-     ON task_lists
-     FOR DELETE
-     TO authenticated
-     USING (
-       auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
-     );
-   ```
+CREATE POLICY "Admin write access"
+  ON task_lists
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (
+    auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
+  );
 
-   c. Create users table and triggers:
-   ```sql
-   -- Create users table
-   CREATE TABLE IF NOT EXISTS users (
-     id uuid PRIMARY KEY REFERENCES auth.users,
-     email text NOT NULL,
-     role text NOT NULL DEFAULT 'user',
-     created_at timestamptz DEFAULT now()
-   );
+CREATE POLICY "Admin update access"
+  ON task_lists
+  FOR UPDATE
+  TO authenticated
+  USING (
+    auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
+  );
 
-   -- Enable RLS
-   ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admin delete access"
+  ON task_lists
+  FOR DELETE
+  TO authenticated
+  USING (
+    auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
+  );
 
-   -- Allow public read access to user count
-   CREATE POLICY "Allow public read access to user count"
-     ON users
-     FOR SELECT
-     TO anon
-     USING (true);
+-- Users Policies
+CREATE POLICY "Allow public read access to user count"
+  ON users
+  FOR SELECT
+  TO anon
+  USING (true);
 
-   -- Create trigger function
-   CREATE OR REPLACE FUNCTION public.handle_new_user()
-   RETURNS TRIGGER AS $$
-   BEGIN
-     INSERT INTO public.users (id, email, role)
-     VALUES (
-       NEW.id,
-       NEW.email,
-       COALESCE(NEW.raw_user_meta_data->>'role', 'user')
-     );
-     RETURN NEW;
-   END;
-   $$ LANGUAGE plpgsql SECURITY DEFINER;
+CREATE POLICY "Users can read own data"
+  ON users
+  FOR SELECT
+  TO authenticated
+  USING (auth.uid() = id);
 
-   -- Create trigger for new user signup
-   DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-   CREATE TRIGGER on_auth_user_created
-     AFTER INSERT ON auth.users
-     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-   ```
+CREATE POLICY "Admins can read all user data"
+  ON users
+  FOR SELECT
+  TO authenticated
+  USING (
+    auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
+  );
+
+CREATE POLICY "Admins can update user data"
+  ON users
+  FOR UPDATE
+  TO authenticated
+  USING (
+    auth.jwt() -> 'user_metadata' ->> 'role' = 'admin'
+  );
+
+-- Create function to handle new user creation
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.users (id, email, role)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'role', 'user')
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create trigger for new user signup
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Add helpful comments
+COMMENT ON TABLE task_lists IS 'Stores all task lists including example lists';
+COMMENT ON TABLE users IS 'Stores user information and roles';
+COMMENT ON COLUMN task_lists.is_example IS 'Indicates if this is a public example list';
+COMMENT ON COLUMN users.role IS 'User role (admin or user)';
+```
 
 4. Start development server:
 ```bash
@@ -146,7 +168,11 @@ npm run dev
 
 ## Authentication
 
-The first user to sign up will automatically become an admin. Subsequent users will be regular users by default.
+Authentication is handled through Supabase. Users can:
+- Sign up with email/password
+- Sign in with existing account
+- Access authentication through the settings menu
+- The first user to sign up automatically becomes an admin
 
 ### Admin Features
 - Create and manage task lists
@@ -161,9 +187,9 @@ The application uses Supabase for data storage. The database schema includes:
 ### Tables
 - `task_lists`: Stores all task lists
   - `id`: UUID primary key
-  - `name`: Task list name
-  - `data`: JSONB field containing tasks
-  - `created_at`: Timestamp
+  - `name`: List name
+  - `data`: JSONB data containing tasks
+  - `created_at`: Creation timestamp
   - `user_id`: Reference to auth.users
   - `is_example`: Boolean flag for example lists
 
@@ -171,13 +197,14 @@ The application uses Supabase for data storage. The database schema includes:
   - `id`: UUID primary key (references auth.users)
   - `email`: User's email
   - `role`: User role (admin/user)
-  - `created_at`: Timestamp
+  - `created_at`: Creation timestamp
 
 ### Security
-- Row Level Security (RLS) policies protect data access
+- Row Level Security (RLS) enabled on all tables
+- Policies control access based on user roles
 - Example lists are publicly readable
-- Admin users have full CRUD access
-- Regular users have limited access
+- Admin users have full access
+- Regular users can only access their own data
 
 ## Core Components
 
