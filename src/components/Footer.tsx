@@ -24,6 +24,14 @@ export function Footer() {
               <img src="/bolt-logo.png" alt="Bolt Logo" className="h-8" />
             </a>
             <a
+              href="https://bolt.new"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-90 transition-opacity"
+            >
+              <img src="/bolt-new-logo.png" alt="Bolt.new Logo" className="h-8" />
+            </a>
+            <a
               href="https://cursor.sh"
               target="_blank"
               rel="noopener noreferrer"
@@ -52,4 +60,4 @@ export function Footer() {
       </div>
     </footer>
   );
-} 
+}
