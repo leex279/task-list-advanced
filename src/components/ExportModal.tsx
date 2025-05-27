@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { X, Download } from 'lucide-react'; // Added Download icon
 
 interface ExportModalProps {
   onClose: () => void;
@@ -8,75 +8,78 @@ interface ExportModalProps {
 
 export function ExportModal({ onClose, onExport }: ExportModalProps) {
   const [name, setName] = useState('');
-  const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  // Removed modalRef and useEffect for handleClickOutside, daisyUI handles this
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
+    // Focus the input field when the modal opens
     inputRef.current?.focus();
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
       onExport(name.trim());
-      onClose();
+      onClose(); // Close modal on successful export
+    } else {
+      // Optionally, provide feedback if name is empty, though `required` attribute handles some of this
+      alert("Please enter a name for the task list.");
     }
   };
 
   return (
-    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-medium text-gray-900">Export Task List</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+    <dialog id="export_modal" className="modal modal-open modal-bottom sm:modal-middle" open>
+      <div className="modal-box">
+        {/* Modal Header */}
+        <div className="flex justify-between items-center pb-3">
+          <h3 className="text-xl font-bold text-base-content">Export Task List</h3>
+          <button onClick={onClose} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
             <X size={20} />
           </button>
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Task List Name
+
+        {/* Modal Body - Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="form-control">
+            <label htmlFor="export-name" className="label">
+              <span className="label-text">Task List Name</span>
             </label>
             <input
               ref={inputRef}
               type="text"
-              id="name"
+              id="export-name" // Changed id for clarity
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="input input-bordered input-primary w-full"
               placeholder="Enter a name for your task list"
-              required
+              required // HTML5 validation for empty field
             />
           </div>
-          <div className="flex justify-end gap-2">
+          
+          {/* Modal Actions */}
+          <div className="modal-action mt-6">
             <button
-              type="button"
+              type="button" // Important: type="button" for cancel to not submit form
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 hover:text-gray-900"
+              className="btn btn-ghost"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              disabled={!name.trim()}
+              className="btn btn-primary"
+              disabled={!name.trim()} // Disable if name is empty or only whitespace
             >
+              <Download size={18} className="mr-2" /> {/* Added icon */}
               Export
             </button>
           </div>
         </form>
       </div>
-    </div>
+      {/* Modal backdrop for closing when clicking outside */}
+      <form method="dialog" className="modal-backdrop">
+        <button type="submit" onClick={onClose}>close</button>
+      </form>
+    </dialog>
   );
 }

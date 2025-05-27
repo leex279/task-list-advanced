@@ -1,67 +1,33 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { X } from 'lucide-react';
+import { X, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 
-interface TourStep {
-  target: string;
+interface TourStepDefinition {
+  target: string; // CSS selector for the target element
   title: string;
   content: string;
-  position: 'top' | 'bottom' | 'left' | 'right';
+  position?: 'top' | 'bottom' | 'left' | 'right' | 'center'; // Added 'center' for non-targeted steps
+  // Future: Add options for spotlight shape, exact pixel offsets, etc.
 }
 
 interface TourProps {
   onComplete: () => void;
+  steps: TourStepDefinition[]; // Allow steps to be passed as props for flexibility
+  // enableSpotlight?: boolean; // Future: option to dim background and highlight target
 }
 
-export function Tour({ onComplete }: TourProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [tooltipStyle, setTooltipStyle] = useState({});
-  const [arrowStyle, setArrowStyle] = useState({});
-  const positioningRef = useRef<number>();
+const DEFAULT_TOOLTIP_WIDTH = 320; // px
+const DEFAULT_TOOLTIP_MIN_HEIGHT = 120; // px, approximate
+const ARROW_SIZE = 10; // px
+const SPACING = 15; // px from target element
 
-  const steps: TourStep[] = [
-    {
-      target: '.task-input input',
-      title: 'Create Tasks',
-      content: 'Add new tasks here. Use the buttons to toggle between regular tasks and headlines.',
-      position: 'bottom'
-    },
-    {
-      target: '.headline-button',
-      title: 'Create Headlines',
-      content: 'Toggle this to create section headers for organizing your tasks.',
-      position: 'bottom'
-    },
-    {
-      target: '.code-button',
-      title: 'Add Code Blocks',
-      content: 'Click here to add code examples to your tasks.',
-      position: 'bottom'
-    },
-    {
-      target: '.rich-text-button',
-      title: 'Rich Text Editor',
-      content: 'Add formatted descriptions with bullet points and styling.',
-      position: 'bottom'
-    },
-    {
-      target: '.optional-checkbox',
-      title: 'Optional Tasks',
-      content: 'Mark tasks as optional to indicate they are not required for completion.',
-      position: 'bottom'
-    },
-    {
-      target: '.ai-config-text',
-      title: 'AI Task Generation',
-      content: 'To use AI task generation, first add your Google API key in the settings. Once configured, you can automatically generate task lists from text descriptions.',
-      position: 'bottom'
-    },
-    {
-      target: '.import-export-buttons',
-      title: 'Import & Export',
-      content: 'Save and share your task lists.',
-      position: 'left'
-    }
-  ];
+export function Tour({ onComplete, steps }: TourProps) {
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({});
+  const [arrowStyle, setArrowStyle] = useState<React.CSSProperties>({});
+  const positioningRef = useRef<number>(); // For requestAnimationFrame
+  const tourTooltipRef = useRef<HTMLDivElement>(null); // Ref for the tooltip itself
+
+  const currentTourStep = steps[currentStepIndex];
 
   const positionTooltip = useCallback(() => {
     if (positioningRef.current) {
@@ -69,204 +35,212 @@ export function Tour({ onComplete }: TourProps) {
     }
 
     positioningRef.current = requestAnimationFrame(() => {
-      const target = document.querySelector(steps[currentStep].target);
-      if (!target) return;
+      if (!currentTourStep) return;
 
-      const rect = target.getBoundingClientRect();
-      const position = steps[currentStep].position;
-      const tooltipWidth = 300;
-      const tooltipHeight = 150;
-      const arrowSize = 8;
-      const spacing = 16;
+      const targetElement = currentTourStep.target ? document.querySelector(currentTourStep.target) : null;
+      const tooltipElement = tourTooltipRef.current;
+      if (!tooltipElement) return;
 
-      let newTooltipStyle = {
-        position: 'fixed' as const,
-        zIndex: 1000,
-        width: `${tooltipWidth}px`,
+      const tooltipRect = tooltipElement.getBoundingClientRect();
+      const tooltipWidth = tooltipRect.width || DEFAULT_TOOLTIP_WIDTH;
+      const tooltipHeight = tooltipRect.height || DEFAULT_TOOLTIP_MIN_HEIGHT;
+      
+      let newTtStyle: React.CSSProperties = {
+        position: 'fixed',
+        zIndex: 10000, // High z-index for tour
+        width: `${DEFAULT_TOOLTIP_WIDTH}px`, // Use fixed width for consistency or measure content
+        visibility: 'hidden', // Initially hidden until position is calculated
       };
-
-      let newArrowStyle = {
-        position: 'absolute' as const,
+      let newArrStyle: React.CSSProperties = {
+        position: 'absolute',
         width: '0',
         height: '0',
-        border: `${arrowSize}px solid transparent`,
+        border: `${ARROW_SIZE}px solid transparent`,
+        visibility: 'hidden',
       };
 
-      switch (position) {
-        case 'top':
-          newTooltipStyle = {
-            ...newTooltipStyle,
-            top: rect.top - tooltipHeight - (arrowSize + spacing),
-            left: rect.left + (rect.width / 2) - (tooltipWidth / 2),
-          };
-          newArrowStyle = {
-            ...newArrowStyle,
-            bottom: -arrowSize * 2,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            borderTopColor: 'white',
-          };
-          break;
-        case 'bottom':
-          newTooltipStyle = {
-            ...newTooltipStyle,
-            top: rect.bottom + (arrowSize + spacing),
-            left: rect.left + (rect.width / 2) - (tooltipWidth / 2),
-          };
-          newArrowStyle = {
-            ...newArrowStyle,
-            top: -arrowSize * 2,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            borderBottomColor: 'white',
-          };
-          break;
-        case 'left':
-          newTooltipStyle = {
-            ...newTooltipStyle,
-            top: rect.top + (rect.height / 2) - (tooltipHeight / 2),
-            left: rect.left - tooltipWidth - (arrowSize + spacing),
-          };
-          newArrowStyle = {
-            ...newArrowStyle,
-            right: -arrowSize * 2,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            borderLeftColor: 'white',
-          };
-          break;
-        case 'right':
-          newTooltipStyle = {
-            ...newTooltipStyle,
-            top: rect.top + (rect.height / 2) - (tooltipHeight / 2),
-            left: rect.right + (arrowSize + spacing),
-          };
-          newArrowStyle = {
-            ...newArrowStyle,
-            left: -arrowSize * 2,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            borderRightColor: 'white',
-          };
-          break;
-      }
+      if (!targetElement || currentTourStep.position === 'center') {
+        // Center on screen if no target or position is 'center'
+        newTtStyle.top = `calc(50% - ${tooltipHeight / 2}px)`;
+        newTtStyle.left = `calc(50% - ${tooltipWidth / 2}px)`;
+        // No arrow for centered tooltips
+      } else {
+        const targetRect = targetElement.getBoundingClientRect();
+        const { position } = currentTourStep;
 
-      setTooltipStyle(newTooltipStyle);
-      setArrowStyle(newArrowStyle);
+        // Calculate available space (simple version)
+        const spaceTop = targetRect.top;
+        const spaceBottom = window.innerHeight - targetRect.bottom;
+        // const spaceLeft = targetRect.left;
+        // const spaceRight = window.innerWidth - targetRect.right;
+
+        // Auto-adjust position if not enough space (basic example)
+        let effectivePosition = position;
+        if (position === 'bottom' && spaceBottom < tooltipHeight + SPACING + ARROW_SIZE) effectivePosition = 'top';
+        if (position === 'top' && spaceTop < tooltipHeight + SPACING + ARROW_SIZE) effectivePosition = 'bottom';
+        // Similar logic for left/right can be added
+
+        switch (effectivePosition) {
+          case 'top':
+            newTtStyle.top = `${targetRect.top - tooltipHeight - SPACING - ARROW_SIZE}px`;
+            newTtStyle.left = `${targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2)}px`;
+            newArrStyle.top = `${tooltipHeight}px`; // Arrow points down from bottom of tooltip
+            newArrStyle.left = `calc(50% - ${ARROW_SIZE}px)`;
+            newArrStyle.borderTopColor = 'var(--fallback-b1, oklch(var(--b1) / 1))'; // Use daisyUI base-100 color
+            break;
+          case 'left':
+            newTtStyle.top = `${targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2)}px`;
+            newTtStyle.left = `${targetRect.left - tooltipWidth - SPACING - ARROW_SIZE}px`;
+            newArrStyle.top = `calc(50% - ${ARROW_SIZE}px)`;
+            newArrStyle.left = `${tooltipWidth}px`; // Arrow points right from edge of tooltip
+            newArrStyle.borderLeftColor = 'var(--fallback-b1, oklch(var(--b1) / 1))';
+            break;
+          case 'right':
+            newTtStyle.top = `${targetRect.top + (targetRect.height / 2) - (tooltipHeight / 2)}px`;
+            newTtStyle.left = `${targetRect.right + SPACING + ARROW_SIZE}px`;
+            newArrStyle.top = `calc(50% - ${ARROW_SIZE}px)`;
+            newArrStyle.right = `${tooltipWidth}px`; // Arrow points left from edge of tooltip
+            newArrStyle.borderRightColor = 'var(--fallback-b1, oklch(var(--b1) / 1))';
+            break;
+          default: // bottom (or fallback)
+            newTtStyle.top = `${targetRect.bottom + SPACING + ARROW_SIZE}px`;
+            newTtStyle.left = `${targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2)}px`;
+            newArrStyle.bottom = `${tooltipHeight}px`; // Arrow points up from top of tooltip
+            newArrStyle.left = `calc(50% - ${ARROW_SIZE}px)`;
+            newArrStyle.borderBottomColor = 'var(--fallback-b1, oklch(var(--b1) / 1))';
+            break;
+        }
+         // Clamp tooltip to viewport
+        const parsedTop = parseFloat(String(newTtStyle.top || 0));
+        const parsedLeft = parseFloat(String(newTtStyle.left || 0));
+
+        newTtStyle.top = `${Math.max(SPACING, Math.min(parsedTop, window.innerHeight - tooltipHeight - SPACING))}px`;
+        newTtStyle.left = `${Math.max(SPACING, Math.min(parsedLeft, window.innerWidth - tooltipWidth - SPACING))}px`;
+        newArrStyle.visibility = 'visible';
+      }
+      
+      newTtStyle.visibility = 'visible';
+      setTooltipStyle(newTtStyle);
+      setArrowStyle(newArrStyle);
     });
-  }, [currentStep, steps]);
+  }, [currentStepIndex, steps, currentTourStep]);
 
   useEffect(() => {
-    // Initial positioning
-    positionTooltip();
+    if (!currentTourStep) return;
 
-    // Add highlight effect to current target
-    const target = document.querySelector(steps[currentStep].target);
+    positionTooltip(); // Position on step change
+
+    const target = currentTourStep.target ? document.querySelector(currentTourStep.target) : null;
     if (target) {
-      target.classList.add('tour-highlight');
+      target.classList.add('tour-highlight'); // Add highlight class
+      target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
     }
 
-    // Set up event listeners for scroll and resize
-    window.addEventListener('scroll', positionTooltip, true);
     window.addEventListener('resize', positionTooltip);
-
-    // Set up ResizeObserver to handle content changes
-    const resizeObserver = new ResizeObserver(positionTooltip);
-
-    if (target) {
-      resizeObserver.observe(target);
-    }
+    window.addEventListener('scroll', positionTooltip, true); // Use capture phase for scroll
 
     return () => {
-      // Clean up event listeners and observers
-      window.removeEventListener('scroll', positionTooltip, true);
-      window.removeEventListener('resize', positionTooltip);
-      resizeObserver.disconnect();
-
-      // Remove highlight when step changes
       if (target) {
-        target.classList.remove('tour-highlight');
+        target.classList.remove('tour-highlight'); // Clean up highlight
       }
-
-      // Cancel any pending animation frames
+      window.removeEventListener('resize', positionTooltip);
+      window.removeEventListener('scroll', positionTooltip, true);
       if (positioningRef.current) {
         cancelAnimationFrame(positioningRef.current);
       }
     };
-  }, [currentStep, positionTooltip]);
+  }, [currentStepIndex, positionTooltip, currentTourStep]);
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+    if (currentStepIndex < steps.length - 1) {
+      setCurrentStepIndex(currentStepIndex + 1);
     } else {
-      onComplete();
+      onComplete(); // Tour finished
     }
   };
 
   const handlePrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex(currentStepIndex - 1);
     }
   };
+  
+  if (!currentTourStep) return null; // Should not happen if steps are provided
 
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-black bg-opacity-50" />
-      <div className="fixed inset-0 z-50 pointer-events-none">
-        <div 
-          className="bg-white rounded-lg shadow-xl p-4 pointer-events-auto relative"
-          style={tooltipStyle}
-        >
-          <div className="arrow" style={arrowStyle} />
+      {/* Overlay */}
+      <div className="fixed inset-0 z-[9999] bg-black/30 backdrop-blur-sm" onClick={onComplete} /> 
+      
+      {/* Tooltip */}
+      <div 
+        ref={tourTooltipRef}
+        className="card bg-base-100 shadow-2xl pointer-events-auto" // daisyUI card for styling
+        style={tooltipStyle}
+        role="dialog"
+        aria-labelledby="tour-title"
+        aria-describedby="tour-content"
+      >
+        <div className="card-body p-4 relative"> {/* Arrow will be relative to this */}
+           <div style={arrowStyle} data-testid="tour-arrow"/>
           <div className="flex justify-between items-center mb-2">
-            <h3 className="font-semibold text-gray-800">{steps[currentStep].title}</h3>
+            <h3 id="tour-title" className="card-title text-md font-semibold text-primary">{currentTourStep.title}</h3>
             <button
               onClick={onComplete}
-              className="text-gray-400 hover:text-gray-600"
+              className="btn btn-xs btn-ghost btn-circle"
+              aria-label="Close tour"
             >
-              <X size={16} />
+              <X size={18} />
             </button>
           </div>
-          <p className="text-gray-600 mb-4">{steps[currentStep].content}</p>
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2">
-              {currentStep > 0 ? (
-                <button
-                  onClick={handlePrevious}
-                  className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900"
-                >
-                  Previous
-                </button>
-              ) : (
-                <button
-                  onClick={onComplete}
-                  className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900"
-                >
-                  Skip
+          <p id="tour-content" className="text-sm text-base-content/80 mb-4">{currentTourStep.content}</p>
+          
+          <div className="card-actions flex justify-between items-center">
+            <div className="flex-1">
+              {currentStepIndex > 0 && (
+                <button onClick={handlePrevious} className="btn btn-sm btn-ghost">
+                  <ArrowLeft size={16} className="mr-1" /> Previous
                 </button>
               )}
+              {currentStepIndex === 0 && (
+                 <button onClick={onComplete} className="btn btn-sm btn-ghost">Skip</button>
+              )}
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex gap-1">
-                {steps.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      index === currentStep ? 'bg-blue-500' : 'bg-gray-300'
-                    }`}
-                  />
-                ))}
-              </div>
-              <button
-                onClick={handleNext}
-                className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
+            
+            {/* Step indicators */}
+            <div className="join hidden sm:flex">
+              {steps.map((_, index) => (
+                <button 
+                  key={index}
+                  onClick={() => setCurrentStepIndex(index)}
+                  className={`join-item btn btn-xs ${index === currentStepIndex ? 'btn-primary' : 'btn-ghost'}`}
+                  aria-label={`Go to step ${index + 1}`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex-1 text-right">
+              <button onClick={handleNext} className="btn btn-sm btn-primary">
+                {currentStepIndex === steps.length - 1 ? 'Finish' : 'Next'}
+                {currentStepIndex === steps.length - 1 ? <CheckCircle size={16} className="ml-1"/> : <ArrowRight size={16} className="ml-1" />}
               </button>
             </div>
           </div>
         </div>
       </div>
+      {/* Global style for highlighting (can be moved to a CSS file) */}
+      <style jsx global>{`
+        .tour-highlight {
+          outline: 3px solid oklch(var(--p) / 0.7); /* Primary color outline */
+          box-shadow: 0 0 0 9999px rgba(0,0,0,0.3); /* Dim overlay effect */
+          border-radius: 0.375rem; /* rounded-md */
+          position: relative; /* Needed for z-index to work if target is complex */
+          z-index: 10001 !important; /* Ensure target is above overlay */
+          transition: outline 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+      `}</style>
     </>
   );
 }

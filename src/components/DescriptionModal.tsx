@@ -1,38 +1,54 @@
-import React, { useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import React from 'react'; // Removed useEffect, useRef
+import { X, Info } from 'lucide-react'; // Added Info icon
 
 interface DescriptionModalProps {
   content: string;
   onClose: () => void;
+  title?: string;
 }
 
-export function DescriptionModal({ content, onClose }: DescriptionModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
+export function DescriptionModal({ 
+  content, 
+  onClose, 
+  title = "Detailed Description" 
+}: DescriptionModalProps) {
+  // daisyUI handles modal closure via form method="dialog" or by pressing ESC
 
   return (
-    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl sm:max-w-2xl md:max-w-3xl">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-gray-800 text-lg sm:text-xl md:text-2xl">Detailed Description</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+    <dialog id="description_modal" className="modal modal-open modal-bottom sm:modal-middle" open>
+      <div className="modal-box w-11/12 max-w-3xl"> {/* Increased max-width for descriptions */}
+        {/* Modal Header */}
+        <div className="flex items-center pb-3"> {/* Use items-center for icon and title alignment */}
+          <Info size={22} className="text-info mr-3 shrink-0" /> {/* Icon for description */}
+          <h3 className="text-xl font-bold text-base-content flex-grow">{title}</h3>
+          <button 
+            onClick={onClose} 
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            aria-label="Close" // Accessibility
+          >
             <X size={20} />
           </button>
         </div>
-        <div className="prose max-w-none prose-ul:list-disc prose-ol:list-decimal" dangerouslySetInnerHTML={{ __html: content }} />
+
+        {/* Modal Body */}
+        {/* Apply prose for rich text styling, ensure it works with daisyUI base styles */}
+        {/* max-h-[calc(100vh-10rem)] makes content scrollable if too long */}
+        <div 
+          className="prose prose-sm sm:prose-base max-w-none py-4 max-h-[calc(100vh-12rem)] overflow-y-auto text-base-content/90" 
+          dangerouslySetInnerHTML={{ __html: content }} 
+        />
+        
+        {/* Modal Actions */}
+        <div className="modal-action mt-4">
+          <button onClick={onClose} className="btn btn-primary">
+            Close
+          </button>
+        </div>
       </div>
-    </div>
+      {/* Modal backdrop for closing when clicking outside */}
+      <form method="dialog" className="modal-backdrop">
+        <button type="submit" onClick={onClose}>close</button>
+      </form>
+    </dialog>
   );
 }

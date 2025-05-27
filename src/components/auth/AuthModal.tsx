@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { X, LogIn, UserPlus, AlertCircle } from 'lucide-react'; // Added icons
 import { supabase } from '../../lib/supabase';
 
 interface AuthModalProps {
@@ -12,18 +12,21 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSignUp, setIsSignUp] = useState(isFirstUser);
+  const [isSignUp, setIsSignUp] = useState(isFirstUser); // Default to sign up if it's the first user
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Auto-focus email input when modal opens
     inputRef.current?.focus();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
-      setError('Please enter both email and password');
+      setError('Please enter both email and password.');
+      return;
+    }
+    if (isSignUp && password.trim().length < 6) {
+      setError('Password must be at least 6 characters long.');
       return;
     }
 
@@ -32,66 +35,51 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
 
     try {
       if (isSignUp) {
-        // Sign up
         const { data, error: signUpError } = await supabase.auth.signUp({
           email: email.trim(),
           password: password.trim(),
-          options: {
-            data: isFirstUser ? { role: 'admin' } : undefined
-          }
+          options: { data: isFirstUser ? { role: 'admin' } : undefined },
         });
-
-        if (signUpError) {
-          if (signUpError.message.includes('already registered')) {
-            setError('This email is already registered. Please sign in instead.');
-          } else {
-            setError(signUpError.message);
-          }
-          return;
-        }
-
-        if (!data.user) {
-          setError('Failed to create account. Please try again.');
-          return;
-        }
-
+        if (signUpError) throw signUpError;
+        if (!data.user) throw new Error('Failed to create account. Please try again.');
+        // Potentially show a "Check your email for confirmation" message if email confirmation is enabled
       } else {
-        // Sign in
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: email.trim(),
-          password: password.trim()
+          password: password.trim(),
         });
-
-        if (signInError) {
-          if (signInError.message.includes('Invalid login credentials')) {
-            setError('Invalid email or password. Please try again.');
-          } else {
-            setError(signInError.message);
-          }
-          return;
-        }
+        if (signInError) throw signInError;
       }
-
       onClose();
     } catch (err: any) {
-      console.error('Auth error:', err);
-      setError('An unexpected error occurred. Please try again.');
+      console.error('Auth error:', err.message);
+      // More user-friendly error messages
+      if (err.message.includes('already registered') || (err.status === 400 && err.message.includes('User already registered'))) {
+        setError('This email is already registered. Please sign in or use a different email.');
+      } else if (err.message.includes('Invalid login credentials')) {
+        setError('Invalid email or password. Please check your credentials and try again.');
+      } else if (err.message.includes('Password should be at least 6 characters')) {
+        setError('Password must be at least 6 characters long.');
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
   };
+  
+  const modalTitle = isFirstUser ? 'Create Admin Account' : (isSignUp ? 'Create New Account' : 'Sign In to Your Account');
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">
-            {isFirstUser ? 'Create Admin Account' : (isSignUp ? 'Create Account' : 'Sign In')}
-          </h2>
-          {!isFirstUser && (
+    <dialog id="auth_modal" className="modal modal-open modal-bottom sm:modal-middle" open>
+      <div className="modal-box w-11/12 max-w-md">
+        {/* Modal Header */}
+        <div className="flex justify-between items-center pb-3 border-b border-base-300">
+          <h3 className="text-xl font-bold text-base-content">{modalTitle}</h3>
+          {!isFirstUser && ( // Do not show close button for first user setup
             <button 
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              onClick={onClose} 
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
               aria-label="Close"
             >
               <X size={20} />
@@ -99,16 +87,20 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
           )}
         </div>
 
-        {isFirstUser && (
-          <p className="mb-4 text-sm text-gray-600">
-            You are the first user. This account will have admin privileges.
-          </p>
-        )}
+        {/* Modal Body */}
+        <form onSubmit={handleSubmit} className="py-4 space-y-4">
+          {isFirstUser && (
+            <div className="alert alert-info shadow-sm">
+              <div>
+                <InfoIcon size={20}/>
+                <span>You are the first user. This account will have admin privileges.</span>
+              </div>
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+          <div className="form-control">
+            <label className="label" htmlFor="email">
+              <span className="label-text">Email Address</span>
             </label>
             <input
               ref={inputRef}
@@ -116,72 +108,84 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+              className="input input-bordered input-primary w-full"
               required
               autoComplete="email"
               disabled={loading}
-              placeholder="Enter your email"
+              placeholder="you@example.com"
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
+          <div className="form-control">
+            <label className="label" htmlFor="password">
+              <span className="label-text">Password</span>
             </label>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+              className="input input-bordered input-primary w-full"
               required
               minLength={6}
               autoComplete={isSignUp ? 'new-password' : 'current-password'}
               disabled={loading}
-              placeholder={isSignUp ? 'Create a password' : 'Enter your password'}
+              placeholder={isSignUp ? 'Choose a strong password (min. 6 chars)' : 'Enter your password'}
             />
             {isSignUp && (
-              <p className="mt-1 text-xs text-gray-500">
-                Password must be at least 6 characters long
-              </p>
+              <label className="label">
+                <span className="label-text-alt">Password must be at least 6 characters.</span>
+              </label>
             )}
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md" role="alert">
-              <p className="text-sm text-red-600">{error}</p>
+            <div role="alert" className="alert alert-error shadow-sm">
+              <AlertCircle size={20}/>
+              <span>{error}</span>
             </div>
           )}
 
           {!isFirstUser && (
-            <button
-              type="button"
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm text-blue-600 hover:text-blue-800"
-            >
-              {isSignUp ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
-            </button>
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => { setIsSignUp(!isSignUp); setError(null); }} // Reset error on toggle
+                className="link link-secondary text-sm"
+              >
+                {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+              </button>
+            </div>
           )}
-
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 transition-colors"
-            disabled={loading || !email.trim() || !password.trim()}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                {isFirstUser ? 'Creating Account...' : (isSignUp ? 'Creating Account...' : 'Signing In...')}
-              </span>
-            ) : (
-              isFirstUser ? 'Create Account' : (isSignUp ? 'Sign Up' : 'Sign In')
-            )}
-          </button>
+          
+          {/* Modal Actions */}
+          <div className="modal-action mt-6">
+             {!isFirstUser && (
+                <button type="button" onClick={onClose} className="btn btn-ghost" disabled={loading}>
+                    Cancel
+                </button>
+             )}
+            <button
+              type="submit"
+              className="btn btn-primary flex-grow sm:flex-grow-0" // Allow button to grow on small screens
+              disabled={loading || !email.trim() || !password.trim()}
+            >
+              {loading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : (
+                isSignUp ? <UserPlus size={18} className="mr-2"/> : <LogIn size={18} className="mr-2"/>
+              )}
+              {loading ? (isSignUp ? 'Creating Account...' : 'Signing In...') : (isSignUp ? 'Sign Up' : 'Sign In')}
+            </button>
+          </div>
         </form>
       </div>
-    </div>
+      {/* Optional: only add backdrop if not first user, to prevent accidental close */}
+      {!isFirstUser && (
+        <form method="dialog" className="modal-backdrop">
+            <button type="submit" onClick={onClose}>close</button>
+        </form>
+      )}
+    </dialog>
   );
 }

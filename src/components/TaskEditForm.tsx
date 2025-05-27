@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { X, Save, Code, AlignLeft, Heading } from 'lucide-react';
+import { X, Save, Code, AlignLeft, Type as HeadingIcon } from 'lucide-react'; // Renamed Heading to HeadingIcon
 import { Task } from '../types/task';
 import { CodeBlockEditor } from './code/CodeBlockEditor';
-import { RichTextEditor } from './RichTextEditor';
+import { RichTextEditor } from './RichTextEditor'; // Assuming RichTextEditor will also be styled
 
 interface TaskEditFormProps {
   task: Task;
-  onSave: (text: string, codeBlock?: { language: string; code: string }, richText?: string, optional?: boolean) => void;
+  onSave: (text: string, codeBlock?: { language: string; code: string }, richText?: string, optional?: boolean, isHeadline?: boolean) => void;
   onCancel: () => void;
 }
 
@@ -14,103 +14,114 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
   const [text, setText] = useState(task.text);
   const [showCodeInput, setShowCodeInput] = useState(!!task.codeBlock);
   const [showRichTextEditor, setShowRichTextEditor] = useState(!!task.richText);
-  const [isHeadline, setIsHeadline] = useState(task.isHeadline);
+  const [isHeadline, setIsHeadline] = useState(task.isHeadline || false);
   const [code, setCode] = useState(task.codeBlock?.code || '');
   const [richText, setRichText] = useState(task.richText || '');
   const [optional, setOptional] = useState(task.optional || false);
 
   const handleSave = () => {
-    if (text.trim() || richText.trim()) {
-      onSave(
-        text.trim(),
-        code.trim() ? { language: 'javascript', code: code.trim() } : undefined,
-        richText.trim() ? richText.trim() : undefined,
-        optional
-      );
+    // For headlines, text is required. For normal tasks, either text or richText can be present.
+    if (isHeadline && !text.trim()) {
+      // Optionally, show an error or prevent saving if headline text is empty
+      // For now, just returning, but an alert or message could be useful
+      return;
     }
+    if (!isHeadline && !text.trim() && !richText.trim()) {
+      // Optionally, show an error or prevent saving if both text and rich text are empty for normal task
+      return;
+    }
+
+    onSave(
+      text.trim(),
+      (showCodeInput && code.trim()) ? { language: 'javascript', code: code.trim() } : undefined,
+      (showRichTextEditor && richText.trim()) ? richText.trim() : undefined,
+      optional,
+      isHeadline
+    );
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-sm">
-      <div className="space-y-3">
-        <div className="flex flex-wrap gap-2">
+    <div className="card bg-base-100 shadow-xl p-4 my-4">
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
           <input
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-500 transition-colors min-w-[200px]"
+            placeholder={isHeadline ? "Headline text" : "Task text"}
+            className="input input-bordered input-primary flex-1 min-w-[200px]"
           />
-          <button
-            type="button"
-            onClick={() => setIsHeadline(!isHeadline)}
-            className={`px-3 rounded-lg border transition-colors ${
-              isHeadline
-                ? 'border-blue-500 text-blue-500'
-                : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
-            }`}
-            title="Toggle headline"
-          >
-            <Heading size={20} />
-          </button>
-          {!isHeadline && (
-            <>
-              <button
-                type="button"
-                onClick={() => setShowCodeInput(!showCodeInput)}
-                className={`px-3 rounded-lg border transition-colors ${
-                  showCodeInput
-                    ? 'border-blue-500 text-blue-500'
-                    : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
-                }`}
-              >
-                <Code size={20} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowRichTextEditor(!showRichTextEditor)}
-                className={`px-3 rounded-lg border transition-colors ${
-                  showRichTextEditor
-                    ? 'border-blue-500 text-blue-500'
-                    : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
-                }`}
-              >
-                <AlignLeft size={20} />
-              </button>
-            </>
-          )}
+          <div className="join">
+            <button
+              type="button"
+              onClick={() => setIsHeadline(!isHeadline)}
+              className={`btn join-item ${isHeadline ? 'btn-primary' : 'btn-outline'}`}
+              title="Toggle headline"
+            >
+              <HeadingIcon size={20} />
+            </button>
+            {!isHeadline && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setShowCodeInput(!showCodeInput)}
+                  className={`btn join-item ${showCodeInput ? 'btn-secondary' : 'btn-outline'}`}
+                  title="Toggle code editor"
+                >
+                  <Code size={20} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowRichTextEditor(!showRichTextEditor)}
+                  className={`btn join-item ${showRichTextEditor ? 'btn-accent' : 'btn-outline'}`}
+                  title="Toggle rich text editor"
+                >
+                  <AlignLeft size={20} />
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
-        {showCodeInput && (
-          <CodeBlockEditor
-            code={code}
-            onChange={(newCode) => setCode(newCode)}
-          />
+        {showCodeInput && !isHeadline && (
+          <div className="form-control">
+            <label className="label"><span className="label-text">Code Block</span></label>
+            <CodeBlockEditor
+              code={code}
+              onChange={(newCode) => setCode(newCode)}
+            />
+          </div>
         )}
-        {showRichTextEditor && (
-          <RichTextEditor value={richText} onChange={setRichText} />
+        {showRichTextEditor && !isHeadline && (
+          <div className="form-control">
+            <label className="label"><span className="label-text">Rich Text Description</span></label>
+            <RichTextEditor value={richText} onChange={setRichText} /> {/* Ensure RichTextEditor is styled for daisyUI */}
+          </div>
         )}
-        <label className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors cursor-pointer">
-          <input
-            type="checkbox"
-            checked={optional}
-            onChange={(e) => setOptional(e.target.checked)}
-            className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
-          />
-          <span className="text-sm font-medium text-gray-600">Optional</span>
-        </label>
-        <div className="flex justify-end gap-2">
+        <div className="form-control">
+          <label className="label cursor-pointer w-max">
+            <span className="label-text mr-2">Optional Task</span>
+            <input
+              type="checkbox"
+              checked={optional}
+              onChange={(e) => setOptional(e.target.checked)}
+              className="toggle toggle-warning"
+            />
+          </label>
+        </div>
+        <div className="card-actions justify-end gap-2">
           <button
             onClick={onCancel}
-            className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900"
+            className="btn btn-ghost"
           >
-            <X size={16} />
+            <X size={18} />
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="flex items-center gap-1 px-3 py-1.5 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            className="btn btn-primary"
           >
-            <Save size={16} />
+            <Save size={18} />
             Save
           </button>
         </div>

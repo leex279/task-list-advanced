@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, ExternalLink, LogIn, LogOut } from 'lucide-react';
-import { ChatHistory } from './ChatHistory';
-import { ImportExamplesButton } from './admin/ImportExamplesButton';
+import { ChatHistory } from './ChatHistory'; // Assuming ChatHistory will be styled or is independent
+import { ImportExamplesButton } from './admin/ImportExamplesButton'; // Assuming ImportExamplesButton will be styled
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
@@ -27,6 +27,9 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
   const [clearing, setClearing] = useState(false);
 
   const clearSiteData = async () => {
+    if (!confirm('Are you sure you want to clear all site data? This action cannot be undone.')) {
+      return;
+    }
     setClearing(true);
     try {
       localStorage.clear();
@@ -47,6 +50,7 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
       window.location.reload();
     } catch (error) {
       console.error('Error clearing site data:', error);
+      alert(`Error clearing site data: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       setClearing(false);
     }
@@ -55,138 +59,145 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
-      onClose();
+      onClose(); // Close modal after sign out
     } catch (error) {
       console.error('Error signing out:', error);
+      alert(`Error signing out: ${error instanceof Error ? error.message : String(error)}`);
     }
   };
 
+  // Use a dialog element for the modal
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-        <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Settings</h3>
-              <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
-                <X size={20} />
-              </button>
-            </div>
-            
-            {/* Authentication Section */}
-            <div className="mb-6 pb-6 border-b">
-              <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium text-gray-900">Account</h4>
-                {user ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600">{user.email}</span>
-                    <button
-                      onClick={handleSignOut}
-                      className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:text-red-700"
-                    >
-                      <LogOut size={16} />
-                      Sign Out
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={onShowAuth}
-                    className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
-                  >
-                    <LogIn size={16} />
-                    Sign In
-                  </button>
-                )}
-              </div>
-            </div>
+    <dialog id="settings_modal" className="modal modal-open modal-bottom sm:modal-middle" open>
+      <div className="modal-box">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold">Settings</h3>
+          <button onClick={onClose} className="btn btn-sm btn-circle btn-ghost">
+            <X size={20} />
+          </button>
+        </div>
 
-            {/* Google API Key Section */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Google API Key
-              </label>
+        {/* Authentication Section */}
+        <div className="mb-6 pb-6 border-b border-base-300">
+          <div className="flex items-center justify-between">
+            <h4 className="text-lg font-semibold">Account</h4>
+            {user ? (
               <div className="flex items-center gap-2">
-                <input
-                  type="password"
-                  value={settings.googleApiKey || ''}
-                  onChange={(e) => setSettings({ ...settings, googleApiKey: e.target.value })}
-                  className="flex-1 px-3 py-2 border rounded-md"
-                  placeholder="Enter your API key"
-                />
+                <span className="text-sm opacity-75">{user.email}</span>
                 <button
-                  onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}
-                  className="modern-button bg-yellow-100 text-yellow-700 hover:bg-yellow-200 whitespace-nowrap w-fit flex items-center gap-1"
-                  title="Get Google API Key"
+                  onClick={handleSignOut}
+                  className="btn btn-outline btn-error btn-sm"
                 >
-                  Get API Key
-                  <ExternalLink size={14} />
+                  <LogOut size={16} />
+                  Sign Out
                 </button>
               </div>
-            </div>
-
-            {/* Admin Section */}
-            {isAdmin && (
-              <div className="mt-8 pt-6 border-t">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-sm font-medium text-gray-900">Admin Tools</h4>
-                  <div className="text-xs text-gray-500">Admin Access</div>
-                </div>
-                <div className="space-y-4">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h5 className="text-sm font-medium text-gray-700 mb-2">Example Lists</h5>
-                    <p className="text-xs text-gray-600 mb-3">
-                      Import example task lists into the database. These lists will be available to all users.
-                    </p>
-                    <ImportExamplesButton
-                      onSuccess={() => {
-                        alert('Example lists imported successfully!');
-                      }}
-                      onError={(error) => {
-                        alert(error);
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Clear Site Data Section */}
-            <div className="mt-8 pt-6 border-t">
-              <h4 className="text-sm font-medium text-gray-900 mb-2">Clear Site Data</h4>
-              <p className="text-sm text-gray-500 mb-4">
-                This will clear all saved settings, tasks, and cached data. This action cannot be undone.
-              </p>
+            ) : (
               <button
-                onClick={clearSiteData}
-                disabled={clearing}
-                className="px-4 py-2 text-sm text-red-600 border border-red-600 rounded-md hover:bg-red-50 transition-colors"
+                onClick={() => { onClose(); onShowAuth(); }} // Close settings to show auth
+                className="btn btn-outline btn-primary btn-sm"
               >
-                {clearing ? 'Clearing...' : 'Clear All Data'}
+                <LogIn size={16} />
+                Sign In
               </button>
-            </div>
-
-            <ChatHistory onClose={onClose} />
-          </div>
-
-          <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-            <button
-              type="button"
-              onClick={() => onSave(settings)}
-              className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
-            >
-              Cancel
-            </button>
+            )}
           </div>
         </div>
+
+        {/* Google API Key Section */}
+        <div className="mb-4 form-control">
+          <label className="label">
+            <span className="label-text font-semibold">Google API Key</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              type="password"
+              value={settings.googleApiKey || ''}
+              onChange={(e) => setSettings({ ...settings, googleApiKey: e.target.value })}
+              className="input input-bordered input-primary flex-1"
+              placeholder="Enter your API key"
+            />
+            <a
+              href="https://makersuite.google.com/app/apikey"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline btn-accent btn-sm whitespace-nowrap"
+              title="Get Google API Key"
+            >
+              Get API Key
+              <ExternalLink size={14} />
+            </a>
+          </div>
+        </div>
+
+        {/* Admin Section */}
+        {isAdmin && (
+          <div className="mt-8 pt-6 border-t border-base-300">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold">Admin Tools</h4>
+              <div className="badge badge-neutral">Admin Access</div>
+            </div>
+            <div className="space-y-4">
+              <div className="card bg-base-200 p-4 rounded-lg">
+                <h5 className="card-title text-md">Example Lists</h5>
+                <p className="text-sm opacity-75 mb-3">
+                  Import example task lists into the database. These lists will be available to all users.
+                </p>
+                <div className="card-actions">
+                  <ImportExamplesButton
+                    onSuccess={() => {
+                      alert('Example lists imported successfully!');
+                    }}
+                    onError={(error) => {
+                      alert(error);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Clear Site Data Section */}
+        <div className="mt-8 pt-6 border-t border-base-300">
+          <h4 className="text-lg font-semibold mb-2">Clear Site Data</h4>
+          <p className="text-sm opacity-75 mb-4">
+            This will clear all saved settings, tasks, and cached data. This action cannot be undone.
+          </p>
+          <button
+            onClick={clearSiteData}
+            disabled={clearing}
+            className="btn btn-error btn-outline"
+          >
+            {clearing ? <span className="loading loading-spinner"></span> : null}
+            {clearing ? 'Clearing...' : 'Clear All Data'}
+          </button>
+        </div>
+
+        {/* Chat History - Assuming it's part of the settings or a separate component to be included */}
+        {/* <ChatHistory onClose={onClose} /> */}
+
+        <div className="modal-action mt-6">
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn btn-ghost"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => { onSave(settings); onClose(); }} // Save and then close
+            className="btn btn-primary"
+          >
+            Save Settings
+          </button>
+        </div>
       </div>
-    </div>
+      {/* Clicking outside closes the modal */}
+      <form method="dialog" className="modal-backdrop">
+        <button type="submit">close</button>
+      </form>
+    </dialog>
   );
 }

@@ -1,56 +1,47 @@
 import React, { useState } from 'react';
-import { Download, Upload } from 'lucide-react';
-import { Task } from '../types/task';
-import { exportTasks } from '../utils/storage';
-import { ImportModal } from './ImportModal';
+import { Upload } from 'lucide-react'; // Download icon and exportTasks removed as export is handled by Header
+import { Task } from '../types/task'; // Task type might not be needed if not directly handling tasks
+import { ImportModal } from './ImportModal'; // Assumed ImportModal is refactored
 
 interface ImportExportProps {
-  tasks: Task[];
-  onImport: (tasks: Task[]) => void;
+  onImport: (tasks: Task[]) => void; // Callback when tasks are imported
+  buttonClass?: string; // Optional class for the button for flexibility
+  buttonSize?: 'btn-xs' | 'btn-sm' | 'btn-md' | 'btn-lg'; // DaisyUI button sizes
+  label?: string; // Optional label for the button, defaults to "Import"
 }
 
-export function ImportExport({ tasks, onImport }: ImportExportProps) {
+export function ImportExport({ 
+  onImport, 
+  buttonClass, 
+  buttonSize = 'btn-sm', 
+  label = "Import" 
+}: ImportExportProps) {
   const [showImportModal, setShowImportModal] = useState(false);
 
-  const handleExport = () => {
-    const name = prompt('Enter a name for the task list:', 'My Task List');
-    
-    // Return early if user clicks Cancel or enters empty name
-    if (!name) return;
+  // Export functionality has been removed from this component.
+  // It's assumed to be handled by an ExportModal triggered elsewhere (e.g., in Header.tsx).
 
-    const json = exportTasks(tasks, name);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    // Use the provided name in the filename, sanitize it for file system
-    const sanitizedName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    a.download = `${sanitizedName}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const iconSize = buttonSize === 'btn-xs' || buttonSize === 'btn-sm' ? 16 : 18;
 
   return (
-    <div className="flex gap-2">
-      <button
-        onClick={handleExport}
-        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-        title="Export tasks"
-      >
-        <Download size={16} />
-        Export
-      </button>
+    <>
       <button
         onClick={() => setShowImportModal(true)}
-        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-        title="Import tasks"
+        className={`btn ${buttonSize} btn-ghost ${buttonClass || 'btn-outline btn-secondary'}`} // Default to outline secondary if no class given
+        title="Import tasks from a JSON file"
       >
-        <Upload size={16} />
-        Import
+        <Upload size={iconSize} />
+        {label}
       </button>
       {showImportModal && (
-        <ImportModal onClose={() => setShowImportModal(false)} onImport={onImport} />
+        <ImportModal 
+          onClose={() => setShowImportModal(false)} 
+          onImport={(importedTasks: Task[]) => { // Ensure type consistency
+            onImport(importedTasks);
+            setShowImportModal(false); // Close modal after successful import
+          }} 
+        />
       )}
-    </div>
+    </>
   );
 }
