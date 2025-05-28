@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Upload } from 'lucide-react';
 import { TaskInput } from '../TaskInput';
 import { TaskList } from '../TaskList';
 import { Task } from '../../types/task';
@@ -113,6 +113,33 @@ export function ListEditor({ list, onSave, onCancel, onError }: ListEditorProps)
     setTasks(newTasks);
   };
 
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const content = e.target?.result as string;
+            const parsed = JSON.parse(content);
+            if (parsed.data) {
+              setTasks(parsed.data);
+            }
+          } catch (error) {
+            console.error('Error parsing imported file:', error);
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    
+    input.click();
+  };  
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -136,6 +163,14 @@ export function ListEditor({ list, onSave, onCancel, onError }: ListEditorProps)
                 />
               </div>
               <div className="flex items-center gap-4">
+                <button
+                  onClick={handleImport}
+                  className="import-export-button flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  title="Import tasks"
+                >
+                  <Upload size={16} />
+                  Import
+                </button>                
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"

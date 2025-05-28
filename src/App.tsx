@@ -31,6 +31,8 @@ export default function App() {
     reorderTasks
   } = useTasks();
 
+  const [ipaddress, setIpaddress] = useState('');
+  const [username, setUsername] = useState('');
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -118,6 +120,11 @@ export default function App() {
     return false;
   };
 
+  const mergeData = (e) => {
+    e.preventDefault();
+    console.log(ipaddress, username);
+  }
+
   if (showAdminDashboard && isAdmin) {
     return (
       <AdminDashboard 
@@ -132,13 +139,14 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 relative">
+    <>
+    <div className="min-h-screen bg-gray-50 relative flex">
       <div className="absolute top-4 left-4 flex items-center gap-2">
         <span className="beta-badge">beta</span>
       </div>
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
-      <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <div className="px-4 py-12 sm:px-6 lg:px-8 w-[70%]">
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
           <Header
             onLogoClick={handleLogoClick}
@@ -147,6 +155,7 @@ export default function App() {
             tasks={tasks}
             onImport={setTasks}
             isAdmin={isAdmin}
+            onError={setError}
           />
           <TaskInput onAddTask={addTask} />
         </div>
@@ -164,7 +173,25 @@ export default function App() {
           isAdmin={isAdmin}
         />
       </div>
-
+      <div className="px-4 py-12 sm:px-6 lg:px-8 w-[30%]">
+        <div className='mb-2'>
+          <label htmlFor="ipaddress">
+            Ip Address: 
+            <input id="ipaddress" type="text" value={ipaddress} onChange={(e) => setIpaddress(e.target.value)} />
+          </label>
+        </div>
+        <div className='mb-2'>
+          <label htmlFor="username">
+            Username: 
+            <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          </label>
+        </div>
+        <div className='mb-2'>
+          <button onClick={mergeData}>Merge Data Into Tasks</button>
+        </div>
+      </div>
+    </div>
+    <div className="bg-gray-50 relative">
       <Footer />
       <button
         onClick={() => setShowHelpModal(true)}
@@ -204,5 +231,6 @@ export default function App() {
         />
       )}
     </div>
+    </>
   );
 }

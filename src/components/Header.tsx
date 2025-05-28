@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { CheckSquare, Settings, Shield, Download, Upload } from 'lucide-react';
+import { CheckSquare, Settings, Shield, Download, Save, Upload } from 'lucide-react';
 import { Task } from '../types/task';
 import { ExportModal } from './ExportModal';
+import { SaveModal } from './SaveModal';
+import { saveTaskList } from '../services/taskListService';
 
 interface HeaderProps {
   onLogoClick: () => void;
@@ -9,11 +11,38 @@ interface HeaderProps {
   onAdminClick: () => void;
   tasks: Task[];
   onImport: (tasks: Task[]) => void;
+  onError: (error: string) => void;
   isAdmin?: boolean;
 }
 
-export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onImport, isAdmin }: HeaderProps) {
+export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onImport, onError, isAdmin }: HeaderProps) {
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [name, setName] = useState('');
+  
+  const handleSave = async (name: string) => {
+    if (!name.trim()) {
+      onError('Please enter a name for the list');
+      return;
+    }
+
+    if (tasks.length === 0) {
+      onError('Please add at least one task to the list');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await saveTaskList(name, tasks, false);
+      // onSave();
+    } catch (error) {
+      console.error('Error saving list:', error);
+      onError('Failed to save task list');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleExport = (name: string) => {
     const dataStr = JSON.stringify({ name, data: tasks }, null, 2);
@@ -61,6 +90,17 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
       </div>
       <div className="flex items-center gap-2">
         <div className="import-export-buttons flex gap-2">
+          {isAdmin && (
+            <button
+              onClick={() => setShowSaveModal(true)}
+              disabled={saving || tasks.length === 0}
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50"
+              title="Save Tasks"
+            >
+              <Save size={16} />
+              {saving ? 'Saving...' : 'Save List'}
+            </button>
+          )}
           <button
             onClick={() => setShowExportModal(true)}
             className="import-export-button flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
@@ -101,6 +141,12 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
         <ExportModal
           onClose={() => setShowExportModal(false)}
           onExport={handleExport}
+        />
+      )}
+      {showSaveModal && (
+        <SaveModal
+          onClose={() => setShowSaveModal(false)}
+          onSave={handleSave}
         />
       )}
     </div>
