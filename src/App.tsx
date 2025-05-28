@@ -133,7 +133,7 @@ export default function App() {
 
   return (
     <>
-    <div className="min-h-screen bg-gray-50 relative flex">
+    <div className="min-h-screen bg-gray-50 relative">
       <div className="absolute top-4 left-4 flex items-center gap-2">
         <span className="beta-badge">beta</span>
       </div>
