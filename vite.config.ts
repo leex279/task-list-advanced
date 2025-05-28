@@ -8,9 +8,6 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     define: {
       'import.meta.env.VITE_DEV_MODE': env.VITE_DEV_MODE
-    },
-    server: {
-      port: 3174
     }
   };
 });
