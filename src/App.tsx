@@ -11,7 +11,7 @@ import { ConfirmationModal } from './components/ConfirmationModal';
 import { SettingsModal } from './components/SettingsModal';
 import { HelpModal } from './components/HelpModal';
 import { ErrorNotification } from './components/ErrorNotification';
-import { IntroModal } from './components/IntroModal';
+// import { IntroModal } from './components/IntroModal';
 import { Tour } from './components/tour/Tour';
 import { AuthModal } from './components/auth/AuthModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';

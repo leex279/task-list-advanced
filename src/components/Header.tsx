@@ -19,7 +19,6 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
   const [showExportModal, setShowExportModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [name, setName] = useState('');
   
   const handleSave = async (name: string) => {
     if (!name.trim()) {
