@@ -139,7 +139,7 @@ export default function App() {
       </div>
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
-      <div className="px-4 py-12 sm:px-6 lg:px-8 mx-auto">
+      <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
           <Header
             onLogoClick={handleLogoClick}
