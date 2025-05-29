@@ -76,7 +76,7 @@ export function ChatHistory({ onClose }: ChatHistoryProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={downloadHistory}
-            className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
+            className="flex items-center gap-1 px-3 py-1 text-sm text-magenta-600 hover:text-magenta-700"
           >
             <Download size={14} />
             Download
@@ -128,7 +128,7 @@ export function ChatHistory({ onClose }: ChatHistoryProps) {
                     <div>
                       <button
                         onClick={() => toggleMessage(index)}
-                        className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+                        className="flex items-center gap-1 text-sm text-magenta-600 hover:text-magenta-700"
                       >
                         <ChevronRight
                           size={16}

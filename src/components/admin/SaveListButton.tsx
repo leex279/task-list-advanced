@@ -13,7 +13,7 @@ export function SaveListButton({ onSave }: SaveListButtonProps) {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+        className="flex items-center gap-2 px-4 py-2 text-sm bg-magenta-500 text-white rounded-md hover:bg-magenta-600 transition-colors"
       >
         <Save size={16} />
         Save List

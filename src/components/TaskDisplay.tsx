@@ -61,7 +61,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
             {task.richText && (
               <button
                 onClick={() => setShowDescriptionModal(true)}
-                className="text-blue-400 hover:text-blue-500 transition-colors"
+                className="text-magenta-400 hover:text-magenta-500 transition-colors"
                 title="Show detailed description"
               >
                 <AlignLeft size={18} />
@@ -69,14 +69,14 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
             )}
             <button
               onClick={() => onDuplicate(task.id)}
-              className="text-gray-400 hover:text-blue-500 transition-colors"
+              className="text-gray-400 hover:text-magenta-500 transition-colors"
               title="Duplicate task"
             >
               <Copy size={18} />
             </button>
             <button
               onClick={() => onEdit()}
-              className="text-gray-400 hover:text-blue-500 transition-colors"
+              className="text-gray-400 hover:text-magenta-500 transition-colors"
             >
               <Edit2 size={18} />
             </button>
@@ -129,7 +129,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
             {task.richText && (
               <button
                 onClick={() => setShowDescriptionModal(true)}
-                className="text-blue-400 hover:text-blue-500 transition-colors"
+                className="text-magenta-400 hover:text-magenta-500 transition-colors"
                 title="Show detailed description"
               >
                 <AlignLeft size={18} />
@@ -148,14 +148,14 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => onDuplicate(task.id)}
-            className="text-gray-400 hover:text-blue-500 transition-colors"
+            className="text-gray-400 hover:text-magenta-500 transition-colors"
             title="Duplicate task"
           >
             <Copy size={18} />
           </button>
           <button
             onClick={() => onEdit()}
-            className="text-gray-400 hover:text-blue-500 transition-colors"
+            className="text-gray-400 hover:text-magenta-500 transition-colors"
           >
             <Edit2 size={18} />
           </button>

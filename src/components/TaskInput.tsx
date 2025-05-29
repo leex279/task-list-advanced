@@ -51,15 +51,15 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={isHeadline ? "Add a headline..." : "Add a new task..."}
-          className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-500 transition-colors min-w-[200px]"
+          className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-magenta-500 transition-colors min-w-[200px]"
         />
         <button
           type="button"
           onClick={() => setIsHeadline(!isHeadline)}
           className={`headline-button px-3 rounded-lg border transition-colors ${
             isHeadline
-              ? 'border-blue-500 text-blue-500'
-              : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
+              ? 'border-magenta-500 text-magenta-500'
+              : 'border-gray-200 text-gray-500 hover:border-magenta-500 hover:text-magenta-500'
           }`}
           title="Toggle headline"
         >
@@ -72,8 +72,8 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
               onClick={() => setShowCodeInput(!showCodeInput)}
               className={`code-button px-3 rounded-lg border transition-colors ${
                 showCodeInput
-                  ? 'border-blue-500 text-blue-500'
-                  : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
+                  ? 'border-magenta-500 text-magenta-500'
+                  : 'border-gray-200 text-gray-500 hover:border-magenta-500 hover:text-magenta-500'
               }`}
               title="Add code block"
             >
@@ -84,8 +84,8 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
               onClick={() => setShowRichTextEditor(!showRichTextEditor)}
               className={`rich-text-button px-3 rounded-lg border transition-colors ${
                 showRichTextEditor
-                  ? 'border-blue-500 text-blue-500'
-                  : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
+                  ? 'border-magenta-500 text-magenta-500'
+                  : 'border-gray-200 text-gray-500 hover:border-magenta-500 hover:text-magenta-500'
               }`}
               title="Add rich text"
             >
@@ -96,7 +96,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
                 type="checkbox"
                 checked={optional}
                 onChange={(e) => setOptional(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
+                className="w-4 h-4 rounded border-gray-300 text-magenta-500 focus:ring-magenta-500 focus:ring-offset-0 transition-colors"
               />
               <span className="text-sm font-medium text-gray-600">Optional</span>
             </label>
@@ -104,7 +104,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
         )}
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+          className="bg-magenta-500 text-white px-4 py-2 rounded-lg hover:bg-magenta-600 transition-colors flex items-center gap-2"
         >
           <PlusCircle size={20} />
           Add

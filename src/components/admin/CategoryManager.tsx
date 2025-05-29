@@ -75,7 +75,7 @@ export function CategoryManager({ categories, onUpdateCategories, onError }: Cat
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow p-8 flex justify-center">
-        <Loader className="animate-spin text-blue-500" size={24} />
+        <Loader className="animate-spin text-magenta-500" size={24} />
       </div>
     );
   }
@@ -97,13 +97,13 @@ export function CategoryManager({ categories, onUpdateCategories, onError }: Cat
             onChange={(e) => setNewCategory(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Add new category"
-            className="flex-1 px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="flex-1 px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-magenta-500"
             disabled={saving}
           />
           <button
             onClick={handleAddCategory}
             disabled={!newCategory.trim() || saving}
-            className="px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 transition-colors flex items-center gap-2"
+            className="px-4 py-2 text-sm bg-magenta-500 text-white rounded-md hover:bg-magenta-600 disabled:opacity-50 transition-colors flex items-center gap-2"
           >
             {saving ? <Loader className="animate-spin" size={16} /> : <Plus size={16} />}
             Add

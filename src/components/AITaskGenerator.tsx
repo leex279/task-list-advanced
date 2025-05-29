@@ -108,12 +108,12 @@ export function AITaskGenerator({ apiKey, onTasksGenerated, onError }: AITaskGen
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
             placeholder="Enter a prompt to generate a task list..."
-            className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 resize-none mr-2"
+            className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:border-magenta-500 resize-none mr-2"
             rows={8}
           />
           <button
             type="submit"
-            className="px-3 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors"
+            className="px-3 py-2 text-white bg-magenta-500 rounded-md hover:bg-magenta-600 transition-colors"
             disabled={loading}
           >
             {loading ? 'Loading...' : <Send size={18} />}

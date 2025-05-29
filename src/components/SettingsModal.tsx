@@ -92,7 +92,7 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
                 ) : (
                   <button
                     onClick={onShowAuth}
-                    className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 hover:text-blue-700"
+                    className="flex items-center gap-1 px-3 py-1 text-sm text-magenta-600 hover:text-magenta-700"
                   >
                     <LogIn size={16} />
                     Sign In
@@ -173,7 +173,7 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
             <button
               type="button"
               onClick={() => onSave(settings)}
-              className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+              className="inline-flex w-full justify-center rounded-md border border-transparent bg-magenta-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-magenta-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
             >
               Save
             </button>

@@ -26,7 +26,7 @@ export function ImportExamplesButton({ onSuccess, onError }: ImportExamplesButto
     <button
       onClick={handleImport}
       disabled={loading}
-      className="px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+      className="px-4 py-2 text-sm bg-magenta-500 text-white rounded-md hover:bg-magenta-600 disabled:opacity-50"
     >
       {loading ? 'Importing...' : 'Import Example Lists'}
     </button>

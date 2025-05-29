@@ -252,14 +252,14 @@ export function Tour({ onComplete }: TourProps) {
                   <div
                     key={index}
                     className={`w-1.5 h-1.5 rounded-full ${
-                      index === currentStep ? 'bg-blue-500' : 'bg-gray-300'
+                      index === currentStep ? 'bg-magenta-500' : 'bg-gray-300'
                     }`}
                   />
                 ))}
               </div>
               <button
                 onClick={handleNext}
-                className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                className="px-3 py-1 text-sm bg-magenta-500 text-white rounded hover:bg-magenta-600"
               >
                 {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
               </button>

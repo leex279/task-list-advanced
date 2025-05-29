@@ -46,7 +46,7 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="flex justify-center items-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-magenta-500"></div>
         </div>
       </div>
     );
@@ -87,7 +87,7 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
             </div>
             <button
               onClick={() => setIsCreating(true)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-magenta-500 text-white rounded-md hover:bg-magenta-600 transition-colors"
             >
               <Plus size={16} />
               New List
@@ -125,7 +125,7 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
                             Example
                           </span>
                         ) : (
-                          <span className="px-2 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full">
+                          <span className="px-2 py-1 text-xs font-semibold text-magenta-600 bg-magenta-100 rounded-full">
                             Custom
                           </span>
                         )}
@@ -137,7 +137,7 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
                         <div className="flex justify-end gap-2">
                           <button
                             onClick={() => setEditingList(list)}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-magenta-600 hover:text-magenta-900"
                             title="Edit list"
                           >
                             <Edit2 size={16} />

@@ -42,12 +42,12 @@ export function CategorySelector({ selectedCategories, onUpdateCategories }: Cat
         {selectedCategories.map(category => (
           <div
             key={category}
-            className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-sm"
+            className="flex items-center gap-1 px-2 py-1 bg-magenta-50 text-magenta-700 rounded-full text-sm"
           >
             {category}
             <button
               onClick={() => toggleCategory(category)}
-              className="hover:text-blue-900"
+              className="hover:text-magenta-900"
             >
               <X size={14} />
             </button>
@@ -71,7 +71,7 @@ export function CategorySelector({ selectedCategories, onUpdateCategories }: Cat
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
                 placeholder="Add new category"
-                className="flex-1 px-3 py-1 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="flex-1 px-3 py-1 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-magenta-500"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
@@ -82,7 +82,7 @@ export function CategorySelector({ selectedCategories, onUpdateCategories }: Cat
               <button
                 onClick={handleAddCategory}
                 disabled={!newCategory.trim()}
-                className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+                className="px-3 py-1 text-sm bg-magenta-500 text-white rounded-md hover:bg-magenta-600 disabled:opacity-50"
               >
                 Add
               </button>
@@ -99,7 +99,7 @@ export function CategorySelector({ selectedCategories, onUpdateCategories }: Cat
                   type="checkbox"
                   checked={selectedCategories.includes(category)}
                   onChange={() => toggleCategory(category)}
-                  className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-4 h-4 text-magenta-500 border-gray-300 rounded focus:ring-magenta-500"
                 />
                 <span className="text-sm text-gray-700">{category}</span>
               </label>

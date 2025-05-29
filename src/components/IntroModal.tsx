@@ -101,14 +101,14 @@ export function IntroModal({ onClose }: IntroModalProps) {
                 <div
                   key={index}
                   className={`w-2 h-2 rounded-full ${
-                    index === currentStep ? 'bg-blue-500' : 'bg-gray-300'
+                    index === currentStep ? 'bg-magenta-500' : 'bg-gray-300'
                   }`}
                 />
               ))}
             </div>
             <button
               onClick={handleNext}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-magenta-500 text-white rounded-md hover:bg-magenta-600 transition-colors"
             >
               {currentStep === steps.length - 1 ? 'Get Started' : 'Next'}
               {currentStep < steps.length - 1 && <ArrowRight size={16} />}

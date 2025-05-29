@@ -45,7 +45,7 @@ export function ConfirmationModal({ onConfirm, onCancel, tasks }: ConfirmationMo
           <button onClick={onCancel} className="px-4 py-2 text-gray-600 hover:text-gray-900">
             Cancel
           </button>
-          <button onClick={handleExport} className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+          <button onClick={handleExport} className="px-4 py-2 text-white bg-magenta-500 rounded-md hover:bg-magenta-600">
             Export
           </button>
           <button onClick={onConfirm} className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600">

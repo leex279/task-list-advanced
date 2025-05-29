@@ -141,14 +141,14 @@ export function ListEditor({ list, onSave, onCancel, onError }: ListEditorProps)
                     type="checkbox"
                     checked={isExample}
                     onChange={(e) => setIsExample(e.target.checked)}
-                    className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-magenta-500 border-gray-300 rounded focus:ring-magenta-500"
                   />
                   <span className="text-sm text-gray-700">Save as example</span>
                 </label>
                 <button
                   onClick={handleSave}
                   disabled={saving || !name.trim() || tasks.length === 0}
-                  className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-4 py-2 text-sm bg-magenta-500 text-white rounded-md hover:bg-magenta-600 transition-colors disabled:opacity-50"
                 >
                   <Save size={16} />
                   {saving ? 'Saving...' : 'Save List'}

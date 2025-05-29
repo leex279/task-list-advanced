@@ -116,7 +116,7 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-magenta-500 disabled:opacity-50"
               required
               autoComplete="email"
               disabled={loading}
@@ -133,7 +133,7 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-magenta-500 disabled:opacity-50"
               required
               minLength={6}
               autoComplete={isSignUp ? 'new-password' : 'current-password'}
@@ -157,7 +157,7 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
             <button
               type="button"
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm text-blue-600 hover:text-blue-800"
+              className="text-sm text-magenta-600 hover:text-magenta-800"
             >
               {isSignUp ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
             </button>
@@ -165,7 +165,7 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
 
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 transition-colors"
+            className="w-full py-2 px-4 bg-magenta-500 text-white rounded-md hover:bg-magenta-600 disabled:opacity-50 transition-colors"
             disabled={loading || !email.trim() || !password.trim()}
           >
             {loading ? (

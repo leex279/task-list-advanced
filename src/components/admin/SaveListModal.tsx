@@ -85,7 +85,7 @@ export function SaveListModal({ onClose, onSave }: SaveListModalProps) {
                     setName('');
                   }
                 }}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-magenta-500"
               >
                 <option value="">Select a list to update...</option>
                 {existingLists.map(list => (
@@ -106,7 +106,7 @@ export function SaveListModal({ onClose, onSave }: SaveListModalProps) {
                 <button
                   type="button"
                   onClick={() => setSelectedList('')}
-                  className="text-sm text-blue-500 hover:text-blue-600"
+                  className="text-sm text-magenta-500 hover:text-magenta-600"
                 >
                   Create New Instead
                 </button>
@@ -123,7 +123,7 @@ export function SaveListModal({ onClose, onSave }: SaveListModalProps) {
                   setSelectedList('');
                 }
               }}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-magenta-500 disabled:bg-gray-100"
               placeholder="Enter a name for your task list"
               disabled={!!selectedList}
               required={!selectedList}
@@ -136,7 +136,7 @@ export function SaveListModal({ onClose, onSave }: SaveListModalProps) {
                 type="checkbox"
                 checked={asExample}
                 onChange={(e) => setAsExample(e.target.checked)}
-                className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-magenta-500 border-gray-300 rounded focus:ring-magenta-500"
               />
               <span className="text-sm text-gray-700">Save as example list (available to all users)</span>
             </label>
@@ -152,7 +152,7 @@ export function SaveListModal({ onClose, onSave }: SaveListModalProps) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+              className="px-4 py-2 bg-magenta-500 text-white rounded-md hover:bg-magenta-600 disabled:opacity-50"
               disabled={loading || (!name.trim() && !selectedList)}
             >
               {loading ? 'Saving...' : (selectedList ? 'Update' : 'Save')}

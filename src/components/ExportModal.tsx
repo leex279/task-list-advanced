@@ -54,7 +54,7 @@ export function ExportModal({ onClose, onExport }: ExportModalProps) {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-magenta-500"
               placeholder="Enter a name for your task list"
               required
             />
@@ -69,7 +69,7 @@ export function ExportModal({ onClose, onExport }: ExportModalProps) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              className="px-4 py-2 bg-magenta-500 text-white rounded-md hover:bg-magenta-600"
               disabled={!name.trim()}
             >
               Export

@@ -73,7 +73,7 @@ export function HelpModal({ onClose }: HelpModalProps) {
                 href="https://github.com/leex279/task-list-advanced"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-500 hover:text-blue-600"
+                className="text-magenta-500 hover:text-magenta-600"
               >
                 GitHub repository
               </a>{' '}

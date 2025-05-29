@@ -97,19 +97,19 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
               setImportType('browse');
               handleBrowseClick();
             }}
-            className={`modern-button ${importType === 'browse' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+            className={`modern-button ${importType === 'browse' ? 'bg-magenta-500 text-white' : 'bg-gray-100 text-gray-700'}`}
           >
             Browse
           </button>
           <button
             onClick={() => setImportType('url')}
-            className={`modern-button ${importType === 'url' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+            className={`modern-button ${importType === 'url' ? 'bg-magenta-500 text-white' : 'bg-gray-100 text-gray-700'}`}
           >
             Import by URL
           </button>
           <button
             onClick={() => setImportType('paste')}
-            className={`modern-button ${importType === 'paste' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+            className={`modern-button ${importType === 'paste' ? 'bg-magenta-500 text-white' : 'bg-gray-100 text-gray-700'}`}
           >
             Paste JSON
           </button>
@@ -121,7 +121,7 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="Enter URL to JSON file"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-magenta-500"
             />
           </div>
         )}
@@ -131,7 +131,7 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
               value={json}
               onChange={(e) => setJson(e.target.value)}
               placeholder="Paste JSON here..."
-              className="w-full h-24 px-4 py-2 rounded-lg border border-gray-200 font-mono text-sm focus:outline-none focus:border-blue-500"
+              className="w-full h-24 px-4 py-2 rounded-lg border border-gray-200 font-mono text-sm focus:outline-none focus:border-magenta-500"
             />
           </div>
         )}
@@ -139,7 +139,7 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
           <button onClick={onClose} className="modern-button bg-gray-100 text-gray-700 hover:bg-gray-200">
             Cancel
           </button>
-          <button onClick={handleImport} className="modern-button bg-blue-500 text-white hover:bg-blue-600">
+          <button onClick={handleImport} className="modern-button bg-magenta-500 text-white hover:bg-magenta-600">
             Import
           </button>
         </div>

@@ -56,7 +56,7 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
   return (
     <div className="flex items-center justify-between mb-4 sm:mb-8">
       <div className="flex items-center gap-3 cursor-pointer" onClick={onLogoClick}>
-        <CheckSquare size={32} className="text-blue-500" />
+        <CheckSquare size={32} className="text-magenta-500" />
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Task List Advanced</h1>
       </div>
       <div className="flex items-center gap-2">
