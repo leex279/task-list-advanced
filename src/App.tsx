@@ -55,9 +55,11 @@ export default function App() {
           const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
           console.log('Looking for list:', normalizedUrlListName);
           console.log('Available lists:', allLists.map(list => list.name));
+          console.log('Available lists lowercase:', allLists.map(list => list.name.toLowerCase()));
           let matchedList = allLists.find(
             (list) => list.name.toLowerCase() === normalizedUrlListName
           );
+          console.log('Found match:', matchedList?.name);
 
           // If not found in all lists, fallback to example lists (which includes local files)
           if (!matchedList) {
