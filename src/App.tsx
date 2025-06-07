@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { HelpCircle } from 'lucide-react';
 import { useSettings } from './hooks/useSettings';
-import { getExampleLists } from './services/taskListService';
+import { getExampleLists, getTaskLists } from './services/taskListService';
 import { useTasks } from './hooks/useTasks';
 import { useAuth } from './hooks/useAuth';
 import { Header } from './components/Header';
@@ -50,11 +50,20 @@ export default function App() {
     const loadListFromParams = async () => {
       if (listName) {
         try {
-          const exampleLists = await getExampleLists();
+          // First try to get all task lists from Supabase
+          const allLists = await getTaskLists();
           const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
-          const matchedList = exampleLists.find(
+          let matchedList = allLists.find(
             (list) => list.name.toLowerCase() === normalizedUrlListName
           );
+
+          // If not found in all lists, fallback to example lists (which includes local files)
+          if (!matchedList) {
+            const exampleLists = await getExampleLists();
+            matchedList = exampleLists.find(
+              (list) => list.name.toLowerCase() === normalizedUrlListName
+            );
+          }
 
           if (matchedList) {
             setTasks(matchedList.data);
@@ -62,7 +71,22 @@ export default function App() {
             console.error(`List not found: ${listName}`);
           }
         } catch (error) {
-          console.error('Failed to load example lists:', error);
+          console.error('Failed to load task lists:', error);
+          // Fallback to example lists only
+          try {
+            const exampleLists = await getExampleLists();
+            const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
+            const matchedList = exampleLists.find(
+              (list) => list.name.toLowerCase() === normalizedUrlListName
+            );
+            if (matchedList) {
+              setTasks(matchedList.data);
+            } else {
+              console.error(`List not found in examples: ${listName}`);
+            }
+          } catch (fallbackError) {
+            console.error('Failed to load example lists:', fallbackError);
+          }
         }
       } else {
         // Optionally clear tasks if on root path, or handle as per desired default behavior
