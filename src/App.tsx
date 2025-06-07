@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { HelpCircle } from 'lucide-react';
 import { useSettings } from './hooks/useSettings';
+import { getExampleLists } from './services/taskListService';
 import { useTasks } from './hooks/useTasks';
 import { useAuth } from './hooks/useAuth';
 import { Header } from './components/Header';
@@ -20,6 +22,7 @@ import { supabase } from './lib/supabase';
 export default function App() {
   const [settings, setSettings] = useSettings();
   const { user, loading: authLoading, isAdmin } = useAuth();
+  const { listName } = useParams<{ listName: string }>();
   const {
     tasks,
     setTasks,
@@ -42,6 +45,37 @@ export default function App() {
     const hasSeenTour = sessionStorage.getItem('hasSeenTour');
     return !hasSeenTour && !settings.googleApiKey;
   });
+
+  useEffect(() => {
+    const loadListFromParams = async () => {
+      if (listName) {
+        try {
+          const exampleLists = await getExampleLists();
+          const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
+          const matchedList = exampleLists.find(
+            (list) => list.name.toLowerCase() === normalizedUrlListName
+          );
+
+          if (matchedList) {
+            setTasks(matchedList.data);
+          } else {
+            console.error(`List not found: ${listName}`);
+          }
+        } catch (error) {
+          console.error('Failed to load example lists:', error);
+        }
+      } else {
+        // Optionally clear tasks if on root path, or handle as per desired default behavior
+        // For now, let's clear if tasks exist and no listName is provided
+        if (tasks.length > 0) {
+           //setTasks([]); // Commented out for now, to avoid clearing tasks during HMR or other re-renders.
+                          // Decide on a clear strategy for initial load vs. navigation.
+        }
+      }
+    };
+
+    loadListFromParams();
+  }, [listName, setTasks]);
 
   useEffect(() => {
     // Check if this is the first user
@@ -133,12 +167,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
-      <div className="absolute top-4 left-4 flex items-center gap-2">
-        <span className="beta-badge">beta</span>
-      </div>
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
-      <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
           <Header
             onLogoClick={handleLogoClick}

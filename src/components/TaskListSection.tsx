@@ -80,7 +80,6 @@ export function TaskListSection({
           )}
           <TaskListSelector
             exampleLists={exampleLists}
-            onImportTaskList={onImportTaskList}
           />
           {googleApiKey ? (
             <AITaskGenerator
