@@ -57,7 +57,7 @@ export default function App() {
           console.log('Available lists:', allLists.map(list => list.name));
           console.log('Available lists lowercase:', allLists.map(list => list.name.toLowerCase()));
           let matchedList = allLists.find(
-            (list) => list.name.toLowerCase() === normalizedUrlListName
+            (list) => list.name.toLowerCase().replace(/-/g, ' ') === normalizedUrlListName
           );
           console.log('Found match:', matchedList?.name);
 
@@ -65,7 +65,7 @@ export default function App() {
           if (!matchedList) {
             const exampleLists = await getExampleLists();
             matchedList = exampleLists.find(
-              (list) => list.name.toLowerCase() === normalizedUrlListName
+              (list) => list.name.toLowerCase().replace(/-/g, ' ') === normalizedUrlListName
             );
           }
 
@@ -81,7 +81,7 @@ export default function App() {
             const exampleLists = await getExampleLists();
             const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
             const matchedList = exampleLists.find(
-              (list) => list.name.toLowerCase() === normalizedUrlListName
+              (list) => list.name.toLowerCase().replace(/-/g, ' ') === normalizedUrlListName
             );
             if (matchedList) {
               setTasks(matchedList.data);
