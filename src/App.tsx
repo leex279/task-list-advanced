@@ -53,6 +53,8 @@ export default function App() {
           // First try to get all task lists from Supabase
           const allLists = await getTaskLists();
           const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
+          console.log('Looking for list:', normalizedUrlListName);
+          console.log('Available lists:', allLists.map(list => list.name));
           let matchedList = allLists.find(
             (list) => list.name.toLowerCase() === normalizedUrlListName
           );
