@@ -53,18 +53,21 @@ export default function App() {
         try {
           // First try to get all task lists from Supabase
           const allLists = await getTaskLists();
-          const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
+          const normalizeForMatching = (str: string) => 
+            str.toLowerCase().replace(/[-:+.]/g, ' ').replace(/\s+/g, ' ').trim();
+          
+          const normalizedUrlListName = normalizeForMatching(listName.replace(/-/g, ' '));
           console.log('Looking for list:', normalizedUrlListName);
-          console.log('Available lists:', allLists.map(list => `"${list.name}" -> "${list.name.toLowerCase().replace(/-/g, ' ')}"`));
+          console.log('Available lists:', allLists.map(list => `"${list.name}" -> "${normalizeForMatching(list.name)}"`));
           let matchedList = allLists.find(
-            (list) => list.name.toLowerCase().replace(/-/g, ' ') === normalizedUrlListName
+            (list) => normalizeForMatching(list.name) === normalizedUrlListName
           );
 
           // If not found in all lists, fallback to example lists (which includes local files)
           if (!matchedList) {
             const exampleLists = await getExampleLists();
             matchedList = exampleLists.find(
-              (list) => list.name.toLowerCase().replace(/-/g, ' ') === normalizedUrlListName
+              (list) => normalizeForMatching(list.name) === normalizedUrlListName
             );
           }
 
@@ -78,9 +81,11 @@ export default function App() {
           // Fallback to example lists only
           try {
             const exampleLists = await getExampleLists();
-            const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
+            const normalizeForMatching = (str: string) => 
+              str.toLowerCase().replace(/[-:+.]/g, ' ').replace(/\s+/g, ' ').trim();
+            const normalizedUrlListName = normalizeForMatching(listName.replace(/-/g, ' '));
             const matchedList = exampleLists.find(
-              (list) => list.name.toLowerCase().replace(/-/g, ' ') === normalizedUrlListName
+              (list) => normalizeForMatching(list.name) === normalizedUrlListName
             );
             if (matchedList) {
               setTasks(matchedList.data);
