@@ -24,7 +24,6 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
   const [optional, setOptional] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
-    console.log('juan', code)
     e.preventDefault();
     if (text.trim() || richText.trim()) {
       onAddTask(
@@ -117,7 +116,6 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
           language="javascript"
           code={code}
           onChange={(code) => { 
-            console.log('new code', code)
             return setCode(code);
           }}
         />
