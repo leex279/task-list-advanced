@@ -131,7 +131,8 @@ export default function App() {
 
   const handleLogoClick = () => {
     if (listName) {
-      // If on a specific list page, navigate back to main app
+      // If on a specific list page, clear tasks and navigate back to main app
+      setTasks([]);
       navigate('/');
     } else if (tasks.length > 0) {
       // If on main page with tasks, show confirmation
