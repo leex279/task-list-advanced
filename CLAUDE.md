@@ -11,6 +11,10 @@ npm run build        # Build for production
 npm run lint         # Run ESLint
 npm run preview      # Preview production build
 
+# Package management - Project uses both npm and pnpm
+npm install          # Install dependencies with npm
+pnpm install         # Install dependencies with pnpm (also supported)
+
 # No test command is available - tests would need to be added
 ```
 
@@ -65,6 +69,20 @@ interface Task {
   - `tour/`: Onboarding tour
 - **services/**: External API integrations (AI, task lists, categories)
 
+### Routing and Deeplinking
+
+The app uses React Router with two main routes:
+- `/` - Main application page
+- `/list/:listName` - Deep links to specific task lists
+
+**Deeplinking Logic**: URLs like `/list/my-task-list` are normalized by:
+1. Converting hyphens to spaces: `my-task-list` → `my task list`
+2. Removing special characters (`:`, `+`, `.`) and normalizing spacing
+3. Case-insensitive matching against Supabase task list names
+4. Falls back to local example lists if not found in database
+
+**Netlify Deployment**: Includes `public/_redirects` file (`/*    /index.html   200`) for client-side routing support.
+
 ### Environment Setup
 
 Requires `.env` file with:
@@ -72,11 +90,36 @@ Requires `.env` file with:
 - `VITE_SUPABASE_ANON_KEY`: Supabase anonymous key
 - `VITE_DEV_MODE`: Development mode flag
 
+Google Gemini AI integration requires API key added through Settings UI (not environment variable).
+
 ### Database Schema
 
 Uses Supabase with two main tables:
 - `task_lists`: Stores task lists with JSONB data, supports example lists
+  - Row Level Security (RLS) policies control access
+  - Example lists (`is_example: true`) are publicly readable
+  - Admin users have full CRUD access
 - `users`: User management with role-based permissions
+  - First user becomes admin automatically
+  - Roles: 'admin' or 'user'
+
+**Important**: Database setup SQL is documented in README.md including all tables, policies, and triggers.
+
+### Key Implementation Details
+
+**Logo Navigation Behavior**:
+- From list page with tasks: Shows confirmation modal before navigation
+- From list page without tasks: Direct navigation to homepage
+- From main page: Standard confirmation behavior
+
+**List Name Matching**: When working with deeplinking, use the `normalizeForMatching` function pattern that handles special characters in list names.
+
+**Modal Management**: App.tsx manages all modal states. Always close modals before navigation/reload to prevent UI issues.
+
+**Task Loading Priority**: 
+1. First checks all Supabase task lists
+2. Falls back to example lists (includes local files)
+3. Local example files are in `public/tasklists/`
 
 ### Development Notes
 
@@ -86,3 +129,5 @@ Uses Supabase with two main tables:
 - Drag & drop uses @dnd-kit library
 - Rich text editing via React Quill
 - Code syntax highlighting via Prism.js
+- Supports both npm and pnpm package managers
+- Uses Vite 6.x (latest major version)
