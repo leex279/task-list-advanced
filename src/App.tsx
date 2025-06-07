@@ -54,6 +54,8 @@ export default function App() {
           // First try to get all task lists from Supabase
           const allLists = await getTaskLists();
           const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
+          console.log('Looking for list:', normalizedUrlListName);
+          console.log('Available lists:', allLists.map(list => `"${list.name}" -> "${list.name.toLowerCase().replace(/-/g, ' ')}"`));
           let matchedList = allLists.find(
             (list) => list.name.toLowerCase().replace(/-/g, ' ') === normalizedUrlListName
           );
@@ -130,8 +132,11 @@ export default function App() {
   }, [authLoading]);
 
   const handleLogoClick = () => {
-    if (listName) {
-      // If on a specific list page, clear tasks and navigate back to main app
+    if (listName && tasks.length > 0) {
+      // If on a specific list page with tasks, show confirmation
+      setShowConfirmationModal(true);
+    } else if (listName) {
+      // If on a specific list page with no tasks, clear and navigate back
       setTasks([]);
       navigate('/');
     } else if (tasks.length > 0) {
@@ -144,7 +149,14 @@ export default function App() {
   };
 
   const handleConfirmReload = () => {
-    window.location.reload();
+    if (listName) {
+      // If on list page, clear tasks and navigate to main page
+      setTasks([]);
+      navigate('/');
+    } else {
+      // If on main page, reload
+      window.location.reload();
+    }
   };
 
   const handleSettingsSave = (newSettings: typeof settings) => {
