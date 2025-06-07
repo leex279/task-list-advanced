@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { HelpCircle } from 'lucide-react';
 import { useSettings } from './hooks/useSettings';
+import { getExampleLists, getTaskLists } from './services/taskListService';
 import { useTasks } from './hooks/useTasks';
 import { useAuth } from './hooks/useAuth';
 import { Header } from './components/Header';
@@ -20,6 +22,8 @@ import { supabase } from './lib/supabase';
 export default function App() {
   const [settings, setSettings] = useSettings();
   const { user, loading: authLoading, isAdmin } = useAuth();
+  const { listName } = useParams<{ listName: string }>();
+  const navigate = useNavigate();
   const {
     tasks,
     setTasks,
@@ -42,6 +46,66 @@ export default function App() {
     const hasSeenTour = sessionStorage.getItem('hasSeenTour');
     return !hasSeenTour && !settings.googleApiKey;
   });
+
+  useEffect(() => {
+    const loadListFromParams = async () => {
+      if (listName) {
+        try {
+          // First try to get all task lists from Supabase
+          const allLists = await getTaskLists();
+          const normalizeForMatching = (str: string) => 
+            str.toLowerCase().replace(/[-:+.]/g, ' ').replace(/\s+/g, ' ').trim();
+          
+          const normalizedUrlListName = normalizeForMatching(listName.replace(/-/g, ' '));
+          let matchedList = allLists.find(
+            (list) => normalizeForMatching(list.name) === normalizedUrlListName
+          );
+
+          // If not found in all lists, fallback to example lists (which includes local files)
+          if (!matchedList) {
+            const exampleLists = await getExampleLists();
+            matchedList = exampleLists.find(
+              (list) => normalizeForMatching(list.name) === normalizedUrlListName
+            );
+          }
+
+          if (matchedList) {
+            setTasks(matchedList.data);
+          } else {
+            console.error(`List not found: ${listName}`);
+          }
+        } catch (error) {
+          console.error('Failed to load task lists:', error);
+          // Fallback to example lists only
+          try {
+            const exampleLists = await getExampleLists();
+            const normalizeForMatching = (str: string) => 
+              str.toLowerCase().replace(/[-:+.]/g, ' ').replace(/\s+/g, ' ').trim();
+            const normalizedUrlListName = normalizeForMatching(listName.replace(/-/g, ' '));
+            const matchedList = exampleLists.find(
+              (list) => normalizeForMatching(list.name) === normalizedUrlListName
+            );
+            if (matchedList) {
+              setTasks(matchedList.data);
+            } else {
+              console.error(`List not found in examples: ${listName}`);
+            }
+          } catch (fallbackError) {
+            console.error('Failed to load example lists:', fallbackError);
+          }
+        }
+      } else {
+        // Optionally clear tasks if on root path, or handle as per desired default behavior
+        // For now, let's clear if tasks exist and no listName is provided
+        if (tasks.length > 0) {
+           //setTasks([]); // Commented out for now, to avoid clearing tasks during HMR or other re-renders.
+                          // Decide on a clear strategy for initial load vs. navigation.
+        }
+      }
+    };
+
+    loadListFromParams();
+  }, [listName, setTasks]);
 
   useEffect(() => {
     // Check if this is the first user
@@ -71,15 +135,36 @@ export default function App() {
   }, [authLoading]);
 
   const handleLogoClick = () => {
-    if (tasks.length > 0) {
+    if (listName && tasks.length > 0) {
+      // If on a specific list page with tasks, show confirmation
+      setShowConfirmationModal(true);
+    } else if (listName) {
+      // If on a specific list page with no tasks, clear and navigate back
+      setTasks([]);
+      navigate('/');
+    } else if (tasks.length > 0) {
+      // If on main page with tasks, show confirmation
       setShowConfirmationModal(true);
     } else {
+      // If on main page with no tasks, just reload
       window.location.reload();
     }
   };
 
   const handleConfirmReload = () => {
-    window.location.reload();
+    // Close the modal first
+    setShowConfirmationModal(false);
+    
+    if (listName) {
+      // If on list page, clear tasks and navigate to main page
+      setTasks([]);
+      navigate('/');
+    } else {
+      // If on main page, reload after a short delay to ensure modal closes
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
   };
 
   const handleSettingsSave = (newSettings: typeof settings) => {
@@ -133,12 +218,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
-      <div className="absolute top-4 left-4 flex items-center gap-2">
-        <span className="beta-badge">beta</span>
-      </div>
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
-      <div className="max-w-2xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
           <Header
             onLogoClick={handleLogoClick}
