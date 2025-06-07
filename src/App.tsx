@@ -57,8 +57,6 @@ export default function App() {
             str.toLowerCase().replace(/[-:+.]/g, ' ').replace(/\s+/g, ' ').trim();
           
           const normalizedUrlListName = normalizeForMatching(listName.replace(/-/g, ' '));
-          console.log('Looking for list:', normalizedUrlListName);
-          console.log('Available lists:', allLists.map(list => `"${list.name}" -> "${normalizeForMatching(list.name)}"`));
           let matchedList = allLists.find(
             (list) => normalizeForMatching(list.name) === normalizedUrlListName
           );
@@ -154,13 +152,18 @@ export default function App() {
   };
 
   const handleConfirmReload = () => {
+    // Close the modal first
+    setShowConfirmationModal(false);
+    
     if (listName) {
       // If on list page, clear tasks and navigate to main page
       setTasks([]);
       navigate('/');
     } else {
-      // If on main page, reload
-      window.location.reload();
+      // If on main page, reload after a short delay to ensure modal closes
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     }
   };
 
