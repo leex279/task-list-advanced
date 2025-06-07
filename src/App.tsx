@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { HelpCircle } from 'lucide-react';
 import { useSettings } from './hooks/useSettings';
 import { getExampleLists, getTaskLists } from './services/taskListService';
@@ -23,6 +23,7 @@ export default function App() {
   const [settings, setSettings] = useSettings();
   const { user, loading: authLoading, isAdmin } = useAuth();
   const { listName } = useParams<{ listName: string }>();
+  const navigate = useNavigate();
   const {
     tasks,
     setTasks,
@@ -53,13 +54,9 @@ export default function App() {
           // First try to get all task lists from Supabase
           const allLists = await getTaskLists();
           const normalizedUrlListName = listName.replace(/-/g, ' ').toLowerCase();
-          console.log('Looking for list:', normalizedUrlListName);
-          console.log('Available lists:', allLists.map(list => list.name));
-          console.log('Available lists lowercase:', allLists.map(list => list.name.toLowerCase()));
           let matchedList = allLists.find(
             (list) => list.name.toLowerCase().replace(/-/g, ' ') === normalizedUrlListName
           );
-          console.log('Found match:', matchedList?.name);
 
           // If not found in all lists, fallback to example lists (which includes local files)
           if (!matchedList) {
@@ -133,9 +130,14 @@ export default function App() {
   }, [authLoading]);
 
   const handleLogoClick = () => {
-    if (tasks.length > 0) {
+    if (listName) {
+      // If on a specific list page, navigate back to main app
+      navigate('/');
+    } else if (tasks.length > 0) {
+      // If on main page with tasks, show confirmation
       setShowConfirmationModal(true);
     } else {
+      // If on main page with no tasks, just reload
       window.location.reload();
     }
   };
