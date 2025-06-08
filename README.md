@@ -371,6 +371,9 @@ URL: https://www.youtube.com/@DIYSmartCode<br><br>
   <img src="public/bolt-logo.png" width="200" alt="Bolt Logo">
 </a>
 
+## Contributers
+@jerrypena1
+
 ## License
 
 This project is licensed under the MIT License.
