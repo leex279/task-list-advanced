@@ -217,6 +217,7 @@ export default function App() {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-gray-50 relative">
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
@@ -229,6 +230,7 @@ export default function App() {
             tasks={tasks}
             onImport={setTasks}
             isAdmin={isAdmin}
+            onError={setError}
           />
           <TaskInput onAddTask={addTask} />
         </div>
@@ -246,7 +248,8 @@ export default function App() {
           isAdmin={isAdmin}
         />
       </div>
-
+    </div>
+    <div className="bg-gray-50 relative">
       <Footer />
       <button
         onClick={() => setShowHelpModal(true)}
@@ -286,5 +289,6 @@ export default function App() {
         />
       )}
     </div>
+    </>
   );
 }
