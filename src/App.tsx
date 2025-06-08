@@ -163,6 +163,8 @@ export default function App() {
       // If on main page, reload after a short delay to ensure modal closes
       setTimeout(() => {
         window.location.reload();
+      }, 100);
+    }
   };
 
   const handleSettingsSave = (newSettings: typeof settings) => {

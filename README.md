@@ -1,31 +1,58 @@
 # Task List Advanced
 
-A modern task management application with code block support and AI task generation capabilities. Built with React, TypeScript, and Tailwind CSS.
+A modern, feature-rich task management application with AI integration, deep linking, and collaborative features. Perfect for developers and teams who need to organize tasks with code examples, rich formatting, and shareable URLs.
+
+**🚀 Live Demo**: [https://task-list-advanced-main.netlify.app](https://task-list-advanced-main.netlify.app)
+
+Built with React 18, TypeScript, Vite 6, Supabase, and Google Gemini AI.
 
 ## Features
 
+### Core Task Management
 - ✨ Create and manage tasks with rich text descriptions
-- 📝 Add code blocks with syntax highlighting
+- 📝 Add code blocks with syntax highlighting (powered by Prism.js)
 - 🔄 Drag and drop to reorder tasks
-- 🤖 Generate task lists using Google's Gemini AI
-- 📁 Import/Export task lists as JSON
 - 🎯 Mark tasks as optional
 - 📑 Organize tasks with headlines and subtasks
+- 🔄 Task duplication
+- 🔍 Rich text descriptions with formatting (powered by React Quill)
+- 🗑️ Delete and edit tasks inline
+
+### AI Integration
+- 🤖 Generate task lists using Google's Gemini AI
+- 📄 Upload files for AI analysis and task generation
+- 🎨 AI generates structured tasks with code blocks and formatting
+
+### Data Management
+- 📁 Import/Export task lists as JSON
+- 💾 Database storage with Supabase
+- 📋 Example task lists for inspiration
+- 🔗 **Deep linking** - Share direct URLs to specific task lists
+- 🌐 **URL sharing** - Access task lists via `/list/task-list-name` URLs
+
+### User Experience
 - 🔗 Automatic URL to clickable link conversion
 - 🎨 Clean, modern UI with responsive design
+- 📱 Mobile-friendly interface
+- ⚡ Fast navigation with confirmation modals
+- 🖱️ Smart logo navigation (back to homepage from any list)
+
+### Authentication & Admin
 - 🔒 User authentication and admin dashboard
-- 💾 Database storage with Supabase
-- 📋 Example task lists
-- 🔄 Task duplication
-- 🔍 Rich text descriptions with formatting
+- 👑 First user becomes admin automatically
+- 🛡️ Role-based access control
+- 📊 Admin can manage example task lists
+- 🔐 Secure Row Level Security (RLS) with Supabase
 
 ## Quick Start
 
 1. Clone and install:
 ```bash
-git clone https://github.com/yourusername/task-list-advanced.git
+git clone https://github.com/leex279/task-list-advanced.git
 cd task-list-advanced
 npm install
+# or use pnpm
+# pnpm install
 ```
 
 2. Set up environment variables:
@@ -235,6 +262,28 @@ To use the AI task generation feature:
 4. Optionally attach files for analysis
 5. Click send to generate tasks
 
+## Deep Linking & URL Sharing
+
+The application supports direct linking to specific task lists:
+
+### How it works
+- **URL Format**: `/list/task-list-name`
+- **Example**: `https://yourapp.com/list/my-project-setup`
+- **Automatic Normalization**: URLs are automatically converted to match list names
+  - Hyphens become spaces: `my-project-setup` → `my project setup`
+  - Special characters (`:`, `+`, `.`) are handled automatically
+  - Case-insensitive matching
+
+### Usage
+1. **Share Lists**: Copy the URL when viewing any task list
+2. **Bookmark**: Save direct links to frequently used lists
+3. **Navigation**: Click the logo to return to the main app from any list
+
+### Smart Navigation
+- **From task list with tasks**: Shows confirmation modal before leaving
+- **From empty task list**: Direct navigation to homepage
+- **Logo always works**: One-click return to main application
+
 ## Task List Format
 
 Tasks are stored in JSON format:
@@ -263,14 +312,53 @@ Tasks are stored in JSON format:
 ## Development
 
 Built with:
-- Vite for development and building
-- React + TypeScript for type safety
-- TailwindCSS for styling
-- DND Kit for drag and drop
-- Prism.js for code highlighting
-- Google Gemini API for AI features
-- Supabase for database and authentication
-- React Quill for rich text editing
+- **Vite 6.x** for development and building
+- **React 18** + **TypeScript 5** for type safety
+- **TailwindCSS 3** for styling
+- **React Router 7** for routing and deep linking
+- **DND Kit** for drag and drop functionality
+- **Prism.js** for code highlighting
+- **Google Gemini API** for AI features
+- **Supabase** for database and authentication
+- **React Quill 2** for rich text editing
+
+### Package Management
+The project supports both npm and pnpm:
+```bash
+npm install    # Standard npm
+pnpm install   # Alternative with pnpm
+```
+
+### Development Commands
+```bash
+npm run dev      # Start development server (localhost:5173)
+npm run build    # Build for production
+npm run lint     # Run ESLint
+npm run preview  # Preview production build
+```
+
+## Deployment
+
+### Netlify Deployment
+The app is optimized for Netlify deployment:
+
+1. **Automatic Redirects**: Includes `public/_redirects` file for client-side routing
+2. **Build Command**: `npm run build`
+3. **Publish Directory**: `dist`
+4. **Environment Variables**: Set Supabase credentials in Netlify dashboard
+
+### Other Static Hosts
+For other static hosting providers, ensure:
+- Client-side routing is supported (redirect all routes to `/index.html`)
+- Environment variables are configured
+- Build output is from the `dist` directory
+
+### Environment Variables for Production
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_DEV_MODE=false
+```
 
 ## See also my Youtube Channel
 URL: https://www.youtube.com/@DIYSmartCode<br><br>
