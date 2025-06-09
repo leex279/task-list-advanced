@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { getTaskLists, deleteTaskList, TaskList } from '../../services/taskListService';
-import { Edit2, Trash2, Plus, ArrowLeft } from 'lucide-react';
+import { getTaskLists, deleteTaskList, TaskList, saveTaskList } from '../../services/taskListService';
+import { Edit2, Trash2, Plus, ArrowLeft, Upload } from 'lucide-react';
 import { ListEditor } from './ListEditor';
+import { SaveImportModal } from '../SaveImportModal';
+import { Task } from '../../types/task';
 
 interface AdminDashboardProps {
   onClose: () => void;
@@ -12,6 +14,9 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
   const [lists, setLists] = useState<TaskList[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingList, setEditingList] = useState<TaskList | null>(null);
+  const [showSaveImportModal, setShowSaveImportModal] = useState(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [saving, setSaving] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
@@ -29,6 +34,62 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
       setLoading(false);
     }
   };
+
+  const onSave = () => {
+    setShowSaveImportModal(false);
+    fetchLists();
+  }
+
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const content = e.target?.result as string;
+            const parsed = JSON.parse(content);
+            if (parsed.data) {
+              setTasks(parsed.data);
+              setShowSaveImportModal(true);
+            }
+          } catch (error) {
+            console.error('Error parsing imported file:', error);
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    
+    input.click();
+  };
+
+  const handleSaveImport = async (name: string, isExample: boolean) => {
+    if (!name.trim()) {
+      onError('Please enter a name for the list');
+      return;
+    }
+
+    if (tasks.length === 0) {
+      onError('Please add at least one task to the list');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await saveTaskList(name, tasks, isExample);
+      onSave();
+    } catch (error) {
+      console.error('Error saving list:', error);
+      onError('Failed to save task list');
+    } finally {
+      setSaving(false);
+    }
+  };  
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this list?')) return;
@@ -85,13 +146,25 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
               </button>
               <h2 className="text-2xl font-semibold text-gray-900">Task Lists</h2>
             </div>
-            <button
-              onClick={() => setIsCreating(true)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-            >
-              <Plus size={16} />
-              New List
-            </button>
+
+            <div className='flex gap-3'>
+              <button
+                onClick={handleImport}
+                className="import-export-button flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                title="Import tasks"
+                disabled={saving}
+              >
+                <Upload size={16} />
+                Import
+              </button>
+              <button
+                onClick={() => setIsCreating(true)}
+                className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+              >
+                <Plus size={16} />
+                New List
+              </button>              
+            </div>
           </div>
 
           <div className="p-6">
@@ -159,6 +232,13 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
           </div>
         </div>
       </div>
+      {showSaveImportModal && (
+        <SaveImportModal
+          onClose={() => setShowSaveImportModal(false)}
+          onSave={handleSaveImport}
+        />
+      )}
+
     </div>
   );
 }
