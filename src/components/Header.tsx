@@ -93,7 +93,7 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
             <button
               onClick={() => setShowSaveModal(true)}
               disabled={saving || tasks.length === 0}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 whitespace-nowrap"
               title="Save Tasks"
             >
               <Save size={16} />
