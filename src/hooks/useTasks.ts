@@ -3,6 +3,7 @@ import { Task } from '../types/task';
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
   const addTask = (
     text: string,
@@ -51,6 +52,9 @@ export function useTasks() {
 
   const deleteTask = (id: string) => {
     setTasks(prev => prev.filter((task) => task.id !== id));
+    if (selectedTaskId === id) {
+      setSelectedTaskId(null);
+    }
   };
 
   const editTask = (
@@ -71,6 +75,10 @@ export function useTasks() {
     setTasks(newTasks);
   };
 
+  const selectTask = (id: string | null) => {
+    setSelectedTaskId(id === '' ? null : id);
+  };
+
   return {
     tasks,
     setTasks,
@@ -79,6 +87,8 @@ export function useTasks() {
     toggleTask,
     deleteTask,
     editTask,
-    reorderTasks
+    reorderTasks,
+    selectedTaskId,
+    selectTask
   };
 }

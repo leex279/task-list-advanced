@@ -23,9 +23,11 @@ interface TaskListProps {
   onDuplicate: (id: string) => void;
   onReorder: (tasks: Task[]) => void;
   onCheckAllSubTasks: (headlineId: string) => void;
+  selectedTaskId?: string | null;
+  onSelectTask?: (id: string) => void;
 }
 
-export function TaskList({ tasks, onToggle, onDelete, onEdit, onDuplicate, onReorder, onCheckAllSubTasks }: TaskListProps) {
+export function TaskList({ tasks, onToggle, onDelete, onEdit, onDuplicate, onReorder, onCheckAllSubTasks, selectedTaskId, onSelectTask }: TaskListProps) {
   const sensors = useSensors(
     useSensor(MouseSensor),
     useSensor(TouchSensor)
@@ -70,6 +72,8 @@ export function TaskList({ tasks, onToggle, onDelete, onEdit, onDuplicate, onReo
               hasHeadlines={hasHeadlines}
               onCheckAllSubTasks={task.isHeadline ? onCheckAllSubTasks : undefined}
               tasks={tasks}
+              isSelected={selectedTaskId === task.id}
+              onSelect={onSelectTask}
             />
           ))}
         </div>
