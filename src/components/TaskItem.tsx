@@ -11,9 +11,11 @@ interface TaskItemProps {
   onDuplicate: (id: string) => void;
   onCheckAllSubTasks?: (headlineId: string) => void;
   tasks: Task[];
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
 }
 
-export function TaskItem({ task, onToggle, onDelete, onEdit, onDuplicate, onCheckAllSubTasks, tasks }: TaskItemProps) {
+export function TaskItem({ task, onToggle, onDelete, onEdit, onDuplicate, onCheckAllSubTasks, tasks, isSelected, onSelect }: TaskItemProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   if (isEditing) {
@@ -38,6 +40,8 @@ export function TaskItem({ task, onToggle, onDelete, onEdit, onDuplicate, onChec
       onDuplicate={onDuplicate}
       onCheckAllSubTasks={onCheckAllSubTasks}
       tasks={tasks}
+      isSelected={isSelected}
+      onSelect={onSelect}
     />
   );
 }

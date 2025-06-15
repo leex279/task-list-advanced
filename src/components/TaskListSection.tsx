@@ -17,6 +17,8 @@ interface TaskListSectionProps {
   googleApiKey?: string;
   onError: (error: string) => void;
   isAdmin: boolean;
+  selectedTaskId?: string | null;
+  onSelectTask?: (id: string) => void;
 }
 
 export function TaskListSection({
@@ -30,7 +32,9 @@ export function TaskListSection({
   onImportTaskList,
   googleApiKey,
   onError,
-  isAdmin
+  isAdmin,
+  selectedTaskId,
+  onSelectTask
 }: TaskListSectionProps) {
   const [exampleLists, setExampleLists] = React.useState<{ name: string; data: Task[] }[]>([]);
 
@@ -71,6 +75,8 @@ export function TaskListSection({
             onDuplicate={onDuplicate}
             onReorder={onReorder}
             onCheckAllSubTasks={onCheckAllSubTasks}
+            selectedTaskId={selectedTaskId}
+            onSelectTask={onSelectTask}
           />
         </>
       ) : (

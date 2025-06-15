@@ -32,7 +32,9 @@ export default function App() {
     toggleTask,
     deleteTask,
     editTask,
-    reorderTasks
+    reorderTasks,
+    selectedTaskId,
+    selectTask
   } = useTasks();
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -246,6 +248,8 @@ export default function App() {
           googleApiKey={settings.googleApiKey}
           onError={setError}
           isAdmin={isAdmin}
+          selectedTaskId={selectedTaskId}
+          onSelectTask={selectTask}
         />
       </div>
     </div>
