@@ -14,9 +14,11 @@ interface DraggableTaskItemProps {
   hasHeadlines: boolean;
   onCheckAllSubTasks?: (headlineId: string) => void;
   tasks: Task[];
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
 }
 
-export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, onDuplicate, hasHeadlines, onCheckAllSubTasks, tasks }: DraggableTaskItemProps) {
+export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, onDuplicate, hasHeadlines, onCheckAllSubTasks, tasks, isSelected, onSelect }: DraggableTaskItemProps) {
   const {
     attributes,
     listeners,
@@ -56,6 +58,8 @@ export function DraggableTaskItem({ task, onToggle, onDelete, onEdit, onDuplicat
             onDuplicate={onDuplicate}
             onCheckAllSubTasks={onCheckAllSubTasks}
             tasks={tasks}
+            isSelected={isSelected}
+            onSelect={onSelect}
           />
         </div>
       </div>

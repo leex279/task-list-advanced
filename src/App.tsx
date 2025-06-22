@@ -32,7 +32,9 @@ export default function App() {
     toggleTask,
     deleteTask,
     editTask,
-    reorderTasks
+    reorderTasks,
+    selectedTaskId,
+    selectTask
   } = useTasks();
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -221,7 +223,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-50 relative">
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
-      <div className="max-w-3xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
           <Header
             onLogoClick={handleLogoClick}
@@ -246,6 +248,8 @@ export default function App() {
           googleApiKey={settings.googleApiKey}
           onError={setError}
           isAdmin={isAdmin}
+          selectedTaskId={selectedTaskId}
+          onSelectTask={selectTask}
         />
       </div>
     </div>

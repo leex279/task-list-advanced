@@ -13,9 +13,11 @@ interface TaskDisplayProps {
   onDuplicate: (id: string) => void;
   onCheckAllSubTasks?: (headlineId: string) => void;
   tasks: Task[];
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
 }
 
-export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onCheckAllSubTasks, tasks }: TaskDisplayProps) {
+export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onCheckAllSubTasks, tasks, isSelected, onSelect }: TaskDisplayProps) {
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
 
   if (task.isHeadline) {
@@ -38,8 +40,19 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
       return allCompleted;
     };
 
+    const handleClick = (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget || (e.target as Element).closest('.task-content')) {
+        onSelect?.(isSelected ? '' : task.id);
+      }
+    };
+
     return (
-      <div className="p-4 bg-white rounded-lg shadow-sm group">
+      <div 
+        className={`p-4 rounded-lg shadow-sm group cursor-pointer transition-colors ${
+          isSelected ? 'bg-yellow-300' : 'bg-white hover:bg-gray-50'
+        }`}
+        onClick={handleClick}
+      >
         <div className="flex items-center gap-3">
           <button
             onClick={() => onCheckAllSubTasks?.(task.id)}
@@ -49,7 +62,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
           >
             {onCheckAllSubTasks && isAllSubTasksCompleted(tasks) && <Check size={14} className="text-white" />}
           </button>
-          <h2 className="flex-1 text-xl font-semibold text-gray-900">
+          <h2 className="flex-1 text-xl font-semibold text-gray-900 task-content">
             {task.text}
             {task.optional && (
               <span className="ml-2 px-2 py-1 text-xs font-semibold text-gray-600 bg-yellow-200 rounded-md optional-badge align-middle">
@@ -107,8 +120,19 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
     );
   }
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget || (e.target as Element).closest('.task-content')) {
+      onSelect?.(isSelected ? '' : task.id);
+    }
+  };
+
   return (
-    <div className="p-4 bg-white rounded-lg shadow-sm group">
+    <div 
+      className={`p-4 rounded-lg shadow-sm group cursor-pointer transition-colors ${
+        isSelected ? 'bg-yellow-300' : 'bg-white hover:bg-gray-50'
+      }`}
+      onClick={handleClick}
+    >
       <div className="flex items-start gap-3">
         <button
           onClick={() => onToggle(task.id)}
@@ -118,7 +142,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
         >
           {task.completed && <Check size={14} className="text-white" />}
         </button>
-        <div className="flex-1 overflow-x-auto">
+        <div className="flex-1 overflow-x-auto task-content">
           <div className="flex items-center gap-2">
             <TaskText text={task.text} completed={task.completed} />
             {task.optional && (

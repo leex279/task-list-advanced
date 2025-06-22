@@ -82,57 +82,57 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
   };
 
   return (
-    <div className="flex items-center justify-between mb-4 sm:mb-8">
-      <div className="flex items-center gap-3 cursor-pointer" onClick={onLogoClick}>
-        <CheckSquare size={32} className="text-blue-500" />
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Task List Advanced</h1>
+    <div className="flex items-center justify-between mb-4 sm:mb-8 flex-wrap gap-2">
+      <div className="flex items-center gap-2 sm:gap-3 cursor-pointer" onClick={onLogoClick}>
+        <CheckSquare size={28} className="text-blue-500 sm:w-8 sm:h-8" />
+        <h1 className="header-title text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 truncate">Task List Advanced</h1>
       </div>
-      <div className="flex items-center gap-2">
-        <div className="import-export-buttons flex gap-2">
+      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+        <div className="import-export-buttons flex gap-1 sm:gap-2">
           {isAdmin && (
             <button
               onClick={() => setShowSaveModal(true)}
               disabled={saving || tasks.length === 0}
-              className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 whitespace-nowrap"
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 whitespace-nowrap"
               title="Save Tasks"
             >
-              <Save size={16} />
-              {saving ? 'Saving...' : 'Save List'}
+              <Save size={14} className="sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">{saving ? 'Saving...' : 'Save List'}</span>
             </button>
           )}
           <button
             onClick={() => setShowExportModal(true)}
-            className="import-export-button flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            className="import-export-button flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors"
             title="Export tasks"
           >
-            <Download size={16} />
-            Export
+            <Download size={14} className="sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Export</span>
           </button>
           <button
             onClick={handleImport}
-            className="import-export-button flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            className="import-export-button flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors"
             title="Import tasks"
           >
-            <Upload size={16} />
-            Import
+            <Upload size={14} className="sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Import</span>
           </button>
         </div>
         {isAdmin && (
           <button
             onClick={onAdminClick}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors"
             title="Admin Dashboard"
           >
-            <Shield size={16} />
-            Admin
+            <Shield size={14} className="sm:w-4 sm:h-4" />
+            <span className="hidden md:inline">Admin</span>
           </button>
         )}
         <button
           onClick={onSettingsClick}
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-gray-600 p-2"
           title="Settings"
         >
-          <Settings size={18} />
+          <Settings size={16} className="sm:w-5 sm:h-5" />
         </button>
       </div>
 

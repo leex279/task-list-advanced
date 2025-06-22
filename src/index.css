@@ -131,3 +131,26 @@ footer {
   border-radius: 0.5rem;
   z-index: -1;
 }
+
+/* Mobile responsive utilities */
+@media (max-width: 480px) {
+  .import-export-buttons {
+    flex-wrap: wrap;
+  }
+  
+  .import-export-button {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  
+  .header-title {
+    font-size: 1rem !important;
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 375px) {
+  .header-title {
+    max-width: 120px;
+  }
+}
