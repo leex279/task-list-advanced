@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { CheckSquare, Settings, Shield, Download, Save, Upload } from 'lucide-react';
 import { Task } from '../types/task';
-import { ExportModal } from './ExportModal';
+import { ExportModal, ExportFormat } from './ExportModal';
 import { SaveModal } from './SaveModal';
 import { saveTaskList } from '../services/taskListService';
+import { exportTasksAsMarkdown } from '../utils/markdownExport';
 
 interface HeaderProps {
   onLogoClick: () => void;
@@ -43,15 +44,20 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
     }
   };
 
-  const handleExport = (name: string) => {
-    const dataStr = JSON.stringify({ name, data: tasks }, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    
-    const sanitizedName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', `${sanitizedName}.json`);
-    linkElement.click();
+  const handleExport = (name: string, format: ExportFormat) => {
+    if (format === 'markdown') {
+      exportTasksAsMarkdown(tasks, name);
+    } else {
+      // JSON export (existing logic)
+      const dataStr = JSON.stringify({ name, data: tasks }, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+      
+      const sanitizedName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', `${sanitizedName}.json`);
+      linkElement.click();
+    }
   };
 
   const handleImport = () => {

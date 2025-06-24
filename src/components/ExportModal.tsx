@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
+export type ExportFormat = 'json' | 'markdown';
+
 interface ExportModalProps {
   onClose: () => void;
-  onExport: (name: string) => void;
+  onExport: (name: string, format: ExportFormat) => void;
 }
 
 export function ExportModal({ onClose, onExport }: ExportModalProps) {
   const [name, setName] = useState('');
+  const [format, setFormat] = useState<ExportFormat>('json');
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -29,7 +32,7 @@ export function ExportModal({ onClose, onExport }: ExportModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
-      onExport(name.trim());
+      onExport(name.trim(), format);
       onClose();
     }
   };
@@ -58,6 +61,33 @@ export function ExportModal({ onClose, onExport }: ExportModalProps) {
               placeholder="Enter a name for your task list"
               required
             />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Export Format
+            </label>
+            <div className="space-y-2">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  value="json"
+                  checked={format === 'json'}
+                  onChange={(e) => setFormat(e.target.value as ExportFormat)}
+                  className="mr-2 text-blue-500 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">JSON (for importing back into the app)</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  value="markdown"
+                  checked={format === 'markdown'}
+                  onChange={(e) => setFormat(e.target.value as ExportFormat)}
+                  className="mr-2 text-blue-500 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">Markdown (for documentation and sharing)</span>
+              </label>
+            </div>
           </div>
           <div className="flex justify-end gap-2">
             <button
