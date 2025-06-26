@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckSquare, Settings, Shield, Download, Save, Upload } from 'lucide-react';
 import { Task } from '../types/task';
 import { ExportModal, ExportFormat } from './ExportModal';
@@ -9,14 +10,14 @@ import { exportTasksAsMarkdown } from '../utils/markdownExport';
 interface HeaderProps {
   onLogoClick: () => void;
   onSettingsClick: () => void;
-  onAdminClick: () => void;
   tasks: Task[];
   onImport: (tasks: Task[]) => void;
   onError: (error: string) => void;
   isAdmin?: boolean;
 }
 
-export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onImport, onError, isAdmin }: HeaderProps) {
+export function Header({ onLogoClick, onSettingsClick, tasks, onImport, onError, isAdmin }: HeaderProps) {
+  const navigate = useNavigate();
   const [showExportModal, setShowExportModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -125,7 +126,7 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
         </div>
         {isAdmin && (
           <button
-            onClick={onAdminClick}
+            onClick={() => navigate('/admin')}
             className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors"
             title="Admin Dashboard"
           >

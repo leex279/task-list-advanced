@@ -24,6 +24,8 @@ export default function App() {
   const { user, loading: authLoading, isAdmin } = useAuth();
   const { listName } = useParams<{ listName: string }>();
   const navigate = useNavigate();
+  const location = window.location.pathname;
+  const isAdminRoute = location.startsWith('/admin');
   const {
     tasks,
     setTasks,
@@ -205,14 +207,21 @@ export default function App() {
     return false;
   };
 
-  if (showAdminDashboard && isAdmin) {
+  if ((showAdminDashboard || isAdminRoute) && isAdmin) {
     return (
       <AdminDashboard 
-        onClose={() => setShowAdminDashboard(false)}
+        onClose={() => {
+          setShowAdminDashboard(false);
+          if (isAdminRoute) navigate('/');
+        }}
         onError={setError}
         onEditList={(list) => {
           setTasks(list.data);
-          setShowAdminDashboard(false);
+          const slug = list.name
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^a-z0-9-]/g, '');
+          navigate(`/admin/list/${slug}`);
         }}
       />
     );
@@ -228,7 +237,6 @@ export default function App() {
           <Header
             onLogoClick={handleLogoClick}
             onSettingsClick={() => setShowSettingsModal(true)}
-            onAdminClick={() => setShowAdminDashboard(true)}
             tasks={tasks}
             onImport={setTasks}
             isAdmin={isAdmin}

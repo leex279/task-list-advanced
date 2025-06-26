@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getTaskLists, deleteTaskList, TaskList, saveTaskList } from '../../services/taskListService';
-import { Edit2, Trash2, Plus, ArrowLeft, Upload } from 'lucide-react';
+import { Edit2, Trash2, Plus, ArrowLeft, Upload, Download } from 'lucide-react';
 import { ListEditor } from './ListEditor';
 import { SaveImportModal } from '../SaveImportModal';
+import { ExportModal } from '../ExportModal';
 import { Task } from '../../types/task';
 
 interface AdminDashboardProps {
@@ -11,6 +13,8 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
+  const { listName } = useParams<{ listName: string }>();
+  const navigate = useNavigate();
   const [lists, setLists] = useState<TaskList[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingList, setEditingList] = useState<TaskList | null>(null);
@@ -18,10 +22,30 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [saving, setSaving] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportingList, setExportingList] = useState<TaskList | null>(null);
 
   useEffect(() => {
     fetchLists();
   }, []);
+
+  useEffect(() => {
+    if (listName && lists.length > 0) {
+      const normalizeForMatching = (str: string) => 
+        str.toLowerCase().replace(/[-:+.]/g, ' ').replace(/\s+/g, ' ').trim();
+      
+      const normalizedUrlListName = normalizeForMatching(listName.replace(/-/g, ' '));
+      
+      const matchedList = lists.find(list => 
+        normalizeForMatching(list.name) === normalizedUrlListName
+      );
+      
+      if (matchedList) {
+        setEditingList(matchedList);
+        setTasks(matchedList.data);
+      }
+    }
+  }, [listName, lists]);
 
   const fetchLists = async () => {
     try {
@@ -118,13 +142,21 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
       <ListEditor
         list={editingList || undefined}
         onSave={() => {
-          setEditingList(null);
-          setIsCreating(false);
+          if (listName) {
+            navigate('/admin');
+          } else {
+            setEditingList(null);
+            setIsCreating(false);
+          }
           fetchLists();
         }}
         onCancel={() => {
-          setEditingList(null);
-          setIsCreating(false);
+          if (listName) {
+            navigate('/admin');
+          } else {
+            setEditingList(null);
+            setIsCreating(false);
+          }
         }}
         onError={onError}
       />
@@ -209,7 +241,23 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end gap-2">
                           <button
-                            onClick={() => setEditingList(list)}
+                            onClick={() => {
+                              setExportingList(list);
+                              setShowExportModal(true);
+                            }}
+                            className="text-green-600 hover:text-green-900"
+                            title="Export list"
+                          >
+                            <Download size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              const slug = list.name
+                                .toLowerCase()
+                                .replace(/\s+/g, '-')
+                                .replace(/[^a-z0-9-]/g, '');
+                              navigate(`/admin/list/${slug}`);
+                            }}
                             className="text-blue-600 hover:text-blue-900"
                             title="Edit list"
                           >
@@ -236,6 +284,16 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
         <SaveImportModal
           onClose={() => setShowSaveImportModal(false)}
           onSave={handleSaveImport}
+        />
+      )}
+
+      {showExportModal && exportingList && (
+        <ExportModal
+          taskListName={exportingList.name}
+          onClose={() => {
+            setShowExportModal(false);
+            setExportingList(null);
+          }}
         />
       )}
 

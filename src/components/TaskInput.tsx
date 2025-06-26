@@ -115,9 +115,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
         <CodeBlockEditor
           language="javascript"
           code={code}
-          onChange={(code) => { 
-            return setCode(code);
-          }}
+          onChange={(_, newCode) => setCode(newCode)}
         />
       )}
       {!isHeadline && showRichTextEditor && (
