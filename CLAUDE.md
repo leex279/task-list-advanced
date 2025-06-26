@@ -71,15 +71,22 @@ interface Task {
 
 ### Routing and Deeplinking
 
-The app uses React Router with two main routes:
+The app uses React Router with four main routes:
 - `/` - Main application page
 - `/list/:listName` - Deep links to specific task lists
+- `/admin` - Admin dashboard (requires admin privileges)
+- `/admin/list/:listName` - Admin list editing with persistent URLs
 
 **Deeplinking Logic**: URLs like `/list/my-task-list` are normalized by:
 1. Converting hyphens to spaces: `my-task-list` → `my task list`
 2. Removing special characters (`:`, `+`, `.`) and normalizing spacing
 3. Case-insensitive matching against Supabase task list names
 4. Falls back to local example lists if not found in database
+
+**Admin URL Persistence**: Admin routes maintain state on page refresh:
+- Admin dashboard automatically opens when visiting `/admin`
+- List editing URLs like `/admin/list/my-task-list` load the specific list for editing
+- Navigation properly handles save/cancel operations returning to `/admin`
 
 **Netlify Deployment**: Includes `public/_redirects` file (`/*    /index.html   200`) for client-side routing support.
 
@@ -104,6 +111,32 @@ Uses Supabase with two main tables:
   - Roles: 'admin' or 'user'
 
 **Important**: Database setup SQL is documented in README.md including all tables, policies, and triggers.
+
+### Admin System
+
+**Admin Authentication & Access**:
+- First user to register automatically becomes admin
+- Admin status persists in users table with role field
+- Admin routes are protected and redirect non-admins
+
+**Admin Dashboard Features** (`/admin`):
+- View all task lists in tabular format with metadata
+- Create new task lists via import functionality
+- Export any list to JSON or Markdown formats
+- Edit existing lists with full task management
+- Delete task lists with confirmation
+- Mark lists as "example" for public visibility
+
+**Admin List Editing** (`/admin/list/:listName`):
+- Full task editor with all features (rich text, code blocks, headlines)
+- URL persistence allows direct linking to specific list editing
+- Save/cancel operations properly navigate back to dashboard
+- Changes are immediately reflected in the database
+
+**Admin Header Integration**:
+- Admin button in header navigates to `/admin` (not modal-based)
+- Export functionality available in both main UI and admin dashboard
+- Save List functionality for admins to create example lists
 
 ### Key Implementation Details
 

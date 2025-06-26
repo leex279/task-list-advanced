@@ -24,11 +24,12 @@ Built with React 18, TypeScript, Vite 6, Supabase, and Google Gemini AI.
 - 🎨 AI generates structured tasks with code blocks and formatting
 
 ### Data Management
-- 📁 Import/Export task lists as JSON
+- 📁 Import/Export task lists as JSON or Markdown
 - 💾 Database storage with Supabase
 - 📋 Example task lists for inspiration
 - 🔗 **Deep linking** - Share direct URLs to specific task lists
 - 🌐 **URL sharing** - Access task lists via `/list/task-list-name` URLs
+- 📤 **Export from admin** - Export any list directly from admin dashboard
 
 ### User Experience
 - 🔗 Automatic URL to clickable link conversion
@@ -42,6 +43,8 @@ Built with React 18, TypeScript, Vite 6, Supabase, and Google Gemini AI.
 - 👑 First user becomes admin automatically
 - 🛡️ Role-based access control
 - 📊 Admin can manage example task lists
+- 🔗 **Admin persistent URLs** - `/admin` and `/admin/list/:listName` for direct access
+- 📥 Export functionality in admin dashboard (JSON/Markdown)
 - 🔐 Secure Row Level Security (RLS) with Supabase
 
 ## Quick Start
@@ -264,9 +267,9 @@ To use the AI task generation feature:
 
 ## Deep Linking & URL Sharing
 
-The application supports direct linking to specific task lists:
+The application supports direct linking to specific task lists and admin functions:
 
-### How it works
+### Public Task Lists
 - **URL Format**: `/list/task-list-name`
 - **Example**: `https://yourapp.com/list/my-project-setup`
 - **Automatic Normalization**: URLs are automatically converted to match list names
@@ -274,10 +277,17 @@ The application supports direct linking to specific task lists:
   - Special characters (`:`, `+`, `.`) are handled automatically
   - Case-insensitive matching
 
+### Admin URLs (Requires Admin Access)
+- **Admin Dashboard**: `/admin` - View and manage all task lists
+- **Admin List Editing**: `/admin/list/task-list-name` - Direct edit access to specific lists
+- **Persistent State**: Admin URLs maintain context on page refresh
+- **Smart Navigation**: Save/cancel operations properly return to dashboard
+
 ### Usage
 1. **Share Lists**: Copy the URL when viewing any task list
-2. **Bookmark**: Save direct links to frequently used lists
+2. **Bookmark**: Save direct links to frequently used lists or admin pages
 3. **Navigation**: Click the logo to return to the main app from any list
+4. **Admin Access**: Use `/admin` for administrative functions
 
 ### Smart Navigation
 - **From task list with tasks**: Shows confirmation modal before leaving
