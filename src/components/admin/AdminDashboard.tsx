@@ -4,8 +4,9 @@ import { getTaskLists, deleteTaskList, TaskList, saveTaskList } from '../../serv
 import { Edit2, Trash2, Plus, ArrowLeft, Upload, Download } from 'lucide-react';
 import { ListEditor } from './ListEditor';
 import { SaveImportModal } from '../SaveImportModal';
-import { ExportModal } from '../ExportModal';
+import { ExportModal, ExportFormat } from '../ExportModal';
 import { Task } from '../../types/task';
+import { exportTasksAsMarkdown } from '../../utils/markdownExport';
 
 interface AdminDashboardProps {
   onClose: () => void;
@@ -62,6 +63,27 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
   const onSave = () => {
     setShowSaveImportModal(false);
     fetchLists();
+  }
+
+  const handleExport = (name: string, format: ExportFormat) => {
+    if (!exportingList) return;
+    
+    if (format === 'markdown') {
+      exportTasksAsMarkdown(exportingList.data, name);
+    } else {
+      // JSON export
+      const dataStr = JSON.stringify({ name, data: exportingList.data }, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+      
+      const sanitizedName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', `${sanitizedName}.json`);
+      linkElement.style.display = 'none';
+      document.body.appendChild(linkElement);
+      linkElement.click();
+      document.body.removeChild(linkElement);
+    }
   }
 
   const handleImport = () => {
@@ -289,11 +311,12 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
 
       {showExportModal && exportingList && (
         <ExportModal
-          taskListName={exportingList.name}
           onClose={() => {
             setShowExportModal(false);
             setExportingList(null);
           }}
+          onExport={handleExport}
+          defaultName={exportingList.name}
         />
       )}
 

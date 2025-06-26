@@ -6,10 +6,11 @@ export type ExportFormat = 'json' | 'markdown';
 interface ExportModalProps {
   onClose: () => void;
   onExport: (name: string, format: ExportFormat) => void;
+  defaultName?: string;
 }
 
-export function ExportModal({ onClose, onExport }: ExportModalProps) {
-  const [name, setName] = useState('');
+export function ExportModal({ onClose, onExport, defaultName }: ExportModalProps) {
+  const [name, setName] = useState(defaultName || '');
   const [format, setFormat] = useState<ExportFormat>('json');
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
