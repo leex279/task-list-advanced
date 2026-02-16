@@ -165,6 +165,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
               <CodeBlock
                 code={task.codeBlock.code}
                 language={task.codeBlock.language}
+                tokens={task.codeBlock.tokens}
               />
             </div>
           )}
