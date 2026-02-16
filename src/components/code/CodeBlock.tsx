@@ -29,16 +29,20 @@ export function CodeBlock({ code, language, tokens }: CodeBlockProps) {
       setShowTokenModal(true);
       return;
     }
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
 
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = window.setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Failed to copy code:', error);
     }
-
-    timeoutRef.current = window.setTimeout(() => {
-      setCopied(false);
-    }, 2000);
   };
 
   return (

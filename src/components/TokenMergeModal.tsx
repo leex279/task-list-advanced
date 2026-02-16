@@ -25,15 +25,20 @@ export function TokenMergeModal({ code, tokens, onClose }: TokenMergeModalProps)
   const getMergedCode = () => {
     let merged = code;
     Object.entries(values).forEach(([key, value]) => {
-      merged = merged.replace(new RegExp(`%%${key}%%`, 'g'), value);
+      const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      merged = merged.replace(new RegExp(`%%${escapedKey}%%`, 'g'), value);
     });
     return merged;
   };
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(getMergedCode());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(getMergedCode());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy code:', error);
+    }
   };
 
   return (
