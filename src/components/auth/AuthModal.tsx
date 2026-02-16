@@ -82,16 +82,17 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-lg shadow-modal w-full max-w-md mx-4 overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-surface-200">
+          <h2 className="text-lg font-semibold text-surface-900">
             {isFirstUser ? 'Create Admin Account' : (isSignUp ? 'Create Account' : 'Sign In')}
           </h2>
           {!isFirstUser && (
-            <button 
+            <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="p-1 text-surface-400 hover:text-surface-600 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               aria-label="Close"
             >
               <X size={20} />
@@ -99,87 +100,95 @@ export function AuthModal({ onClose, isFirstUser }: AuthModalProps) {
           )}
         </div>
 
-        {isFirstUser && (
-          <p className="mb-4 text-sm text-gray-600">
-            You are the first user. This account will have admin privileges.
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              ref={inputRef}
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
-              required
-              autoComplete="email"
-              disabled={loading}
-              placeholder="Enter your email"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
-              required
-              minLength={6}
-              autoComplete={isSignUp ? 'new-password' : 'current-password'}
-              disabled={loading}
-              placeholder={isSignUp ? 'Create a password' : 'Enter your password'}
-            />
-            {isSignUp && (
-              <p className="mt-1 text-xs text-gray-500">
-                Password must be at least 6 characters long
-              </p>
+        {/* Content */}
+        <form onSubmit={handleSubmit}>
+          <div className="px-6 py-4 space-y-4">
+            {isFirstUser && (
+              <div className="p-3 bg-primary-50 border border-primary-200 rounded-lg">
+                <p className="text-sm text-primary-700">
+                  You are the first user. This account will have admin privileges.
+                </p>
+              </div>
             )}
-          </div>
 
-          {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md" role="alert">
-              <p className="text-sm text-red-600">{error}</p>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-surface-700 mb-1">
+                Email
+              </label>
+              <input
+                ref={inputRef}
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 border border-surface-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:opacity-50 transition-all"
+                required
+                autoComplete="email"
+                disabled={loading}
+                placeholder="Enter your email"
+              />
             </div>
-          )}
 
-          {!isFirstUser && (
-            <button
-              type="button"
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm text-blue-600 hover:text-blue-800"
-            >
-              {isSignUp ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
-            </button>
-          )}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-surface-700 mb-1">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-surface-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:opacity-50 transition-all"
+                required
+                minLength={6}
+                autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                disabled={loading}
+                placeholder={isSignUp ? 'Create a password' : 'Enter your password'}
+              />
+              {isSignUp && (
+                <p className="mt-1 text-xs text-surface-500">
+                  Password must be at least 6 characters long
+                </p>
+              )}
+            </div>
 
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 transition-colors"
-            disabled={loading || !email.trim() || !password.trim()}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                {isFirstUser ? 'Creating Account...' : (isSignUp ? 'Creating Account...' : 'Signing In...')}
-              </span>
-            ) : (
-              isFirstUser ? 'Create Account' : (isSignUp ? 'Sign Up' : 'Sign In')
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg" role="alert">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
             )}
-          </button>
+
+            {!isFirstUser && (
+              <button
+                type="button"
+                onClick={() => setIsSignUp(!isSignUp)}
+                className="text-sm text-primary-600 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded"
+              >
+                {isSignUp ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
+              </button>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-4 border-t border-surface-200 bg-surface-50">
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={loading || !email.trim() || !password.trim()}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  {isFirstUser ? 'Creating Account...' : (isSignUp ? 'Creating Account...' : 'Signing In...')}
+                </span>
+              ) : (
+                isFirstUser ? 'Create Account' : (isSignUp ? 'Sign Up' : 'Sign In')
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>

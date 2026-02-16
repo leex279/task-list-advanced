@@ -13,8 +13,8 @@ import { ConfirmationModal } from './components/ConfirmationModal';
 import { SettingsModal } from './components/SettingsModal';
 import { HelpModal } from './components/HelpModal';
 import { ErrorNotification } from './components/ErrorNotification';
-import { IntroModal } from './components/IntroModal';
 import { Tour } from './components/tour/Tour';
+import { Task } from './types/task';
 import { AuthModal } from './components/auth/AuthModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { supabase } from './lib/supabase';
@@ -55,9 +55,9 @@ export default function App() {
         try {
           // First try to get all task lists from Supabase
           const allLists = await getTaskLists();
-          const normalizeForMatching = (str: string) => 
+          const normalizeForMatching = (str: string) =>
             str.toLowerCase().replace(/[-:+.]/g, ' ').replace(/\s+/g, ' ').trim();
-          
+
           const normalizedUrlListName = normalizeForMatching(listName.replace(/-/g, ' '));
           let matchedList = allLists.find(
             (list) => normalizeForMatching(list.name) === normalizedUrlListName
@@ -81,7 +81,7 @@ export default function App() {
           // Fallback to example lists only
           try {
             const exampleLists = await getExampleLists();
-            const normalizeForMatching = (str: string) => 
+            const normalizeForMatching = (str: string) =>
               str.toLowerCase().replace(/[-:+.]/g, ' ').replace(/\s+/g, ' ').trim();
             const normalizedUrlListName = normalizeForMatching(listName.replace(/-/g, ' '));
             const matchedList = exampleLists.find(
@@ -156,7 +156,7 @@ export default function App() {
   const handleConfirmReload = () => {
     // Close the modal first
     setShowConfirmationModal(false);
-    
+
     if (listName) {
       // If on list page, clear tasks and navigate to main page
       setTasks([]);
@@ -181,10 +181,10 @@ export default function App() {
 
   const checkAllSubTasks = (headlineId: string) => {
     setTasks((prevTasks) => {
-      const isAllCompleted = prevTasks.every(task => 
+      const isAllCompleted = prevTasks.every(task =>
         task.isHeadline || task.completed || !isSubTaskOf(task, headlineId, prevTasks)
       );
-      
+
       return prevTasks.map(task => {
         if (task.id === headlineId || isSubTaskOf(task, headlineId, prevTasks)) {
           return { ...task, completed: !isAllCompleted };
@@ -207,7 +207,7 @@ export default function App() {
 
   if (showAdminDashboard && isAdmin) {
     return (
-      <AdminDashboard 
+      <AdminDashboard
         onClose={() => setShowAdminDashboard(false)}
         onError={setError}
         onEditList={(list) => {
@@ -220,11 +220,11 @@ export default function App() {
 
   return (
     <>
-    <div className="min-h-screen bg-gray-50 relative">
+    <div className="min-h-screen bg-surface-50 relative">
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
-      <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
+      <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-xl shadow-card border border-surface-200 p-4 sm:p-6 mb-8">
           <Header
             onLogoClick={handleLogoClick}
             onSettingsClick={() => setShowSettingsModal(true)}
@@ -253,11 +253,11 @@ export default function App() {
         />
       </div>
     </div>
-    <div className="bg-gray-50 relative">
+    <div className="bg-surface-50 relative">
       <Footer />
       <button
         onClick={() => setShowHelpModal(true)}
-        className="fixed bottom-4 right-4 p-2 text-gray-400 hover:text-gray-600"
+        className="fixed bottom-4 right-4 p-2 text-surface-400 hover:text-surface-600 transition-colors rounded-full hover:bg-surface-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
         title="Help"
       >
         <HelpCircle size={24} />

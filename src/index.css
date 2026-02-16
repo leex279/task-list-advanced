@@ -2,12 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design System CSS Variables */
+:root {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+
+  --color-surface-50: #fafafa;
+  --color-surface-100: #f4f4f5;
+  --color-surface-200: #e4e4e7;
+  --color-surface-300: #d4d4d8;
+  --color-surface-400: #a1a1aa;
+  --color-surface-500: #71717a;
+  --color-surface-600: #52525b;
+  --color-surface-700: #3f3f46;
+  --color-surface-800: #27272a;
+  --color-surface-900: #18181b;
+
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-modal: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .indent {
   margin-left: 2rem;
+}
+
+/* Button Variants */
+.btn {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-700;
+  @apply shadow-sm hover:shadow-md;
+}
+
+.btn-secondary {
+  @apply bg-surface-100 text-surface-700 hover:bg-surface-200 active:bg-surface-300;
+  @apply border border-surface-200;
+}
+
+.btn-ghost {
+  @apply bg-transparent text-surface-600 hover:bg-surface-100 hover:text-surface-900 active:bg-surface-200;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700 active:bg-red-800;
+  @apply shadow-sm hover:shadow-md;
+}
+
+/* Card Styles */
+.card {
+  @apply bg-white rounded-lg border border-surface-200;
+  box-shadow: var(--shadow-card);
+}
+
+.card-elevated {
+  @apply bg-white rounded-lg border border-surface-200;
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Modal Overlay - unified z-index */
+.modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center;
+  background-color: rgb(0 0 0 / 0.5);
+}
+
+/* Focus Ring Utility */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2;
 }
 
 .tag-button {
@@ -37,27 +109,7 @@ code {
 }
 
 footer {
-  border-top: 1px solid #e2e8f0;
-}
-
-.confirmation-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.confirmation-modal {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-top: 1px solid var(--color-surface-200);
 }
 
 .beta-badge {
@@ -137,12 +189,12 @@ footer {
   .import-export-buttons {
     flex-wrap: wrap;
   }
-  
+
   .import-export-button {
     min-width: 0;
     flex-shrink: 1;
   }
-  
+
   .header-title {
     font-size: 1rem !important;
     max-width: 150px;

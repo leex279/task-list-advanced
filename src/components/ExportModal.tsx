@@ -35,17 +35,23 @@ export function ExportModal({ onClose, onExport }: ExportModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-medium text-gray-900">Export Task List</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div ref={modalRef} className="bg-white rounded-lg shadow-modal w-full max-w-md mx-4 overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-surface-200">
+          <h2 className="text-lg font-semibold text-surface-900">Export Task List</h2>
+          <button
+            onClick={onClose}
+            className="p-1 text-surface-400 hover:text-surface-600 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+          >
             <X size={20} />
           </button>
         </div>
+
+        {/* Content */}
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="px-6 py-4">
+            <label htmlFor="name" className="block text-sm font-medium text-surface-700 mb-2">
               Task List Name
             </label>
             <input
@@ -54,22 +60,24 @@ export function ExportModal({ onClose, onExport }: ExportModalProps) {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-surface-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
               placeholder="Enter a name for your task list"
               required
             />
           </div>
-          <div className="flex justify-end gap-2">
+
+          {/* Footer */}
+          <div className="flex justify-end gap-2 px-6 py-4 border-t border-surface-200 bg-surface-50">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 hover:text-gray-900"
+              className="btn btn-ghost"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              className="btn btn-primary"
               disabled={!name.trim()}
             >
               Export
