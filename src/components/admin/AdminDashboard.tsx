@@ -56,9 +56,12 @@ export function AdminDashboard({ onClose, onError }: AdminDashboardProps) {
             if (parsed.data) {
               setTasks(parsed.data);
               setShowSaveImportModal(true);
+            } else {
+              onError('Invalid task list format: missing data property');
             }
           } catch (error) {
             console.error('Error parsing imported file:', error);
+            onError('Failed to parse imported file. Please ensure it is valid JSON.');
           }
         };
         reader.readAsText(file);

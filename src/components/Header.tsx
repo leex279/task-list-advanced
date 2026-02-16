@@ -69,9 +69,12 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
             const parsed = JSON.parse(content);
             if (parsed.data) {
               onImport(parsed.data);
+            } else {
+              onError('Invalid task list format: missing data property');
             }
           } catch (error) {
             console.error('Error parsing imported file:', error);
+            onError('Failed to parse imported file. Please ensure it is valid JSON.');
           }
         };
         reader.readAsText(file);
