@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 const DEFAULT_SETTINGS = {
   service: 'Google',
   model: 'gemini-2.0-flash-exp',
-  googleApiKey: ''
+  googleApiKey: '',
+  darkMode: false
 };
 
 export function useSettings() {

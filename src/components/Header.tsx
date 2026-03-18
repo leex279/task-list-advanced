@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckSquare, Settings, Shield, Download, Save, Upload } from 'lucide-react';
+import { CheckSquare, Settings, Shield, Download, Save, Upload, Moon, Sun } from 'lucide-react';
 import { Task } from '../types/task';
 import { ExportModal } from './ExportModal';
 import { SaveModal } from './SaveModal';
@@ -9,13 +9,15 @@ interface HeaderProps {
   onLogoClick: () => void;
   onSettingsClick: () => void;
   onAdminClick: () => void;
+  onDarkModeToggle: () => void;
+  darkMode?: boolean;
   tasks: Task[];
   onImport: (tasks: Task[]) => void;
   onError: (error: string) => void;
   isAdmin?: boolean;
 }
 
-export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onImport, onError, isAdmin }: HeaderProps) {
+export function Header({ onLogoClick, onSettingsClick, onAdminClick, onDarkModeToggle, darkMode, tasks, onImport, onError, isAdmin }: HeaderProps) {
   const [showExportModal, setShowExportModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -127,6 +129,13 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
             <span className="hidden md:inline">Admin</span>
           </button>
         )}
+        <button
+          onClick={onDarkModeToggle}
+          className="text-gray-400 hover:text-gray-600 p-2"
+          title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {darkMode ? <Sun size={16} className="sm:w-5 sm:h-5" /> : <Moon size={16} className="sm:w-5 sm:h-5" />}
+        </button>
         <button
           onClick={onSettingsClick}
           className="text-gray-400 hover:text-gray-600 p-2"

@@ -136,6 +136,14 @@ export default function App() {
     }
   }, [authLoading]);
 
+  useEffect(() => {
+    if (settings.darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [settings.darkMode]);
+
   const handleLogoClick = () => {
     if (listName && tasks.length > 0) {
       // If on a specific list page with tasks, show confirmation
@@ -220,15 +228,17 @@ export default function App() {
 
   return (
     <>
-    <div className="min-h-screen bg-gray-50 relative">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 relative">
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
 
       <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 mb-8">
           <Header
             onLogoClick={handleLogoClick}
             onSettingsClick={() => setShowSettingsModal(true)}
             onAdminClick={() => setShowAdminDashboard(true)}
+            onDarkModeToggle={() => setSettings({ ...settings, darkMode: !settings.darkMode })}
+            darkMode={settings.darkMode}
             tasks={tasks}
             onImport={setTasks}
             isAdmin={isAdmin}
@@ -253,7 +263,7 @@ export default function App() {
         />
       </div>
     </div>
-    <div className="bg-gray-50 relative">
+    <div className="bg-gray-50 dark:bg-gray-900 relative">
       <Footer />
       <button
         onClick={() => setShowHelpModal(true)}

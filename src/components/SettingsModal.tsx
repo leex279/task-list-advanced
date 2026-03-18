@@ -65,11 +65,11 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-        <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="inline-block transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+          <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Settings</h3>
-              <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Settings</h3>
+              <button onClick={onClose} className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
                 <X size={20} />
               </button>
             </div>
@@ -77,7 +77,7 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
             {/* Authentication Section */}
             <div className="mb-6 pb-6 border-b">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium text-gray-900">Account</h4>
+                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">Account</h4>
                 {user ? (
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-600">{user.email}</span>
@@ -103,7 +103,7 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
 
             {/* Google API Key Section */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Google API Key
               </label>
               <div className="flex items-center gap-2">
@@ -111,7 +111,7 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
                   type="password"
                   value={settings.googleApiKey || ''}
                   onChange={(e) => setSettings({ ...settings, googleApiKey: e.target.value })}
-                  className="flex-1 px-3 py-2 border rounded-md"
+                  className="flex-1 px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                   placeholder="Enter your API key"
                 />
                 <button
@@ -153,7 +153,7 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
 
             {/* Clear Site Data Section */}
             <div className="mt-8 pt-6 border-t">
-              <h4 className="text-sm font-medium text-gray-900 mb-2">Clear Site Data</h4>
+              <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Clear Site Data</h4>
               <p className="text-sm text-gray-500 mb-4">
                 This will clear all saved settings, tasks, and cached data. This action cannot be undone.
               </p>
@@ -169,7 +169,7 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
             <ChatHistory onClose={onClose} />
           </div>
 
-          <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+          <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
             <button
               type="button"
               onClick={() => onSave(settings)}
@@ -180,7 +180,7 @@ export function SettingsModal({ onClose, onSave, initialSettings, isAdmin, user,
             <button
               type="button"
               onClick={onClose}
-              className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
+              className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-base font-medium text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
             >
               Cancel
             </button>

@@ -54,7 +54,7 @@ footer {
 }
 
 .confirmation-modal {
-  background-color: white;
+  @apply bg-white dark:bg-gray-800;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -130,6 +130,10 @@ footer {
   background: white;
   border-radius: 0.5rem;
   z-index: -1;
+}
+
+.dark .tour-highlight::before {
+  background: #1f2937; /* gray-800 */
 }
 
 /* Mobile responsive utilities */
