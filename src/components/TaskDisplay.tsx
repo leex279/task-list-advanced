@@ -47,22 +47,24 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
     };
 
     return (
-      <div 
-        className={`p-4 rounded-lg shadow-sm group cursor-pointer transition-colors ${
-          isSelected ? 'bg-yellow-300' : 'bg-white hover:bg-gray-50'
+      <div
+        className={`p-4 rounded-lg group cursor-pointer transition-all duration-200 ${
+          isSelected
+            ? 'bg-primary-50 border border-primary-200 shadow-card'
+            : 'bg-white border border-surface-200 hover:border-surface-300 hover:shadow-card-hover'
         }`}
         onClick={handleClick}
       >
         <div className="flex items-center gap-3">
           <button
             onClick={() => onCheckAllSubTasks?.(task.id)}
-            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-              onCheckAllSubTasks && isAllSubTasksCompleted(tasks) ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-500'
+            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
+              onCheckAllSubTasks && isAllSubTasksCompleted(tasks) ? 'bg-green-500 border-green-500' : 'border-surface-300 hover:border-green-500'
             }`}
           >
             {onCheckAllSubTasks && isAllSubTasksCompleted(tasks) && <Check size={14} className="text-white" />}
           </button>
-          <h2 className="flex-1 text-xl font-semibold text-gray-900 task-content">
+          <h2 className="flex-1 text-xl font-semibold text-surface-900 task-content">
             {task.text}
             {task.optional && (
               <span className="ml-2 px-2 py-1 text-xs font-semibold text-gray-600 bg-yellow-200 rounded-md optional-badge align-middle">
@@ -70,11 +72,11 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
               </span>
             )}
           </h2>
-          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
             {task.richText && (
               <button
                 onClick={() => setShowDescriptionModal(true)}
-                className="text-blue-400 hover:text-blue-500 transition-colors"
+                className="text-primary-400 hover:text-primary-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
                 title="Show detailed description"
               >
                 <AlignLeft size={18} />
@@ -82,27 +84,29 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
             )}
             <button
               onClick={() => onDuplicate(task.id)}
-              className="text-gray-400 hover:text-blue-500 transition-colors"
+              className="text-surface-400 hover:text-primary-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
               title="Duplicate task"
             >
               <Copy size={18} />
             </button>
             <button
               onClick={() => onEdit()}
-              className="text-gray-400 hover:text-blue-500 transition-colors"
+              className="text-surface-400 hover:text-primary-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
+              title="Edit task"
             >
               <Edit2 size={18} />
             </button>
             <button
               onClick={() => onDelete(task.id)}
-              className="text-gray-400 hover:text-red-500 transition-colors"
+              className="text-surface-400 hover:text-red-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
+              title="Delete task"
             >
               <Trash2 size={18} />
             </button>
             {onCheckAllSubTasks && (
               <button
                 onClick={() => onCheckAllSubTasks(task.id)}
-                className="text-gray-400 hover:text-green-500 transition-colors"
+                className="text-surface-400 hover:text-green-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
                 title="Check all subtasks"
               >
                 <CheckSquare size={18} />
@@ -127,17 +131,19 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
   };
 
   return (
-    <div 
-      className={`p-4 rounded-lg shadow-sm group cursor-pointer transition-colors ${
-        isSelected ? 'bg-yellow-300' : 'bg-white hover:bg-gray-50'
+    <div
+      className={`p-4 rounded-lg group cursor-pointer transition-all duration-200 ${
+        isSelected
+          ? 'bg-primary-50 border border-primary-200 shadow-card'
+          : 'bg-white border border-surface-200 hover:border-surface-300 hover:shadow-card-hover'
       }`}
       onClick={handleClick}
     >
       <div className="flex items-start gap-3">
         <button
           onClick={() => onToggle(task.id)}
-          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-            task.completed ? 'bg-green-500 border-green-500' : 'border-gray-300 hover:border-green-500'
+          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
+            task.completed ? 'bg-green-500 border-green-500' : 'border-surface-300 hover:border-green-500'
           }`}
         >
           {task.completed && <Check size={14} className="text-white" />}
@@ -153,7 +159,7 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
             {task.richText && (
               <button
                 onClick={() => setShowDescriptionModal(true)}
-                className="text-blue-400 hover:text-blue-500 transition-colors"
+                className="text-primary-400 hover:text-primary-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
                 title="Show detailed description"
               >
                 <AlignLeft size={18} />
@@ -169,23 +175,25 @@ export function TaskDisplay({ task, onToggle, onEdit, onDelete, onDuplicate, onC
             </div>
           )}
         </div>
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => onDuplicate(task.id)}
-            className="text-gray-400 hover:text-blue-500 transition-colors"
+            className="text-surface-400 hover:text-primary-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
             title="Duplicate task"
           >
             <Copy size={18} />
           </button>
           <button
             onClick={() => onEdit()}
-            className="text-gray-400 hover:text-blue-500 transition-colors"
+            className="text-surface-400 hover:text-primary-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
+            title="Edit task"
           >
             <Edit2 size={18} />
           </button>
           <button
             onClick={() => onDelete(task.id)}
-            className="text-gray-400 hover:text-red-500 transition-colors"
+            className="text-surface-400 hover:text-red-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
+            title="Delete task"
           >
             <Trash2 size={18} />
           </button>

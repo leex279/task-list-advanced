@@ -76,8 +76,8 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-      <div ref={modalRef} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg sm:max-w-xl md:max-w-3xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div ref={modalRef} className="bg-white rounded-lg shadow-modal w-full max-w-lg sm:max-w-xl md:max-w-3xl mx-4 overflow-hidden">
         <input
           type="file"
           accept=".json"
@@ -85,61 +85,81 @@ export function ImportModal({ onClose, onImport }: ImportModalProps) {
           onChange={handleFileChange}
           style={{ display: 'none' }}
         />
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-gray-800 text-lg sm:text-xl md:text-2xl">Import Tasks</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-surface-200">
+          <h2 className="text-lg font-semibold text-surface-900">Import Tasks</h2>
+          <button
+            onClick={onClose}
+            className="p-1 text-surface-400 hover:text-surface-600 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+          >
             <X size={20} />
           </button>
         </div>
-        <div className="flex flex-wrap gap-2 mb-4">
-          <button
-            onClick={() => {
-              setImportType('browse');
-              handleBrowseClick();
-            }}
-            className={`modern-button ${importType === 'browse' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-          >
-            Browse
-          </button>
-          <button
-            onClick={() => setImportType('url')}
-            className={`modern-button ${importType === 'url' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-          >
-            Import by URL
-          </button>
-          <button
-            onClick={() => setImportType('paste')}
-            className={`modern-button ${importType === 'paste' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-          >
-            Paste JSON
-          </button>
+
+        {/* Content */}
+        <div className="px-6 py-4">
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button
+              onClick={() => {
+                setImportType('browse');
+                handleBrowseClick();
+              }}
+              className={`btn ${importType === 'browse' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              Browse
+            </button>
+            <button
+              onClick={() => setImportType('url')}
+              className={`btn ${importType === 'url' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              Import by URL
+            </button>
+            <button
+              onClick={() => setImportType('paste')}
+              className={`btn ${importType === 'paste' ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              Paste JSON
+            </button>
+          </div>
+
+          {importType === 'url' && (
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="Enter URL to JSON file"
+                className="w-full px-3 py-2 border border-surface-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+              />
+            </div>
+          )}
+
+          {importType === 'paste' && (
+            <div className="space-y-2">
+              <textarea
+                value={json}
+                onChange={(e) => setJson(e.target.value)}
+                placeholder="Paste JSON here..."
+                className="w-full h-32 px-4 py-2 rounded-lg border border-surface-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+              />
+            </div>
+          )}
         </div>
-        {importType === 'url' && (
-          <div className="space-y-2 mb-4">
-            <input
-              type="text"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="Enter URL to JSON file"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-            />
-          </div>
-        )}
-        {importType === 'paste' && (
-          <div className="space-y-2 mb-4">
-            <textarea
-              value={json}
-              onChange={(e) => setJson(e.target.value)}
-              placeholder="Paste JSON here..."
-              className="w-full h-24 px-4 py-2 rounded-lg border border-gray-200 font-mono text-sm focus:outline-none focus:border-blue-500"
-            />
-          </div>
-        )}
-        <div className="flex justify-end gap-4 mt-4">
-          <button onClick={onClose} className="modern-button bg-gray-100 text-gray-700 hover:bg-gray-200">
+
+        {/* Footer */}
+        <div className="flex justify-end gap-2 px-6 py-4 border-t border-surface-200 bg-surface-50">
+          <button
+            onClick={onClose}
+            className="btn btn-ghost"
+          >
             Cancel
           </button>
-          <button onClick={handleImport} className="modern-button bg-blue-500 text-white hover:bg-blue-600">
+          <button
+            onClick={handleImport}
+            className="btn btn-primary"
+            disabled={!importType || (importType === 'url' && !url) || (importType === 'paste' && !json)}
+          >
             Import
           </button>
         </div>

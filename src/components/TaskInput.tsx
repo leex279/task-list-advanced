@@ -51,63 +51,63 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={isHeadline ? "Add a headline..." : "Add a new task..."}
-          className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-500 transition-colors min-w-[200px]"
+          className="flex-1 px-4 py-2 rounded-lg border border-surface-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all min-w-[200px]"
         />
         <button
           type="button"
           onClick={() => setIsHeadline(!isHeadline)}
-          className={`headline-button px-3 rounded-lg border transition-colors ${
+          className={`headline-button px-3 py-2 rounded-full border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
             isHeadline
-              ? 'border-blue-500 text-blue-500'
-              : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
+              ? 'border-primary-500 bg-primary-50 text-primary-600'
+              : 'border-surface-200 text-surface-500 hover:border-primary-300 hover:text-primary-500 hover:bg-primary-50'
           }`}
           title="Toggle headline"
         >
-          <Heading size={20} />
+          <Heading size={18} />
         </button>
         {!isHeadline && (
           <>
             <button
               type="button"
               onClick={() => setShowCodeInput(!showCodeInput)}
-              className={`code-button px-3 rounded-lg border transition-colors ${
+              className={`code-button px-3 py-2 rounded-full border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
                 showCodeInput
-                  ? 'border-blue-500 text-blue-500'
-                  : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
+                  ? 'border-primary-500 bg-primary-50 text-primary-600'
+                  : 'border-surface-200 text-surface-500 hover:border-primary-300 hover:text-primary-500 hover:bg-primary-50'
               }`}
               title="Add code block"
             >
-              <Code size={20} />
+              <Code size={18} />
             </button>
             <button
               type="button"
               onClick={() => setShowRichTextEditor(!showRichTextEditor)}
-              className={`rich-text-button px-3 rounded-lg border transition-colors ${
+              className={`rich-text-button px-3 py-2 rounded-full border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
                 showRichTextEditor
-                  ? 'border-blue-500 text-blue-500'
-                  : 'border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-500'
+                  ? 'border-primary-500 bg-primary-50 text-primary-600'
+                  : 'border-surface-200 text-surface-500 hover:border-primary-300 hover:text-primary-500 hover:bg-primary-50'
               }`}
               title="Add rich text"
             >
-              <AlignLeft size={20} />
+              <AlignLeft size={18} />
             </button>
-            <label className="optional-checkbox flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors cursor-pointer">
+            <label className="optional-checkbox flex items-center gap-2 px-3 py-2 rounded-full border-2 border-surface-200 hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 cursor-pointer">
               <input
                 type="checkbox"
                 checked={optional}
                 onChange={(e) => setOptional(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
+                className="w-4 h-4 rounded border-surface-300 text-primary-500 focus:ring-primary-500 focus:ring-offset-0 transition-colors"
               />
-              <span className="text-sm font-medium text-gray-600">Optional</span>
+              <span className="text-sm font-medium text-surface-600">Optional</span>
             </label>
           </>
         )}
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+          className="btn btn-primary px-4 py-2"
         >
-          <PlusCircle size={20} />
-          Add
+          <PlusCircle size={18} />
+          <span>Add</span>
         </button>
       </div>
 
@@ -115,7 +115,7 @@ export function TaskInput({ onAddTask }: TaskInputProps) {
         <CodeBlockEditor
           language="javascript"
           code={code}
-          onChange={(code) => { 
+          onChange={(code) => {
             return setCode(code);
           }}
         />

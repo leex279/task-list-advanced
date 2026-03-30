@@ -56,32 +56,35 @@ export function IntroModal({ onClose }: IntroModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">{steps[currentStep].title}</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-lg shadow-modal w-full max-w-2xl mx-4 overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-surface-200">
+          <h2 className="text-lg font-semibold text-surface-900">{steps[currentStep].title}</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="p-1 text-surface-400 hover:text-surface-600 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
             title="Skip tutorial"
           >
             <X size={20} />
           </button>
         </div>
 
-        <div className="mb-8">
-          <div className="aspect-video bg-gray-100 rounded-lg mb-4 overflow-hidden">
+        {/* Content */}
+        <div className="px-6 py-4">
+          <div className="aspect-video bg-surface-100 rounded-lg mb-4 overflow-hidden border border-surface-200">
             {steps[currentStep].image}
           </div>
-          <p className="text-gray-600">{steps[currentStep].content}</p>
+          <p className="text-surface-600">{steps[currentStep].content}</p>
         </div>
 
-        <div className="flex justify-between items-center">
+        {/* Footer */}
+        <div className="flex justify-between items-center px-6 py-4 border-t border-surface-200 bg-surface-50">
           <div className="flex gap-2">
             {currentStep > 0 ? (
               <button
                 onClick={handlePrevious}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="btn btn-ghost"
               >
                 <ArrowLeft size={16} />
                 Previous
@@ -89,7 +92,7 @@ export function IntroModal({ onClose }: IntroModalProps) {
             ) : (
               <button
                 onClick={onClose}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="btn btn-ghost"
               >
                 Skip Tutorial
               </button>
@@ -100,15 +103,15 @@ export function IntroModal({ onClose }: IntroModalProps) {
               {steps.map((_, index) => (
                 <div
                   key={index}
-                  className={`w-2 h-2 rounded-full ${
-                    index === currentStep ? 'bg-blue-500' : 'bg-gray-300'
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentStep ? 'bg-primary-500' : 'bg-surface-300'
                   }`}
                 />
               ))}
             </div>
             <button
               onClick={handleNext}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+              className="btn btn-primary"
             >
               {currentStep === steps.length - 1 ? 'Get Started' : 'Next'}
               {currentStep < steps.length - 1 && <ArrowRight size={16} />}
@@ -118,4 +121,4 @@ export function IntroModal({ onClose }: IntroModalProps) {
       </div>
     </div>
   );
-} 
+}
