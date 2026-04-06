@@ -12,7 +12,7 @@ export function useSettings() {
     const storedSettings = localStorage.getItem('settings');
     try {
       const parsed = storedSettings ? JSON.parse(storedSettings) : null;
-      return parsed || DEFAULT_SETTINGS;
+      return parsed ? { ...DEFAULT_SETTINGS, ...parsed } : DEFAULT_SETTINGS;
     } catch (e) {
       console.error('Error parsing stored settings:', e);
       return DEFAULT_SETTINGS;
