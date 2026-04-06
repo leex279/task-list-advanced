@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckSquare, Settings, Shield, Download, Save, Upload } from 'lucide-react';
+import { CheckSquare, Settings, Shield, Download, Save, Upload, Moon, Sun } from 'lucide-react';
 import { Task } from '../types/task';
 import { ExportModal } from './ExportModal';
 import { SaveModal } from './SaveModal';
@@ -9,13 +9,15 @@ interface HeaderProps {
   onLogoClick: () => void;
   onSettingsClick: () => void;
   onAdminClick: () => void;
+  onDarkModeToggle: () => void;
+  darkMode: boolean;
   tasks: Task[];
   onImport: (tasks: Task[]) => void;
   onError: (error: string) => void;
   isAdmin?: boolean;
 }
 
-export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onImport, onError, isAdmin }: HeaderProps) {
+export function Header({ onLogoClick, onSettingsClick, onAdminClick, onDarkModeToggle, darkMode, tasks, onImport, onError, isAdmin }: HeaderProps) {
   const [showExportModal, setShowExportModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -85,7 +87,7 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
     <div className="flex items-center justify-between mb-4 sm:mb-8 flex-wrap gap-2">
       <div className="flex items-center gap-2 sm:gap-3 cursor-pointer" onClick={onLogoClick}>
         <CheckSquare size={28} className="text-blue-500 sm:w-8 sm:h-8" />
-        <h1 className="header-title text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 truncate">Task List Advanced</h1>
+        <h1 className="header-title text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-gray-100 truncate">Task List Advanced</h1>
       </div>
       <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
         <div className="import-export-buttons flex gap-1 sm:gap-2">
@@ -102,7 +104,7 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
           )}
           <button
             onClick={() => setShowExportModal(true)}
-            className="import-export-button flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            className="import-export-button flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             title="Export tasks"
           >
             <Download size={14} className="sm:w-4 sm:h-4" />
@@ -110,7 +112,7 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
           </button>
           <button
             onClick={handleImport}
-            className="import-export-button flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            className="import-export-button flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             title="Import tasks"
           >
             <Upload size={14} className="sm:w-4 sm:h-4" />
@@ -120,7 +122,7 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
         {isAdmin && (
           <button
             onClick={onAdminClick}
-            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             title="Admin Dashboard"
           >
             <Shield size={14} className="sm:w-4 sm:h-4" />
@@ -128,8 +130,15 @@ export function Header({ onLogoClick, onSettingsClick, onAdminClick, tasks, onIm
           </button>
         )}
         <button
+          onClick={onDarkModeToggle}
+          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-2"
+          title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {darkMode ? <Sun size={16} className="sm:w-5 sm:h-5" /> : <Moon size={16} className="sm:w-5 sm:h-5" />}
+        </button>
+        <button
           onClick={onSettingsClick}
-          className="text-gray-400 hover:text-gray-600 p-2"
+          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-2"
           title="Settings"
         >
           <Settings size={16} className="sm:w-5 sm:h-5" />
