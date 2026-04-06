@@ -11,6 +11,7 @@ Built with React 18, TypeScript, Vite 6, Supabase, and Google Gemini AI.
 ### Core Task Management
 - ✨ Create and manage tasks with rich text descriptions
 - 📝 Add code blocks with syntax highlighting (powered by Prism.js)
+- 🔀 Token variables in code blocks (replaceable %%tokenName%% placeholders)
 - 🔄 Drag and drop to reorder tasks
 - 🎯 Mark tasks as optional
 - 📑 Organize tasks with headlines and subtasks
@@ -300,7 +301,8 @@ Tasks are stored in JSON format:
       "createdAt": "2024-03-20T12:00:00.000Z",
       "codeBlock": {
         "language": "javascript",
-        "code": "console.log('Hello!');"
+        "code": "const name = '%%NAME%%';",
+        "tokens": { "NAME": "default value" }
       },
       "optional": false,
       "richText": "<p>Detailed description</p>"

@@ -8,7 +8,7 @@ export function useTasks() {
   const addTask = (
     text: string,
     isHeadline: boolean,
-    codeBlock?: { language: string; code: string },
+    codeBlock?: { language: string; code: string; tokens?: Record<string, string> },
     richText?: string,
     optional?: boolean
   ) => {
@@ -60,7 +60,7 @@ export function useTasks() {
   const editTask = (
     id: string,
     text: string,
-    codeBlock?: { language: string; code: string },
+    codeBlock?: { language: string; code: string; tokens?: Record<string, string> },
     richText?: string,
     optional?: boolean
   ) => {

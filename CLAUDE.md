@@ -29,6 +29,7 @@ This is a React + TypeScript task management application with AI integration bui
 **Task System**: Tasks support rich content including:
 - Rich text descriptions (React Quill)
 - Code blocks with syntax highlighting (Prism.js)
+- Token variables in code blocks (%%tokenName%% syntax for replaceable values)
 - Headlines for grouping
 - Drag & drop reordering (@dnd-kit)
 - Optional flags
@@ -51,7 +52,11 @@ interface Task {
   completed: boolean;
   createdAt: Date;
   isHeadline?: boolean;
-  codeBlock?: { language: string; code: string; };
+  codeBlock?: {
+    language: string;
+    code: string;
+    tokens?: Record<string, string>;  // Token variables with default values
+  };
   richText?: string;
   optional?: boolean;
 }

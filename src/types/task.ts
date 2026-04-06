@@ -7,6 +7,7 @@ export interface Task {
   codeBlock?: {
     language: string;
     code: string;
+    tokens?: Record<string, string>;  // Token definitions { tokenName: defaultValue }
   };
   richText?: string;
   optional?: boolean;

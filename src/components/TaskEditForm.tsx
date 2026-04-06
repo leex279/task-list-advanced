@@ -6,9 +6,15 @@ import { RichTextEditor } from './RichTextEditor';
 
 interface TaskEditFormProps {
   task: Task;
-  onSave: (text: string, codeBlock?: { language: string; code: string }, richText?: string, optional?: boolean) => void;
+  onSave: (text: string, codeBlock?: { language: string; code: string; tokens?: Record<string, string> }, richText?: string, optional?: boolean) => void;
   onCancel: () => void;
 }
+
+// Helper to detect tokens from code
+const detectTokens = (code: string): string[] => {
+  const matches = code.match(/%%(\w+)%%/g) || [];
+  return [...new Set(matches.map(m => m.replace(/%%/g, '')))];
+};
 
 export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
   const [text, setText] = useState(task.text);
@@ -18,12 +24,23 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
   const [code, setCode] = useState(task.codeBlock?.code || '');
   const [richText, setRichText] = useState(task.richText || '');
   const [optional, setOptional] = useState(task.optional || false);
+  const [tokens] = useState<Record<string, string>>(task.codeBlock?.tokens || {});
 
   const handleSave = () => {
     if (text.trim() || richText.trim()) {
+      const detectedTokens = detectTokens(code);
+      const updatedTokens: Record<string, string> = {};
+      detectedTokens.forEach(t => {
+        updatedTokens[t] = tokens[t] || '';
+      });
+
       onSave(
         text.trim(),
-        code.trim() ? { language: 'javascript', code: code.trim() } : undefined,
+        code.trim() ? {
+          language: 'javascript',
+          code: code.trim(),
+          tokens: Object.keys(updatedTokens).length > 0 ? updatedTokens : undefined
+        } : undefined,
         richText.trim() ? richText.trim() : undefined,
         optional
       );
@@ -86,6 +103,18 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
             code={code}
             onChange={(_, newCode) => setCode(newCode)}
           />
+        )}
+        {showCodeInput && detectTokens(code).length > 0 && (
+          <div className="mt-2 p-3 bg-gray-50 rounded-md">
+            <p className="text-sm font-medium text-gray-700 mb-2">Detected Tokens:</p>
+            <div className="flex flex-wrap gap-2">
+              {detectTokens(code).map(token => (
+                <span key={token} className="px-2 py-1 bg-blue-100 text-blue-700 text-sm rounded">
+                  %%{token}%%
+                </span>
+              ))}
+            </div>
+          </div>
         )}
         {showRichTextEditor && (
           <RichTextEditor value={richText} onChange={setRichText} />
